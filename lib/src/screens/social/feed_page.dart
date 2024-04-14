@@ -82,18 +82,14 @@ class _FeedPageState extends State<FeedPage> {
     switch (index) {
       case 0:
         // Navegar a la página de FeedPage
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => FeedPage()),
-        );
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil("/feed", (route) => false);
         break;
       case 1:
         // Navegar a la página de creación dependiendo su ultimo estado
         if (globalVariable.selectedSubPageCreate == 0) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CreateExercisePage()),
-          );
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil("/create-excersice", (route) => false);
         } else if (globalVariable.selectedSubPageCreate == 1) {
           Navigator.push(
             context,

@@ -5,6 +5,7 @@ import 'package:gym_check/src/screens/authentication/confirm_email_page.dart';
 import 'package:gym_check/src/screens/authentication/login_page.dart';
 import 'package:gym_check/src/screens/authentication/register_page.dart';
 import 'package:gym_check/src/screens/crear/create_page.dart';
+import 'package:gym_check/src/screens/crear/ejercicios/create_exercise_page.dart';
 import 'package:gym_check/src/screens/seguimiento/physical/physical_tracking_page.dart';
 
 import 'package:gym_check/src/screens/social/create_post_page.dart';
@@ -68,6 +69,7 @@ class MyApp extends StatelessWidget {
 
           //Paginas para el modulo de creacion
           'create-module': (context) => CreatePage(),
+          '/create-excersice': (context) => const CreateExercisePage(),
 
           //Paginas para le modulo de seguimiento
 

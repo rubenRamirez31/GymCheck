@@ -22,16 +22,20 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       children: [
         AppBar(
           title: Text(title),
-          backgroundColor: Color.fromARGB(255, 227, 227, 227), // Color del AppBar
+          backgroundColor:
+              Color.fromARGB(255, 227, 227, 227), // Color del AppBar
           leading: GestureDetector(
             onTap: () {
               _showProfileMenu(context);
             },
             child: Padding(
-              padding: const EdgeInsets.all(8.0), // Añadir un poco de espacio alrededor de la imagen de perfil
+              padding: const EdgeInsets.all(
+                  8.0), // Añadir un poco de espacio alrededor de la imagen de perfil
               child: CircleAvatar(
-                backgroundImage: profileImageUrl != null ? NetworkImage(profileImageUrl!) : null,
-                backgroundColor: Colors.transparent,
+                backgroundImage: profileImageUrl != null
+                    ? NetworkImage(profileImageUrl!)
+                    : null,
+                backgroundColor: Colors.amber,
               ),
             ),
           ),
@@ -42,12 +46,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         if (trackingOptions != null)
           Row(
             children: trackingOptions!,
-          ),      ],
+          ),
+      ],
     );
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight + (trackingOptions?.length ?? 0) * 40.0);
+  Size get preferredSize =>
+      Size.fromHeight(kToolbarHeight + (trackingOptions?.length ?? 0) * 40.0);
 
   void _showProfileMenu(BuildContext context) {
     showModalBottomSheet(
