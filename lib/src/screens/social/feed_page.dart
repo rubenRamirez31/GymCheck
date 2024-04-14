@@ -13,6 +13,8 @@ import 'package:gym_check/src/screens/user/primero_pasos/emotional_data_page.dar
 import 'package:gym_check/src/screens/user/primero_pasos/nutritional_data_page.dart';
 import 'package:gym_check/src/services/api_service.dart';
 import 'package:gym_check/src/services/user_service.dart';
+import 'package:gym_check/src/utils/common_widgets/gradient_background.dart';
+import 'package:gym_check/src/values/app_colors.dart';
 
 import 'package:gym_check/src/widgets/custom_app_bar.dart';
 import 'package:gym_check/src/widgets/social/post_widget.dart';
@@ -26,7 +28,10 @@ import 'package:gym_check/src/widgets/bottom_navigation_menu.dart';
 import 'create_post_page.dart';
 
 class FeedPage extends StatefulWidget {
+  const FeedPage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _FeedPageState createState() => _FeedPageState();
 }
 
@@ -84,19 +89,17 @@ class _FeedPageState extends State<FeedPage> {
         break;
       case 1:
         // Navegar a la página de creación dependiendo su ultimo estado
-
         if (globalVariable.selectedSubPageCreate == 0) {
-           Navigator.push(
+          Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => CreateExercisePage()),
           );
-
-        } else if (globalVariable.selectedSubPageCreate == 1){
-             Navigator.push(
+        } else if (globalVariable.selectedSubPageCreate == 1) {
+          Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CreateDietPage()),);
+            MaterialPageRoute(builder: (context) => CreateDietPage()),
+          );
         }
-         
         break;
       case 2:
         if (globalVariable.selectedSubPageTracking == 0) {
@@ -123,57 +126,55 @@ class _FeedPageState extends State<FeedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Life Check',
-        //profileImageUrl: _urlImagen,
-        onProfilePressed: () {},
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search), // Botón de búsqueda
-            onPressed: () {
-              // Acción al presionar el botón de búsqueda
-            },
+      backgroundColor: AppColors.darkestBlue,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            title: const Text(
+              'GymCheck',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: AppColors.darkestBlue,
+            actions: [
+              IconButton(
+                color: AppColors.white,
+                icon: const Icon(Icons.search),
+                onPressed: () {},
+              ),
+              IconButton(
+                color: AppColors.white,
+                icon: const Icon(Icons.notifications),
+                onPressed: () {},
+              ),
+            ],
+            floating:
+                true, // Hace que el AppBar se desplace fuera de la vista al hacer scroll hacia abajo
+            snap:
+                true, // Hace que el AppBar se oculte completamente al hacer scroll hacia abajo
           ),
-          IconButton(
-            icon: Icon(Icons.notifications), // Botón de notificaciones
-            onPressed: () {
-              // Acción al presionar el botón de notificaciones
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.message), // Botón de mensajes
-            onPressed: () {
-              // Acción al presionar el botón de mensajes
-            },
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                return PostWidget(post: _posts[index]);
+              },
+              childCount: _posts.length,
+            ),
           ),
         ],
       ),
-
-      body: _nick.isEmpty
-          ? CircularProgressIndicator()
-          : ListView.builder(
-              itemCount: _posts.length,
-              itemBuilder: (context, index) {
-                return PostWidget(post: _posts[index]);
-              },
-            ),
-      // Agrega el botón flotante de acción aquí
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navegar a la página de creación de publicaciones
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => CreatePostPage()),
           );
         },
-        child: Icon(Icons.add),
-        backgroundColor: const Color.fromARGB(255, 134, 149, 161)
-            .withOpacity(0.75), // Cambiar el nivel de opacidad
+        backgroundColor: AppColors.darkBlue,
+        child: const Icon(Icons.add, color: Colors.white),
       ),
-      // Agrega el menú de navegación inferior aquí
       bottomNavigationBar: BottomNavigationMenu(
-        selectedIndex: 0, // Índice de la pestaña seleccionada
-        onTabTapped: _onTabTapped, // Función para manejar el cambio de pestañas
+        selectedIndex: 0,
+        onTabTapped: _onTabTapped,
       ),
     );
   }

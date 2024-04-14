@@ -1,7 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:gym_check/src/components/app_text_form_field.dart';
 import 'package:gym_check/src/models/user_sesion_model.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
@@ -148,12 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                     valueListenable: fieldValidNotifier,
                     builder: (_, isValid, __) {
                       return FilledButton(
-                        onPressed: isValid
-                            ? () {
-                                emailController.clear();
-                                passwordController.clear();
-                              }
-                            : null,
+                        onPressed: isValid ? () => _login(context) : null,
                         child: const Text(AppStrings.login),
                       );
                     },
@@ -204,10 +201,92 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                AppStrings.doNotHaveAnAccount,
+                style: AppTheme.bodySmall,
+              ),
+              const SizedBox(width: 4),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, "/register");
+                },
+                child: const Text(AppStrings.register),
+              )
+            ],
+          ),
         ],
       ),
     );
   }
 
   // Función para manejar el inicio de sesión
+  Future<void> _login(BuildContext context) async {
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+
+    // Realizar inicio de sesión usando ApiService
+    try {
+      Map<String, dynamic>? userData =
+          await UserService.loginUser(email, password);
+      if (userData != null) {
+        // Asigna el ID del usuario y el token obtenidos de la API
+        final userId = userData['userId'];
+        final token = userData['token'];
+        final userSession = UserSession(userId: userId, token: token);
+        Provider.of<UserSessionProvider>(context, listen: false)
+            .setUserSession(userSession);
+
+        print(userId);
+
+        Map<String, dynamic> userData2 = await UserService.getUserData(userId);
+
+        int _primeros_pasos = userData2['primeros_pasos'];
+        print(_primeros_pasos);
+
+        if (_primeros_pasos == 0) {
+          // ignore: use_build_context_synchronously
+          Navigator.pushNamed(context, '/confirm_email');
+        } else if (_primeros_pasos == 1) {
+          Navigator.pushNamed(context, '/general_data');
+        } else if (_primeros_pasos == 2) {
+          Navigator.pushNamed(context, '/first_photo');
+        } else if (_primeros_pasos == 3) {
+          Navigator.pushNamed(context, '/body_data');
+        } else if (_primeros_pasos == 4) {
+          Navigator.pushNamed(context, '/nutritional_data');
+        } else if (_primeros_pasos == 5) {
+          Navigator.pushNamed(context, '/emotional_data');
+        } else if (_primeros_pasos == 6) {
+          Navigator.pushNamed(context, '/recomendar_premium');
+        } else if (_primeros_pasos == 7) {
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil("/feed", (route) => false);
+        }
+      }
+    } catch (error) {
+      // Manejar el error en caso de fallo en el inicio de sesión
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Error'),
+          content: const Text(
+            'Error al iniciar sesión. Por favor, revise su correo electrónico y contraseña.',
+            style: TextStyle(color: Colors.black),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text(
+                'Aceptar',
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+  }
 }

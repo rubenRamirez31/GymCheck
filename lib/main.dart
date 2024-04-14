@@ -18,13 +18,15 @@ import 'package:gym_check/src/screens/user/primero_pasos/first_photo_page.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/general_data_page.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/nutritional_data_page.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/recomerdar_premium_page.dart';
+import 'package:gym_check/src/values/app_theme.dart';
+import 'package:gym_check/src/widgets/social/comment_box.dart';
+import 'package:gym_check/src/widgets/social/share_box.dart';
 import 'package:provider/provider.dart';
 
-
-
-
 void main() {
-  runApp(MyApp());
+  runApp(
+    const MyApp(),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -40,14 +42,12 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Your App',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
+        theme: AppTheme.themeData,
         initialRoute: '/',
         routes: {
           //Paginas de autenticacion
-          '/': (context) => LoginPage(),
-          '/register': (context) => RegisterPage(),
+          '/': (context) => const LoginPage(),
+          '/register': (context) => const RegisterPage(),
           '/confirm_email': (context) => ConfirmEmailPage(),
 
           //Paginas de usuario primeros pasos
@@ -60,20 +60,22 @@ class MyApp extends StatelessWidget {
 
           //Paginas del modulo social
           '/feed': (context) => FeedPage(),
+          '/commentbox': (context) => CommentBox(),
+          '/share': (context) => Share(),
           '/profile': (context) => ProfilePage(nick: ""),
           '/create-post': (context) => CreatePostPage(),
-          '/edit-post': (context) => EditPostPage(postId: ""),
+          '/edit-post': (context) => const EditPostPage(postId: ""),
 
           //Paginas para el modulo de creacion
           'create-module': (context) => CreatePage(),
 
           //Paginas para le modulo de seguimiento
 
-          'seguimiento-fisico':(context) => PhysicalTrackingPage(),
+          'seguimiento-fisico': (context) => PhysicalTrackingPage(),
 
           //Paginas para el modulo de mi espacio
 
-          'mi-espacio':(context) => MiEspacioPage(),
+          'mi-espacio': (context) => MiEspacioPage(),
 
           //'/home': (context) => HomePage(),
         },

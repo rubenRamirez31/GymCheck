@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:gym_check/src/values/app_colors.dart';
 
 class BottomNavigationMenu extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onTabTapped;
 
-  BottomNavigationMenu({required this.selectedIndex, required this.onTabTapped});
+  const BottomNavigationMenu(
+      {super.key, required this.selectedIndex, required this.onTabTapped});
 
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       currentIndex: selectedIndex,
       onTap: onTabTapped,
-      backgroundColor: Colors.grey[800], // Cambiar color de fondo
-      selectedItemColor: Colors.blue, // Cambiar color de íconos activos
+      backgroundColor: AppColors.darkestBlue,
+      selectedItemColor: AppColors.darkBlue, // Cambiar color de íconos activos
       unselectedItemColor: Colors.grey, // Cambiar color de íconos inactivos
-      selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold), // Cambiar estilo de etiquetas activas
-      unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal), // Cambiar estilo de etiquetas inactivas
-      items: [
+      selectedLabelStyle: const TextStyle(
+          fontWeight: FontWeight.bold), // Cambiar estilo de etiquetas activas
+      unselectedLabelStyle: const TextStyle(
+          fontWeight:
+              FontWeight.normal), // Cambiar estilo de etiquetas inactivas
+      items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
           label: 'Inicio',

@@ -1,13 +1,19 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/user_model.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
 import 'package:gym_check/src/services/user_service.dart';
+import 'package:gym_check/src/utils/common_widgets/gradient_background.dart';
+import 'package:gym_check/src/values/app_theme.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class FirstPhotoPage extends StatefulWidget {
+  const FirstPhotoPage({super.key});
+
   @override
   _FirstPhotoPageState createState() => _FirstPhotoPageState();
 }
@@ -18,56 +24,70 @@ class _FirstPhotoPageState extends State<FirstPhotoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Subir Foto de Perfil'),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _imageFile != null
-                ? Container(
-                    height: 200,
-                    width: 200,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: FileImage(_imageFile!),
-                        fit: BoxFit.cover,
+      body: Column(
+        children: [
+          const GradientBackground(
+            children: [
+              Text(
+                'Elige una imagen de \nperfil',
+                style: AppTheme.titleLarge,
+              ),
+              SizedBox(height: 6),
+              Text('Selecciona una foto de perfil de tu galeria',
+                  style: AppTheme.bodySmall),
+            ],
+          ),
+          Expanded(
+              child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _imageFile != null
+                    ? Container(
+                        height: 250,
+                        width: 250,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: FileImage(_imageFile!),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      )
+                    : Container(), // Mostrar la imagen seleccionada si existe
+                const SizedBox(height: 20),
+                _imageFile != null
+                    ? ElevatedButton(
+                        onPressed: () => _seleccionarFoto(),
+                        child: const Text('Cambiar Imagen'),
+                      )
+                    : const SizedBox(height: 20),
+                const SizedBox(height: 20),
+                _imageFile != null
+                    ? ElevatedButton(
+                        onPressed: () => _subirFoto(context),
+                        child: const Text('Continuar'),
+                      )
+                    : const SizedBox(height: 20),
+                const SizedBox(height: 20),
+
+                _imageFile == null
+                    ? ElevatedButton(
+                        onPressed: _seleccionarFoto,
+                        child: const Text('Agregar Foto'),
+                      )
+                    : Container(),
+                _imageFile != null
+                    ? const SizedBox(height: 20)
+                    : ElevatedButton(
+                        onPressed: () => _subirDespues(context),
+                        child: const Text('Agregar Foto Después'),
                       ),
-                    ),
-                  )
-                : Container(), // Mostrar la imagen seleccionada si existe
-
-            _imageFile != null
-                ? ElevatedButton(
-                    onPressed: () => _subirFoto(context),
-                    child: Text('Continuar'),
-                  )
-                : SizedBox(height: 20),
-            SizedBox(height: 20),
-
-            _imageFile == null
-                ? ElevatedButton(
-                    onPressed: _seleccionarFoto,
-                    child: Text('Agregar Foto'),
-                  )
-                : Container(),
-            _imageFile != null
-                ? SizedBox(height: 20)
-                : ElevatedButton(
-                    onPressed: () => _subirDespues(context),
-                    child: Text('Agregar Foto Después'),
-                  ),
-            SizedBox(height: 20),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _seleccionarFoto,
-        tooltip: 'Seleccionar Foto',
-        child: Icon(Icons.add_a_photo),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ))
+        ],
       ),
     );
   }
@@ -125,6 +145,7 @@ class _FirstPhotoPageState extends State<FirstPhotoPage> {
       await UserService.updateUser(userId, user);
 
       // Redirigir a la página de body_data_page
+      // ignore: use_build_context_synchronously
       Navigator.pushNamed(context, '/body_data');
     } catch (error) {
       print('Error al agregar foto después: $error');
