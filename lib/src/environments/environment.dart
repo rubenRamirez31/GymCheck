@@ -1,5 +1,5 @@
 class Environment {
-  static const String API_URL = 'http://192.168.1.82:3000';
+  static const String API_URL = 'http://172.16.19.40:3000';
   //static const String API_URL = 'http://192.168.56.1:3000';
 
   // Opcionalmente, puedes tener diferentes URLs para diferentes entornos

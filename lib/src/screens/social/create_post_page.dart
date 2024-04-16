@@ -127,16 +127,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    KeyboardVisibilityController().onChange.listen((bool visible) {
-      setState(() {
-        _isKeyboardVisible = visible;
-      });
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -161,7 +151,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextFormField(
-              autofocus: true,
               controller: _textoController,
               maxLines: 5,
               decoration: const InputDecoration(
@@ -172,16 +161,46 @@ class _CreatePostPageState extends State<CreatePostPage> {
             const SizedBox(
               height: 20,
             ),
-            Container(
-              // Altura definida
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15), // Borde redondeado
-              ),
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(
-                      15), // Borde redondeado para la imagen
-                  child: Image.file(_image!, fit: BoxFit.cover)),
-            ),
+            _image != null
+                ? Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(15), // Borde redondeado
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(
+                              15), // Borde redondeado para la imagen
+                          child: Image.file(_image!, fit: BoxFit.cover),
+                        ),
+                      ),
+                      Positioned(
+                        top: 5,
+                        right: 5,
+                        child: Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            color: Color.fromARGB(114, 197, 185, 185),
+                          ),
+                          child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _image = null;
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.close,
+                              color: AppColors.white,
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  )
+                : Container()
           ],
         ),
       ),
