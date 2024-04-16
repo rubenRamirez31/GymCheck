@@ -160,7 +160,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 20),
             TextFormField(
               autofocus: true,
               controller: _textoController,
@@ -170,40 +169,53 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _getImageCamera,
-              child: const Text('Tomar una foto'),
+            const SizedBox(
+              height: 20,
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _getImageGallery,
-              child: const Text('Subir una foto desde la galeria'),
+            Container(
+              // Altura definida
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15), // Borde redondeado
+              ),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(
+                      15), // Borde redondeado para la imagen
+                  child: Image.file(_image!, fit: BoxFit.cover)),
             ),
-            const SizedBox(height: 20),
-            if (_image != null) Image.file(_image!),
           ],
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: MediaQuery.of(context).viewInsets,
-        child: BottomAppBar(
-          notchMargin: 1,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              IconButton(
-                onPressed: _getImageCamera,
-                icon: const Icon(Icons.camera_alt),
+          padding: MediaQuery.of(context).viewInsets,
+          child: Container(
+            decoration: const BoxDecoration(
+              border: Border(
+                top: BorderSide(
+                    color: AppColors.darkBlue,
+                    width: 1.0), // Borde superior negro
+                bottom: BorderSide(
+                    color: AppColors.darkBlue,
+                    width: 1.0), // Borde inferior negro
               ),
-              IconButton(
-                onPressed: _getImageGallery,
-                icon: const Icon(Icons.photo),
+            ),
+            child: Container(
+              height: 45,
+              color: AppColors.primaryColor,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  IconButton(
+                    onPressed: _getImageCamera,
+                    icon: const Icon(Icons.camera_alt),
+                  ),
+                  IconButton(
+                    onPressed: _getImageGallery,
+                    icon: const Icon(Icons.photo),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
+          )),
     );
   }
 }
