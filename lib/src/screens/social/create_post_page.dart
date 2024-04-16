@@ -1,23 +1,29 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:gym_check/src/components/app_text_form_field.dart';
 import 'package:gym_check/src/models/social/post_model.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
 import 'package:gym_check/src/services/api_service.dart';
 import 'package:gym_check/src/services/user_service.dart';
-import 'package:gym_check/src/widgets/bottom_navigation_menu.dart';
-import 'package:gym_check/src/widgets/custom_app_bar.dart';
+import 'package:gym_check/src/values/app_colors.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class CreatePostPage extends StatefulWidget {
+  const CreatePostPage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _CreatePostPageState createState() => _CreatePostPageState();
 }
 
 class _CreatePostPageState extends State<CreatePostPage> {
   final TextEditingController _textoController = TextEditingController();
- 
+
+  bool _isKeyboardVisible = false;
+
   //String _selectedLugar = 'Agregar lugar'; // Cambiado de 'Puebla' a 'Agregar lugar'
   File? _image;
 
@@ -47,12 +53,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('Error'),
-            content: Text('Por favor ingrese un texto para la publicación.'),
+            title: const Text('Error'),
+            content:
+                const Text('Por favor ingrese un texto para la publicación.'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('OK'),
+                child: const Text('OK'),
               ),
             ],
           ),
@@ -60,7 +67,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
         return;
       }
 
-     
       String _nick = '';
       String _userIdAuth = '';
       String userId = Provider.of<UserSessionProvider>(context, listen: false)
@@ -72,11 +78,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
         _userIdAuth = userData['userIdAuth'];
       });
       final Post newPost = Post(
-
         userId: _userIdAuth,
-      
         texto: _textoController.text,
-      
         nick: _nick,
         fechaCreacion: DateTime.now(),
         imagen: _image,
@@ -123,52 +126,84 @@ class _CreatePostPageState extends State<CreatePostPage> {
     }
   }
 
- 
+  @override
+  void initState() {
+    super.initState();
+    KeyboardVisibilityController().onChange.listen((bool visible) {
+      setState(() {
+        _isKeyboardVisible = visible;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       appBar: AppBar(
-        title: Text('Crear Publicacion'),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(
+            Icons.close,
+            size: 30,
+          ), // Icono de una equis
+          onPressed: () {
+            // Acción al presionar el botón de la equis
+            Navigator.pop(context); // Cierra la pantalla actual
+          },
+        ),
+        actions: [
+          ElevatedButton(onPressed: _createPost, child: const Text('Publicar')),
+          const SizedBox(width: 10)
+        ],
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextFormField(
+              autofocus: true,
               controller: _textoController,
               maxLines: 5,
-              decoration: InputDecoration(
-                labelText: 'Texto',
+              decoration: const InputDecoration(
+                labelText: 'Comparte algo con los demas',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _getImageCamera,
-              child: Text('Tomar una foto'),
+              child: const Text('Tomar una foto'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _getImageGallery,
-              child: Text('Subir una foto desde la galeria'),
+              child: const Text('Subir una foto desde la galeria'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             if (_image != null) Image.file(_image!),
-            SizedBox(height: 20),
-            Center(
-              child: ElevatedButton(
-                onPressed: _createPost,
-                child: Text('Crear Publicación'),
-              ),
-            ),
           ],
         ),
       ),
-      
+      bottomNavigationBar: Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: BottomAppBar(
+          notchMargin: 1,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(
+                onPressed: _getImageCamera,
+                icon: const Icon(Icons.camera_alt),
+              ),
+              IconButton(
+                onPressed: _getImageGallery,
+                icon: const Icon(Icons.photo),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

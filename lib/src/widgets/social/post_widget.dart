@@ -135,7 +135,7 @@ class PostWidget extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              height: 560,
+              height: 540,
               child: const Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [

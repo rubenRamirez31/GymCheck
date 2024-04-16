@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
           '/recomendar_premium': (context) => RecomendarPlanPremiumPage(),
 
           //Paginas del modulo social
-          '/feed': (context) => FeedPage(),
+          '/feed': (context) => const FeedPage(),
           '/commentbox': (context) => CommentBox(),
           '/share': (context) => Share(),
           '/profile': (context) => ProfilePage(nick: ""),

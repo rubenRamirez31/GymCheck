@@ -44,6 +44,7 @@ dependencies:
   table_calendar: ^3.1.1
   flutter_svg: ^2.0.9
   flutter_smart_dialog: ^4.9.6
+  flutter_keyboard_visibility: ^6.0.0
 
 dev_dependencies:
   flutter_test:
