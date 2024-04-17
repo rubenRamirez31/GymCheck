@@ -31,11 +31,10 @@ class _AddDataPageState extends State<AddDataPage> {
     // Obtener el tamaño de la pantalla
     Size screenSize = MediaQuery.of(context).size;
     return Container(
-     width: screenSize.width,
+      width: screenSize.width,
       decoration: BoxDecoration(
-         border: Border.all(color: Colors.grey),
+        border: Border.all(color: Colors.grey),
         borderRadius: BorderRadius.circular(8),
-        
       ),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -126,11 +125,6 @@ class _AddDataPageState extends State<AddDataPage> {
             ),
           ],
         ),
-      );
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const PhysicalTrackingPage()),
       );
     } catch (error) {
       print('Error al guardar datos: $error');
