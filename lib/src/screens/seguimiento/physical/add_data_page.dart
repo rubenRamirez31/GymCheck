@@ -33,7 +33,7 @@ class _AddDataPageState extends State<AddDataPage> {
     return Container(
      width: screenSize.width,
       decoration: BoxDecoration(
-         border: Border.all(color: Colors.grey),
+    
         borderRadius: BorderRadius.circular(8),
         
       ),

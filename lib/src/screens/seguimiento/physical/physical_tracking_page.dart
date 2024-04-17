@@ -12,6 +12,7 @@ import 'package:gym_check/src/screens/seguimiento/physical/corporal_data_page.da
 import 'package:gym_check/src/screens/seguimiento/widgets/tracking_option_widget.dart';
 import 'package:gym_check/src/screens/social/feed_page.dart';
 import 'package:gym_check/src/services/user_service.dart';
+import 'package:gym_check/src/values/app_colors.dart';
 import 'package:gym_check/src/widgets/bottom_navigation_menu.dart';
 import 'package:gym_check/src/widgets/custom_app_bar.dart';
 import 'package:gym_check/src/widgets/menu_button_option_widget.dart';
@@ -110,6 +111,7 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
         context); // Obtiene la instancia de GlobalVariable
 
     return Scaffold(
+       backgroundColor: AppColors.darkestBlue,
       appBar: CustomAppBar(
         title: 'Seguimiento',
         profileImageUrl: _urlImagen,
@@ -184,7 +186,7 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
 
             SizedBox(height: 20),
             Container(
-              color: Color.fromARGB(255, 255, 255, 255),
+              color:  Color.fromRGBO(12, 28, 46, 1),
               width: MediaQuery.of(context).size.width,
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,

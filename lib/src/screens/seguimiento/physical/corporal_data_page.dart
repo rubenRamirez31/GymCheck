@@ -187,11 +187,12 @@ class _CorporalDataPageState extends State<CorporalDataPage> {
                 padding: const EdgeInsets.all(16),
                 child: const Text(
                   'Mis Registros',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
               ),
               IconButton(
                 icon: const Icon(Icons.info),
+                color: Colors.white,
                 onPressed: () {},
               ),
             ],
