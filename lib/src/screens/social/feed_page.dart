@@ -1,29 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
-import 'package:gym_check/src/screens/crear/create_page.dart';
-import 'package:gym_check/src/screens/crear/dietas/create_diets_page.dart';
-import 'package:gym_check/src/screens/crear/ejercicios/create_exercise_page.dart';
-import 'package:gym_check/src/screens/seguimiento/emotional/emotional_tracking_page.dart';
-import 'package:gym_check/src/screens/seguimiento/nutritional/nutritional_tracking_page.dart';
-
-import 'package:gym_check/src/screens/seguimiento/physical/physical_tracking_page.dart';
-
-import 'package:gym_check/src/screens/social/profile_page.dart';
-import 'package:gym_check/src/screens/user/primero_pasos/emotional_data_page.dart';
-import 'package:gym_check/src/screens/user/primero_pasos/nutritional_data_page.dart';
 import 'package:gym_check/src/services/api_service.dart';
 import 'package:gym_check/src/services/user_service.dart';
-import 'package:gym_check/src/utils/common_widgets/gradient_background.dart';
 import 'package:gym_check/src/values/app_colors.dart';
-
-import 'package:gym_check/src/widgets/custom_app_bar.dart';
 import 'package:gym_check/src/widgets/social/post_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:gym_check/src/models/social/post_model.dart';
-
-// Importa el widget del menú de navegación inferior
-import 'package:gym_check/src/widgets/bottom_navigation_menu.dart';
 
 // Importa la página de creación de publicaciones
 import 'create_post_page.dart';
