@@ -70,7 +70,8 @@ class _EmotionalTrackingPageState extends State<EmotionalTrackingPage> {
 
   @override
   Widget build(BuildContext context) {
-     var globalVariable = Provider.of<GlobalVariablesProvider>(context); // Obtiene la instancia de GlobalVariable
+    var globalVariable = Provider.of<GlobalVariablesProvider>(
+        context); // Obtiene la instancia de GlobalVariable
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Seguimiento',
@@ -108,7 +109,7 @@ class _EmotionalTrackingPageState extends State<EmotionalTrackingPage> {
                   setState(() {
                     // globalVariable.selectedSubPageTracking = 1;
                     _selectedSubPage = index;
-                   
+
 //print( 'Provider en emotional '+globalVariable.selectedSubPageTracking.toString());
                   });
                 },
@@ -135,7 +136,7 @@ class _EmotionalTrackingPageState extends State<EmotionalTrackingPage> {
           ],
         ),
       ),
-      bottomNavigationBar: Column(
+/*       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           BottomNavigationMenu(
@@ -143,7 +144,7 @@ class _EmotionalTrackingPageState extends State<EmotionalTrackingPage> {
             onTabTapped: _onTabTapped,
           ),
         ],
-      ),
+      ), */
     );
   }
 }

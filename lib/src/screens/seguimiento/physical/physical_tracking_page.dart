@@ -61,7 +61,10 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
         backgroundColor: const Color(0xff0C1C2E),
         title: const Text(
           'Seguimiento',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 26,
+          ),
         ),
         actions: [
           IconButton(

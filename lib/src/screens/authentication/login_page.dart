@@ -145,12 +145,6 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () {},
                     child: const Text(AppStrings.forgotPassword),
                   ),
-                  TextButton(
-                    onPressed: () {
-                      _login(context);
-                    },
-                    child: const Text("ctmmmmm"),
-                  ),
                   const SizedBox(height: 20),
                   ValueListenableBuilder(
                     valueListenable: fieldValidNotifier,
