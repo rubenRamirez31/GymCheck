@@ -150,7 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                     valueListenable: fieldValidNotifier,
                     builder: (_, isValid, __) {
                       return FilledButton(
-                        onPressed: isValid ? () => _login(context) : null,
+                        onPressed: () => _login(context),
                         child: const Text(AppStrings.login),
                       );
                     },
