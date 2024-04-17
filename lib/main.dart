@@ -24,9 +24,15 @@ import 'package:gym_check/src/values/app_theme.dart';
 import 'package:gym_check/src/widgets/social/comment_box.dart';
 import 'package:gym_check/src/widgets/social/share_box.dart';
 import 'package:provider/provider.dart';
+import 'firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -42,40 +48,40 @@ class MyApp extends StatelessWidget {
       child: CalendarControllerProvider(
         controller: EventController(), // Aquí asignamos un EventController
         child: MaterialApp(
-          title: 'Your App',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.themeData,
           initialRoute: '/',
           routes: {
             // Rutas de autenticación
-            '/': (context) => LoginPage(),
-            '/register': (context) => RegisterPage(),
+            '/': (context) => const LoginPage(),
+            '/register': (context) => const RegisterPage(),
             '/confirm_email': (context) => ConfirmEmailPage(),
 
             // Rutas de primeros pasos del usuario
-            '/general_data': (context) => GeneralDataPage(),
-            '/first_photo': (context) => FirstPhotoPage(),
-            '/body_data': (context) => BodyDataPage(),
-            '/nutritional_data': (context) => NutritionalDataPage(),
-            '/emotional_data': (context) => EmotionalDataPage(),
-            '/recomendar_premium': (context) => RecomendarPlanPremiumPage(),
+            '/general_data': (context) => const GeneralDataPage(),
+            '/first_photo': (context) => const FirstPhotoPage(),
+            '/body_data': (context) => const BodyDataPage(),
+            '/nutritional_data': (context) => const NutritionalDataPage(),
+            '/emotional_data': (context) => const EmotionalDataPage(),
+            '/recomendar_premium': (context) =>
+                const RecomendarPlanPremiumPage(),
 
             //principal
             '/principal': (context) => const PrincipalPage(),
 
             //Paginas del modulo social
             '/feed': (context) => const FeedPage(),
-            '/commentbox': (context) => CommentBox(),
-            '/share': (context) => Share(),
+            '/commentbox': (context) => const CommentBox(),
+            '/share': (context) => const Share(),
             '/profile': (context) => ProfilePage(nick: ""),
-            '/create-post': (context) => CreatePostPage(),
+            '/create-post': (context) => const CreatePostPage(),
             '/edit-post': (context) => const EditPostPage(postId: ""),
 
             // Rutas para el módulo de creación
             'create-module': (context) => CreatePage(),
 
             // Rutas para el módulo de seguimiento
-            'seguimiento-fisico': (context) => PhysicalTrackingPage(),
+            'seguimiento-fisico': (context) => const PhysicalTrackingPage(),
 
             // Rutas para el módulo de "mi espacio"
             'mi-espacio': (context) => MiEspacioPage(),

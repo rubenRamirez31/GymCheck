@@ -29,9 +29,8 @@ class _GeneralDataPageState extends State<GeneralDataPage> {
 
   void _updateButtonEnabled() {
     setState(() {
-      _buttonEnabled = txtPrimerNombre.text.isNotEmpty &&
-          txtApellidos.text.isNotEmpty &&
-          txtGenero.text.isNotEmpty;
+      _buttonEnabled =
+          txtPrimerNombre.text.isNotEmpty && txtApellidos.text.isNotEmpty;
     });
   }
 
@@ -104,8 +103,7 @@ class _GeneralDataPageState extends State<GeneralDataPage> {
                   ),
                   const SizedBox(height: 20),
                   FilledButton(
-                    onPressed:
-                        _buttonEnabled ? () => _primerosDatos(context) : null,
+                    onPressed: () => _primerosDatos(context),
                     child: const Text('Continuar'),
                   )
                 ],

@@ -29,7 +29,7 @@ class _FirstPhotoPageState extends State<FirstPhotoPage> {
           const GradientBackground(
             children: [
               Text(
-                'Elige una imagen de \nperfil',
+                'Elige una imagen de perfil',
                 style: AppTheme.titleLarge,
               ),
               SizedBox(height: 6),

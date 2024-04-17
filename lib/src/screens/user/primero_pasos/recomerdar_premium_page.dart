@@ -29,7 +29,7 @@ class _RecomendarPlanPremiumPageState extends State<RecomendarPlanPremiumPage> {
               ),
               SizedBox(height: 6),
               Text(
-                  'Con la subscripcion premium tinenes acceso a más herramientas las cuales te ayudarán a mejorar tu siguiemiento: físico, emocional y nutricional.',
+                  'Con la subscripcion premium tienes acceso a más herramientas las cuales te ayudarán a mejorar tu siguiemiento: físico, emocional y nutricional.',
                   style: AppTheme.bodySmall),
             ],
           ),
@@ -75,7 +75,8 @@ class _RecomendarPlanPremiumPageState extends State<RecomendarPlanPremiumPage> {
 
       // Navegar a la página Feed
       // ignore: use_build_context_synchronously
-      Navigator.of(context).pushNamedAndRemoveUntil("/feed", (route) => false);
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil("/principal", (route) => false);
     } catch (error) {
       print('Error al suscribirse después: $error');
       // Manejar el error si es necesario
