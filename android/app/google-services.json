@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1029234988715",
+    "project_id": "life-check-6f31f",
+    "storage_bucket": "life-check-6f31f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1029234988715:android:609875e214bba80865c9ee",
+        "android_client_info": {
+          "package_name": "com.example.gym_check"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJzAjCFqTtk8oUGdTS5E-gTBls7nXRiqI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1029234988715:android:c99f619f08f1907065c9ee",
+        "android_client_info": {
+          "package_name": "com.lifecheck.project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJzAjCFqTtk8oUGdTS5E-gTBls7nXRiqI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
