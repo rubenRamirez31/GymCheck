@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -69,10 +71,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
       String _nick = '';
       String _userIdAuth = '';
+
       String userId = Provider.of<UserSessionProvider>(context, listen: false)
           .userSession!
           .userId;
+
       Map<String, dynamic> userData = await UserService.getUserData(userId);
+
       setState(() {
         _nick = userData['nick'];
         _userIdAuth = userData['userIdAuth'];
@@ -95,8 +100,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Éxito'),
-          content: Text('La publicación se ha creado exitosamente.'),
+          title: const Text('Éxito'),
+          content: const Text('La publicación se ha creado exitosamente.'),
           actions: [
             TextButton(
               onPressed: () {
@@ -110,20 +115,25 @@ class _CreatePostPageState extends State<CreatePostPage> {
       );
     } catch (error) {
       // Manejar errores
+      // ignore: use_build_context_synchronously
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Error'),
+          title: const Text('Error'),
           content: Text('Ocurrió un error al crear la publicación: $error'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         ),
       );
     }
+  }
+
+  Future<void> _getFotoPerfil() async{
+    
   }
 
   @override
@@ -146,64 +156,90 @@ class _CreatePostPageState extends State<CreatePostPage> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextFormField(
-              controller: _textoController,
-              maxLines: 5,
-              decoration: const InputDecoration(
-                labelText: 'Comparte algo con los demas',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            _image != null
-                ? Stack(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.circular(15), // Borde redondeado
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(
-                              15), // Borde redondeado para la imagen
-                          child: Image.file(_image!, fit: BoxFit.cover),
-                        ),
+          padding: const EdgeInsets.all(10),
+          child: Row(
+            children: [
+              SizedBox(
+                height: 570,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(25),
+                      child: CircleAvatar(
+                        radius: 25,
+                        child: Image.network(
+                            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRF1IwK6-SxM83UpFVY6WtUZxXx-phss_gAUfdKbkTfau6VWVkt"),
                       ),
-                      Positioned(
-                        top: 5,
-                        right: 5,
-                        child: Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25),
-                            color: Color.fromARGB(114, 197, 185, 185),
-                          ),
-                          child: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _image = null;
-                              });
-                            },
-                            icon: const Icon(
-                              Icons.close,
-                              color: AppColors.white,
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  )
-                : Container()
-          ],
-        ),
-      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    TextFormField(
+                      controller: _textoController,
+                      maxLines: 5,
+                      decoration: const InputDecoration(
+                        labelText: 'Comparte algo con los demas',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    _image != null
+                        ? Stack(
+                            children: [
+                              Container(
+                                height: 400,
+                                width: double.maxFinite,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                      15), // Borde redondeado
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      15), // Borde redondeado para la imagen
+                                  child: Image.file(_image!, fit: BoxFit.cover),
+                                ),
+                              ),
+                              Positioned(
+                                top: 5,
+                                right: 5,
+                                child: Container(
+                                  height: 40,
+                                  width: 40,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(25),
+                                    color: const Color.fromARGB(
+                                        198, 197, 185, 185),
+                                  ),
+                                  child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _image = null;
+                                      });
+                                    },
+                                    icon: const Icon(Icons.close),
+                                  ),
+                                ),
+                              )
+                            ],
+                          )
+                        : Container(
+                            height: 400,
+                          )
+                  ],
+                ),
+              )
+            ],
+          )),
       bottomNavigationBar: Padding(
           padding: MediaQuery.of(context).viewInsets,
           child: Container(

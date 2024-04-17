@@ -28,17 +28,17 @@ class _AddDataPageState extends State<AddDataPage> {
 
   @override
   Widget build(BuildContext context) {
-     // Obtener el tamaño de la pantalla
+    // Obtener el tamaño de la pantalla
     Size screenSize = MediaQuery.of(context).size;
     return Container(
      width: screenSize.width,
       decoration: BoxDecoration(
-    
+         border: Border.all(color: Colors.grey),
         borderRadius: BorderRadius.circular(8),
         
       ),
       child: Padding(
-        padding: EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
@@ -47,7 +47,7 @@ class _AddDataPageState extends State<AddDataPage> {
               children: [
                 DropdownButton<String>(
                   value: _selectedField,
-                  hint: Text('Seleccionar tipo de dato'),
+                  hint: const Text('Seleccionar tipo de dato'),
                   items: _getCamposPorRegistro().map((campo) {
                     return DropdownMenuItem<String>(
                       value: campo,
@@ -60,10 +60,10 @@ class _AddDataPageState extends State<AddDataPage> {
                     });
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 if (_selectedField != null) ...[
                   Text(_getDescription(_selectedField!)),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   TextFormField(
                     controller: _controller,
                     keyboardType: TextInputType.number,
@@ -75,17 +75,17 @@ class _AddDataPageState extends State<AddDataPage> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         _guardarDatos(context);
                       }
                     },
-                    child: Text('Agregar'),
+                    child: const Text('Agregar'),
                   ),
                 ],
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
               ],
             ),
           ),
@@ -94,11 +94,11 @@ class _AddDataPageState extends State<AddDataPage> {
     );
   }
 
-  
-
   void _guardarDatos(BuildContext context) async {
     try {
-      String userId = Provider.of<UserSessionProvider>(context, listen: false).userSession!.userId;
+      String userId = Provider.of<UserSessionProvider>(context, listen: false)
+          .userSession!
+          .userId;
       Map<String, dynamic> userData = await UserService.getUserData(userId);
       String _nick = userData['nick'];
 
@@ -109,19 +109,20 @@ class _AddDataPageState extends State<AddDataPage> {
 
       String coleccion = _getColeccion();
 
-      final response = await PhysicalDataService.addData(_nick, coleccion, bodyData.toJson());
+      final response = await PhysicalDataService.addData(
+          _nick, coleccion, bodyData.toJson());
 
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Mensaje'),
+          title: const Text('Mensaje'),
           content: Text(response['message'] ?? 'Datos guardados correctamente'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         ),
@@ -129,7 +130,7 @@ class _AddDataPageState extends State<AddDataPage> {
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => PhysicalTrackingPage()),
+        MaterialPageRoute(builder: (context) => const PhysicalTrackingPage()),
       );
     } catch (error) {
       print('Error al guardar datos: $error');
@@ -139,11 +140,24 @@ class _AddDataPageState extends State<AddDataPage> {
   List<String> _getCamposPorRegistro() {
     switch (widget.tipoDeRegistro) {
       case 'corporales':
-        return ['Peso (kg)', 'Altura (cm)', 'Grasa Corporal (%)', 'Circunferencia de Cintura (cm)'];
+        return [
+          'Peso (kg)',
+          'Altura (cm)',
+          'Grasa Corporal (%)',
+          'Circunferencia de Cintura (cm)'
+        ];
       case 'antropométricos':
-        return ['Circunferencia de Cuello (cm)', 'Circunferencia de Cadera (cm)', 'Índice de Masa Corporal (IMC)'];
+        return [
+          'Circunferencia de Cuello (cm)',
+          'Circunferencia de Cadera (cm)',
+          'Índice de Masa Corporal (IMC)'
+        ];
       case 'Record':
-        return ['Campo1', 'Campo2', 'Campo3']; // Añade los campos correspondientes
+        return [
+          'Campo1',
+          'Campo2',
+          'Campo3'
+        ]; // Añade los campos correspondientes
       default:
         return [];
     }
@@ -157,7 +171,7 @@ class _AddDataPageState extends State<AddDataPage> {
         return 'Por favor, ingrese su altura actual en centímetros.';
       case 'Grasa Corporal (%)':
         return 'Por favor, ingrese su porcentaje de grasa corporal actual.';
-        //
+      //
       case 'Circunferencia de Cintura (cm)':
         return 'Por favor, ingrese su circunferencia de cintura actual en centímetros.';
       case 'Circunferencia de Cuello (cm)':

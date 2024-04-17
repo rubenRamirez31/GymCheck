@@ -152,7 +152,6 @@ class _LoginPageState extends State<LoginPage> {
                     child: const Text("ctmmmmm"),
                   ),
                   const SizedBox(height: 20),
-
                   ValueListenableBuilder(
                     valueListenable: fieldValidNotifier,
                     builder: (_, isValid, __) {
@@ -270,7 +269,7 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pushNamed(context, '/recomendar_premium');
         } else if (_primeros_pasos == 7) {
           Navigator.of(context)
-              .pushNamedAndRemoveUntil("/feed", (route) => false);
+              .pushNamedAndRemoveUntil("/principal", (route) => false);
         }
       }
     } catch (error) {

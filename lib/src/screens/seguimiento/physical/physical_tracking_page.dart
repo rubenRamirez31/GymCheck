@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
+import 'package:gym_check/src/screens/calendar/app_colors.dart';
 
 import 'package:gym_check/src/screens/crear/dietas/create_diets_page.dart';
 import 'package:gym_check/src/screens/crear/ejercicios/create_exercise_page.dart';
@@ -21,7 +22,10 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PhysicalTrackingPage extends StatefulWidget {
+  const PhysicalTrackingPage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _PhysicalTrackingPageState createState() => _PhysicalTrackingPageState();
 }
 
@@ -47,90 +51,38 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
     _loadSelectedMenuOption(); // Cargar el estado guardado de _selectedMenuOption
   }
 
-  Future<void> _loadSelectedMenuOption() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _selectedMenuOption = prefs.getInt('selectedMenuOption') ?? 0;
-    });
-  }
-
-  void _onTabTapped(int index) {
-    var globalVariable =
-        Provider.of<GlobalVariablesProvider>(context, listen: false);
-    setState(() {
-      _selectedPage = index;
-    });
-
-    switch (index) {
-      case 0:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => FeedPage()),
-        );
-        break;
-      case 1:
-        // Navegar a la página de creación dependiendo su ultimo estado
-
-        if (globalVariable.selectedSubPageCreate == 0) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CreateExercisePage()),
-          );
-        } else if (globalVariable.selectedSubPageCreate == 1) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CreateDietPage()),
-          );
-        }
-        break;
-
-      case 2:
-        // Ya estamos en la página de seguimiento, no hay acción necesaria
-        break;
-    }
-  }
-
-  Future<void> _loadUserData() async {
-    try {
-      String userId = Provider.of<UserSessionProvider>(context, listen: false)
-          .userSession!
-          .userId;
-      Map<String, dynamic> userData = await UserService.getUserData(userId);
-      setState(() {
-        _nick = userData['nick'];
-        _urlImagen = userData['urlImagen'];
-      });
-    } catch (error) {
-      print('Error al cargar los datos del usuario: $error');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     var globalVariable = Provider.of<GlobalVariablesProvider>(
         context); // Obtiene la instancia de GlobalVariable
 
     return Scaffold(
-       backgroundColor: AppColors.darkestBlue,
       appBar: CustomAppBar(
         title: 'Seguimiento',
         profileImageUrl: _urlImagen,
         onProfilePressed: () {},
         actions: [
           IconButton(
-            icon: Icon(Icons.search), // Botón de búsqueda
+            icon: const Icon(
+              Icons.search,
+              color: Colors.white,
+            ), // Botón de búsqueda
             onPressed: () {
               // Acción al presionar el botón de búsqueda
             },
           ),
           IconButton(
-            icon: Icon(Icons.notifications), // Botón de notificaciones
+            icon: const Icon(Icons.notifications,
+                color: Colors.white), // Botón de notificaciones
             onPressed: () {
               // Acción al presionar el botón de notificaciones
             },
           ),
           IconButton(
-            icon: Icon(Icons.info), // Botón de mensajes
+            icon: const Icon(
+              Icons.info,
+              color: Colors.white,
+            ), // Botón de mensajes
             onPressed: () {
               setState(() {
                 print("Global " +
@@ -161,32 +113,18 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
               child: Container(
                 height: 300, // Altura específica del área de desplazamiento
                 // Ajusta los márgenes y el tamaño del contenedor según tus necesidades
-                margin: EdgeInsets.all(16.0),
-                padding: EdgeInsets.all(8.0),
+                margin: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
-                child: MonthViewWidget(),
+                child: const MonthViewWidget(),
               ),
             ),
-
-            // CreateButton(
-            //   text: 'Crear',
-            //   buttonColor: Colors.blue,
-            //   onPressed: () {
-            //     Navigator.push(
-            //       context,Da
-            //       MaterialPageRoute(builder: (context) => DayViewPageDemo()),
-            //     );
-            //   },
-            //   iconData: Icons.abc,
-            //   iconColor: Colors.white,
-            // ),
-
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Container(
-              color:  Color.fromRGBO(12, 28, 46, 1),
+              color: Color.fromARGB(255, 255, 255, 255),
               width: MediaQuery.of(context).size.width,
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -212,41 +150,63 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
               ),
             ),
 
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             _selectedMenuOption == 0
-                ? CorporalDataPage()
-                : SizedBox(), // Si _selectedMenuOption no es 0, no mostrar el contenedor
+                ? const CorporalDataPage()
+                : const SizedBox(), // Si _selectedMenuOption no es 0, no mostrar el contenedor
             _selectedMenuOption == 1
-                ? AntropometricDataPage()
-                : SizedBox(), // Si _selectedMenuOption no es 1, no mostrar el contenedor
+                ? const AntropometricDataPage()
+                : const SizedBox(), // Si _selectedMenuOption no es 1, no mostrar el contenedor
             _selectedMenuOption == 2
                 ? Container(
-                    color: Color.fromARGB(255, 0, 0, 255), // Contenedor azul
+                    color:
+                        const Color.fromARGB(255, 0, 0, 255), // Contenedor azul
                     height: 250,
                     width: MediaQuery.of(context).size.width,
                   )
-                : SizedBox(), // Si _selectedMenuOption no es 2, no mostrar el contenedor
+                : const SizedBox(), // Si _selectedMenuOption no es 2, no mostrar el contenedor
             _selectedMenuOption == 3
                 ? Container(
-                    color:
-                        Color.fromARGB(255, 255, 255, 0), // Contenedor amarillo
+                    color: const Color.fromARGB(
+                        255, 255, 255, 0), // Contenedor amarillo
                     height: 250,
                     width: MediaQuery.of(context).size.width,
                   )
-                : SizedBox(), // Si _selectedMenuOption no es 3, no mostrar el contenedor
-            SizedBox(height: 20),
+                : const SizedBox(), // Si _selectedMenuOption no es 3, no mostrar el contenedor
+            const SizedBox(height: 20),
           ],
         ),
       ),
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          BottomNavigationMenu(
-            selectedIndex: 2,
-            onTabTapped: _onTabTapped,
-          ),
-        ],
-      ),
     );
+  }
+
+  Future<void> _loadSelectedMenuOption() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _selectedMenuOption = prefs.getInt('selectedMenuOption') ?? 0;
+    });
+  }
+
+  void _onTabTapped(int index) {
+    var globalVariable =
+        Provider.of<GlobalVariablesProvider>(context, listen: false);
+    setState(() {
+      _selectedPage = index;
+    });
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      String userId = Provider.of<UserSessionProvider>(context, listen: false)
+          .userSession!
+          .userId;
+      Map<String, dynamic> userData = await UserService.getUserData(userId);
+      setState(() {
+        _nick = userData['nick'];
+        _urlImagen = userData['urlImagen'];
+      });
+    } catch (error) {
+      print('Error al cargar los datos del usuario: $error');
+    }
   }
 }
