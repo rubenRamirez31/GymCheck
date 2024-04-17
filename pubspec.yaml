@@ -45,6 +45,8 @@ dependencies:
   flutter_svg: ^2.0.9
   flutter_smart_dialog: ^4.9.6
   flutter_keyboard_visibility: ^6.0.0
+  calendar_view: 1.1.0
+  flutter_colorpicker: ^1.0.3
 
 dev_dependencies:
   flutter_test:

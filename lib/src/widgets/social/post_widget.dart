@@ -163,22 +163,35 @@ class PostWidget extends StatelessWidget {
                     post.texto,
                   ),
                   const SizedBox(height: 10),
-                  Container(
-                    height: 400, // Altura definida
-                    decoration: BoxDecoration(
-                      borderRadius:
-                          BorderRadius.circular(15), // Borde redondeado
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(
-                          15), // Borde redondeado para la imagen
-                      child: Image.network(
-                        post.urlImagen!,
-                        fit: BoxFit
-                            .cover, // Ajustar la imagen para cubrir todo el contenedor
-                      ),
-                    ),
-                  ),
+Container(
+  height: 400, // Altura definida
+  decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(15), // Borde redondeado
+  ),
+  child: ClipRRect(
+    borderRadius: BorderRadius.circular(15), // Borde redondeado para la imagen
+    child: post.urlImagen != null && post.urlImagen!.isNotEmpty
+        ? Image.network(
+            post.urlImagen!,
+            fit: BoxFit.cover, // Ajustar la imagen para cubrir todo el contenedor
+          )
+        : SizedBox(
+            width: 100, // Ancho del SizedBox
+            height: 100, // Alto del SizedBox
+            child: Center(
+              child: Text(
+                'Imagen no disponible',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+          ),
+  ),
+),
+
                   /* Container(
                       height: 200,
                     ),

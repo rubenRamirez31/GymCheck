@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
-import 'package:gym_check/src/screens/seguimiento/emotional_tracking_page.dart';
-import 'package:gym_check/src/screens/seguimiento/nutritional_tracking_page.dart';
+import 'package:gym_check/src/screens/seguimiento/emotional/emotional_tracking_page.dart';
+import 'package:gym_check/src/screens/seguimiento/nutritional/nutritional_tracking_page.dart';
+
 import 'package:gym_check/src/screens/seguimiento/physical/physical_tracking_page.dart';
 import 'package:gym_check/src/screens/social/feed_page.dart';
 import 'package:gym_check/src/widgets/bottom_navigation_menu.dart';

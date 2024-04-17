@@ -1,3 +1,5 @@
+
+import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
@@ -5,7 +7,6 @@ import 'package:gym_check/src/screens/authentication/confirm_email_page.dart';
 import 'package:gym_check/src/screens/authentication/login_page.dart';
 import 'package:gym_check/src/screens/authentication/register_page.dart';
 import 'package:gym_check/src/screens/crear/create_page.dart';
-import 'package:gym_check/src/screens/crear/ejercicios/create_exercise_page.dart';
 import 'package:gym_check/src/screens/seguimiento/physical/physical_tracking_page.dart';
 
 import 'package:gym_check/src/screens/social/create_post_page.dart';
@@ -24,10 +25,9 @@ import 'package:gym_check/src/widgets/social/comment_box.dart';
 import 'package:gym_check/src/widgets/social/share_box.dart';
 import 'package:provider/provider.dart';
 
+
 void main() {
-  runApp(
-    const MyApp(),
-  );
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -40,26 +40,29 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => UserSessionProvider()),
         ChangeNotifierProvider(create: (_) => GlobalVariablesProvider()),
       ],
-      child: MaterialApp(
-        title: 'Your App',
+      child: CalendarControllerProvider(
+        controller: EventController(), // Aquí asignamos un EventController
+        child: MaterialApp(
+           title: 'Your App',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.themeData,
-        initialRoute: '/',
-        routes: {
-          //Paginas de autenticacion
-          '/': (context) => const LoginPage(),
-          '/register': (context) => const RegisterPage(),
-          '/confirm_email': (context) => ConfirmEmailPage(),
+    
+          initialRoute: '/',
+          routes: {
+            // Rutas de autenticación
+            '/': (context) => LoginPage(),
+            '/register': (context) => RegisterPage(),
+            '/confirm_email': (context) => ConfirmEmailPage(),
 
-          //Paginas de usuario primeros pasos
-          '/general_data': (context) => GeneralDataPage(),
-          '/first_photo': (context) => FirstPhotoPage(),
-          '/body_data': (context) => BodyDataPage(),
-          '/nutritional_data': (context) => NutritionalDataPage(),
-          '/emotional_data': (context) => EmotionalDataPage(),
-          '/recomendar_premium': (context) => RecomendarPlanPremiumPage(),
+            // Rutas de primeros pasos del usuario
+            '/general_data': (context) => GeneralDataPage(),
+            '/first_photo': (context) => FirstPhotoPage(),
+            '/body_data': (context) => BodyDataPage(),
+            '/nutritional_data': (context) => NutritionalDataPage(),
+            '/emotional_data': (context) => EmotionalDataPage(),
+            '/recomendar_premium': (context) => RecomendarPlanPremiumPage(),
 
-          //Paginas del modulo social
+            //Paginas del modulo social
           '/feed': (context) => const FeedPage(),
           '/commentbox': (context) => CommentBox(),
           '/share': (context) => Share(),
@@ -67,20 +70,16 @@ class MyApp extends StatelessWidget {
           '/create-post': (context) => CreatePostPage(),
           '/edit-post': (context) => const EditPostPage(postId: ""),
 
-          //Paginas para el modulo de creacion
-          'create-module': (context) => CreatePage(),
-          '/create-excersice': (context) => const CreateExercisePage(),
+            // Rutas para el módulo de creación
+            'create-module': (context) => CreatePage(),
 
-          //Paginas para le modulo de seguimiento
+            // Rutas para el módulo de seguimiento
+            'seguimiento-fisico':(context) => PhysicalTrackingPage(),
 
-          'seguimiento-fisico': (context) => PhysicalTrackingPage(),
-
-          //Paginas para el modulo de mi espacio
-
-          'mi-espacio': (context) => MiEspacioPage(),
-
-          //'/home': (context) => HomePage(),
-        },
+            // Rutas para el módulo de "mi espacio"
+            'mi-espacio':(context) => MiEspacioPage(),
+          },
+        ),
       ),
     );
   }
