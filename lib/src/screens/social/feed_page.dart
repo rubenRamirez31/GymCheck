@@ -4,8 +4,9 @@ import 'package:gym_check/src/providers/user_session_provider.dart';
 import 'package:gym_check/src/screens/crear/create_page.dart';
 import 'package:gym_check/src/screens/crear/dietas/create_diets_page.dart';
 import 'package:gym_check/src/screens/crear/ejercicios/create_exercise_page.dart';
-import 'package:gym_check/src/screens/seguimiento/emotional_tracking_page.dart';
-import 'package:gym_check/src/screens/seguimiento/nutritional_tracking_page.dart';
+import 'package:gym_check/src/screens/seguimiento/emotional/emotional_tracking_page.dart';
+import 'package:gym_check/src/screens/seguimiento/nutritional/nutritional_tracking_page.dart';
+
 import 'package:gym_check/src/screens/seguimiento/physical/physical_tracking_page.dart';
 
 import 'package:gym_check/src/screens/social/profile_page.dart';

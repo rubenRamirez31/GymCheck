@@ -1,48 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
-import 'package:gym_check/src/screens/crear/create_page.dart';
+
 import 'package:gym_check/src/screens/crear/dietas/create_diets_page.dart';
 import 'package:gym_check/src/screens/crear/ejercicios/create_exercise_page.dart';
-import 'package:gym_check/src/screens/seguimiento/emotional_tracking_page.dart';
-import 'package:gym_check/src/screens/seguimiento/nutritional_tracking_page.dart';
-import 'package:gym_check/src/screens/seguimiento/physical/body_data_tracking_page.dart';
+
+import 'package:gym_check/src/screens/calendar/physical-nutritional/month_view_widget.dart';
+import 'package:gym_check/src/screens/seguimiento/physical/Antropometric_data_page.dart';
+
+import 'package:gym_check/src/screens/seguimiento/physical/corporal_data_page.dart';
+import 'package:gym_check/src/screens/seguimiento/widgets/tracking_option_widget.dart';
 import 'package:gym_check/src/screens/social/feed_page.dart';
-import 'package:gym_check/src/services/physical_data_service.dart';
 import 'package:gym_check/src/services/user_service.dart';
 import 'package:gym_check/src/widgets/bottom_navigation_menu.dart';
-import 'package:gym_check/src/widgets/create_button_widget.dart';
 import 'package:gym_check/src/widgets/custom_app_bar.dart';
 import 'package:gym_check/src/widgets/menu_button_option_widget.dart';
-import 'package:gym_check/src/widgets/seguimiento/data_tracking_widget.dart';
-import 'package:gym_check/src/widgets/seguimiento/tracking_option_widget.dart';
+
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PhysicalTrackingPage extends StatefulWidget {
-  
   @override
   _PhysicalTrackingPageState createState() => _PhysicalTrackingPageState();
 }
 
 class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
-  
   int _selectedPage = 0;
   int _selectedSubPage = 0;
   int _selectedMenuOption = 0;
   String _nick = '';
   String _urlImagen = '';
 
-
-
   List<String> options = [
-    'Datos Corporales',
-    'Metas ',
-    'PR',
-    'General',
+    'Datos corporales',
+    'Datos antropométricos',
+    'Metas',
+    'Record personal',
     'Configuraciones'
   ]; // Lista de opciones
-
 
   @override
   void initState() {
@@ -59,14 +54,13 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
   }
 
   void _onTabTapped(int index) {
-        var globalVariable =
+    var globalVariable =
         Provider.of<GlobalVariablesProvider>(context, listen: false);
     setState(() {
       _selectedPage = index;
     });
 
     switch (index) {
-       
       case 0:
         Navigator.push(
           context,
@@ -74,21 +68,21 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
         );
         break;
       case 1:
-         // Navegar a la página de creación dependiendo su ultimo estado
+        // Navegar a la página de creación dependiendo su ultimo estado
 
         if (globalVariable.selectedSubPageCreate == 0) {
-           Navigator.push(
+          Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => CreateExercisePage()),
           );
-
-        } else if (globalVariable.selectedSubPageCreate == 1){
-             Navigator.push(
+        } else if (globalVariable.selectedSubPageCreate == 1) {
+          Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CreateDietPage()),);
+            MaterialPageRoute(builder: (context) => CreateDietPage()),
+          );
         }
         break;
-  
+
       case 2:
         // Ya estamos en la página de seguimiento, no hay acción necesaria
         break;
@@ -110,7 +104,6 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
     }
   }
 
-  
   @override
   Widget build(BuildContext context) {
     var globalVariable = Provider.of<GlobalVariablesProvider>(
@@ -119,7 +112,7 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Seguimiento',
-        // profileImageUrl: _urlImagen,
+        profileImageUrl: _urlImagen,
         onProfilePressed: () {},
         actions: [
           IconButton(
@@ -156,32 +149,38 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
                 selectedIndex: _selectedSubPage,
                 onItemSelected: (index) {
                   setState(() {
-
                     _selectedSubPage = index;
                   });
                 },
               ),
             ),
-            SizedBox(height: 20),
-      
-            Text("Aqui va el calendario ñejeje"),
-            Container(
-              color: Colors.green,
-              height: 50,
-              width: MediaQuery.of(context).size.width,
-            ),
-            SizedBox(),
 
-             CreateButton(
-          text: 'Crear',
-          buttonColor: Colors.blue,
-          onPressed: () {
-            // Aquí puedes definir qué hacer cuando se presiona el botón
-            print('Botón presionado');
-          },
-          iconData: Icons.abc,
-          iconColor: Colors.white,
-        ),
+            SingleChildScrollView(
+              child: Container(
+                height: 300, // Altura específica del área de desplazamiento
+                // Ajusta los márgenes y el tamaño del contenedor según tus necesidades
+                margin: EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: MonthViewWidget(),
+              ),
+            ),
+
+            // CreateButton(
+            //   text: 'Crear',
+            //   buttonColor: Colors.blue,
+            //   onPressed: () {
+            //     Navigator.push(
+            //       context,Da
+            //       MaterialPageRoute(builder: (context) => DayViewPageDemo()),
+            //     );
+            //   },
+            //   iconData: Icons.abc,
+            //   iconColor: Colors.white,
+            // ),
 
             SizedBox(height: 20),
             Container(
@@ -213,14 +212,10 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
 
             SizedBox(height: 20),
             _selectedMenuOption == 0
-                ? BodyDataTrackingPage()
+                ? CorporalDataPage()
                 : SizedBox(), // Si _selectedMenuOption no es 0, no mostrar el contenedor
             _selectedMenuOption == 1
-                ? Container(
-                    color: Color.fromARGB(255, 0, 255, 0), // Contenedor verde
-                    height: 250,
-                    width: MediaQuery.of(context).size.width,
-                  )
+                ? AntropometricDataPage()
                 : SizedBox(), // Si _selectedMenuOption no es 1, no mostrar el contenedor
             _selectedMenuOption == 2
                 ? Container(

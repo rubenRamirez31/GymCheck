@@ -2,21 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
 import 'package:gym_check/src/screens/crear/create_page.dart';
+import 'package:gym_check/src/screens/seguimiento/widgets/tracking_option_widget.dart';
 import 'package:gym_check/src/screens/social/feed_page.dart';
 import 'package:gym_check/src/services/user_service.dart';
 import 'package:gym_check/src/widgets/bottom_navigation_menu.dart';
 import 'package:gym_check/src/widgets/custom_app_bar.dart';
-import 'package:gym_check/src/widgets/seguimiento/tracking_option_widget.dart';
+
 import 'package:provider/provider.dart';
 
-class NutritionalTrackingPage extends StatefulWidget {
+class EmotionalTrackingPage extends StatefulWidget {
   @override
-  _NutritionalTrackingPageState createState() => _NutritionalTrackingPageState();
+  _EmotionalTrackingPageState createState() => _EmotionalTrackingPageState();
 }
 
-class _NutritionalTrackingPageState extends State<NutritionalTrackingPage> {
+class _EmotionalTrackingPageState extends State<EmotionalTrackingPage> {
   int _selectedPage = 0;
-  int _selectedSubPage = 2;
+  int _selectedSubPage = 1;
   String _nick = '';
   String _urlImagen = '';
 
@@ -105,17 +106,17 @@ class _NutritionalTrackingPageState extends State<NutritionalTrackingPage> {
                 selectedIndex: _selectedSubPage,
                 onItemSelected: (index) {
                   setState(() {
-                   // globalVariable.selectedSubPageTracking = 2;
+                    // globalVariable.selectedSubPageTracking = 1;
                     _selectedSubPage = index;
-                    
-                   // print( 'Provider en nutrional '+globalVariable.selectedSubPageTracking.toString());
+                   
+//print( 'Provider en emotional '+globalVariable.selectedSubPageTracking.toString());
                   });
                 },
               ),
             ),
             SizedBox(height: 20),
             Container(
-              color: Color.fromARGB(255, 172, 197, 13),
+              color: Color.fromARGB(255, 6, 218, 255),
               height: 250,
               width: MediaQuery.of(context).size.width,
             ),

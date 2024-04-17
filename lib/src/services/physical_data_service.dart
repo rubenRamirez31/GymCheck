@@ -98,8 +98,8 @@ class PhysicalDataService {
       return {'error': 'Error en la solicitud'};
     }
   }
-static Future<Map<String, dynamic>> getLatestPhysicalData(String nick, String collection) async {
-  String apiUrl = '${Environment.API_URL}/api/datos-fisicos/ultimo-dato/$nick/$collection';
+static Future<Map<String, dynamic>> getLatestPhysicalData(String nick, String collection, String typeData) async {
+  String apiUrl = '${Environment.API_URL}/api/datos-fisicos/ultimo-dato/$nick/$collection/$typeData';
 
   try {
     final response = await http.get(Uri.parse(apiUrl));
