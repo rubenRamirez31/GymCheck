@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
+import 'package:gym_check/src/values/app_colors.dart';
 import 'package:gym_check/src/widgets/crear/create_option_widget.dart';
 import 'package:gym_check/src/widgets/custom_app_bar.dart';
 import 'package:provider/provider.dart';
@@ -21,31 +22,42 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
     var globalVariable = Provider.of<GlobalVariablesProvider>(
         context); // Obtiene la instancia de GlobalVariable
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Creacion',
-        // profileImageUrl: _urlImagen,
-        onProfilePressed: () {},
+      appBar: AppBar(
+        backgroundColor: const Color(0xff0C1C2E),
+        title: const Text(
+          'Creacion',
+          style: TextStyle(color: AppColors.white, fontSize: 26),
+        ),
         actions: [
           IconButton(
-            icon: Icon(Icons.search), // Botón de búsqueda
+            icon: const Icon(
+              Icons.search,
+              color: AppColors.white,
+            ), // Botón de búsqueda
             onPressed: () {
               // Acción al presionar el botón de búsqueda
             },
           ),
           IconButton(
-            icon: Icon(Icons.notifications), // Botón de notificaciones
+            icon: const Icon(
+              Icons.notifications,
+              color: AppColors.white,
+            ), // Botón de notificaciones
             onPressed: () {
               // Acción al presionar el botón de notificaciones
             },
           ),
           IconButton(
-            icon: Icon(Icons.info), // Botón de mensajes
+            icon: const Icon(Icons.info,
+                color: AppColors.white), // Botón de mensajes
             onPressed: () {
-              setState(() {
-                print("Global " +
-                    globalVariable.selectedMenuOptionTrackingPhysical
-                        .toString());
-              });
+              setState(
+                () {
+                  print("Global " +
+                      globalVariable.selectedMenuOptionTrackingPhysical
+                          .toString());
+                },
+              );
               // Acción al presionar el botón de mensajes
             },
           ),

@@ -57,10 +57,15 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
         context); // Obtiene la instancia de GlobalVariable
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Seguimiento',
-        profileImageUrl: _urlImagen,
-        onProfilePressed: () {},
+      appBar: AppBar(
+        backgroundColor: const Color(0xff0C1C2E),
+        title: const Text(
+          'Seguimiento',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 26,
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(
