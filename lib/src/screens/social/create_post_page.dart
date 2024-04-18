@@ -1,10 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
-
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:gym_check/src/components/app_text_form_field.dart';
 import 'package:gym_check/src/models/social/post_model.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
 import 'package:gym_check/src/services/api_service.dart';
@@ -23,8 +19,6 @@ class CreatePostPage extends StatefulWidget {
 
 class _CreatePostPageState extends State<CreatePostPage> {
   final TextEditingController _textoController = TextEditingController();
-
-  bool _isKeyboardVisible = false;
 
   //String _selectedLugar = 'Agregar lugar'; // Cambiado de 'Puebla' a 'Agregar lugar'
   File? _image;

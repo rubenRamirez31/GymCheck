@@ -134,8 +134,7 @@ class PostWidget extends StatelessWidget {
         padding: const EdgeInsets.all(15.0),
         child: Row(
           children: [
-            Container(
-              height: 540,
+/*             Container(
               child: const Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -148,7 +147,7 @@ class PostWidget extends StatelessWidget {
             ),
             const SizedBox(
               width: 5,
-            ),
+            ), */
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,7 +163,7 @@ class PostWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Container(
-                    height: 400, // Altura definida
+                    // Altura definida
                     decoration: BoxDecoration(
                       borderRadius:
                           BorderRadius.circular(15), // Borde redondeado
@@ -173,20 +172,7 @@ class PostWidget extends StatelessWidget {
                       borderRadius: BorderRadius.circular(
                           15), // Borde redondeado para la imagen
                       child: post.urlImagen != null && post.urlImagen!.isEmpty
-                          ? const SizedBox(
-                              width: 100, // Ancho del SizedBox
-                              height: 100, // Alto del SizedBox
-                              child: Center(
-                                child: Text(
-                                  'Imagen no disponible',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ),
-                            )
+                          ? Container(height: 10)
                           : Image.network(
                               post.urlImagen!,
                               fit: BoxFit
