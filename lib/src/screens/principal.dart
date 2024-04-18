@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/screens/crear/ejercicios/create_exercise_page.dart';
 import 'package:gym_check/src/screens/seguimiento/physical/physical_tracking_page.dart';
+import 'package:gym_check/src/screens/seguimiento/home_tracking_page.dart';
 import 'package:gym_check/src/screens/social/feed_page.dart';
 
 class PrincipalPage extends StatefulWidget {
@@ -49,7 +50,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
 
         const CreateExercisePage(),
 
-        const PhysicalTrackingPage()
+        const HomeTrackingPage()
         //Pagina para agregar
       ][currentPageIndex],
     );

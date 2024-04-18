@@ -3,19 +3,14 @@ import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
 import 'package:gym_check/src/screens/calendar/app_colors.dart';
 
-import 'package:gym_check/src/screens/crear/dietas/create_diets_page.dart';
-import 'package:gym_check/src/screens/crear/ejercicios/create_exercise_page.dart';
-
 import 'package:gym_check/src/screens/calendar/physical-nutritional/month_view_widget.dart';
 import 'package:gym_check/src/screens/seguimiento/physical/Antropometric_data_page.dart';
 
 import 'package:gym_check/src/screens/seguimiento/physical/corporal_data_page.dart';
 import 'package:gym_check/src/screens/seguimiento/widgets/tracking_option_widget.dart';
-import 'package:gym_check/src/screens/social/feed_page.dart';
+
 import 'package:gym_check/src/services/user_service.dart';
-import 'package:gym_check/src/values/app_colors.dart';
-import 'package:gym_check/src/widgets/bottom_navigation_menu.dart';
-import 'package:gym_check/src/widgets/custom_app_bar.dart';
+
 import 'package:gym_check/src/widgets/menu_button_option_widget.dart';
 
 import 'package:provider/provider.dart';
@@ -37,6 +32,7 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
   String _urlImagen = '';
 
   List<String> options = [
+    'Rutinas',
     'Datos corporales',
     'Datos antropométricos',
     'Metas',
@@ -57,63 +53,11 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
         context); // Obtiene la instancia de GlobalVariable
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xff0C1C2E),
-        title: const Text(
-          'Seguimiento',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 26,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.search,
-              color: Colors.white,
-            ), // Botón de búsqueda
-            onPressed: () {
-              // Acción al presionar el botón de búsqueda
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.notifications,
-                color: Colors.white), // Botón de notificaciones
-            onPressed: () {
-              // Acción al presionar el botón de notificaciones
-            },
-          ),
-          IconButton(
-            icon: const Icon(
-              Icons.info,
-              color: Colors.white,
-            ), // Botón de mensajes
-            onPressed: () {
-              setState(() {
-                print("Global " +
-                    globalVariable.selectedMenuOptionTrackingPhysical
-                        .toString());
-              });
-              // Acción al presionar el botón de mensajes
-            },
-          ),
-        ],
-      ),
+      backgroundColor: Color.fromARGB(255, 29, 52, 78),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Container(
-              child: TrackingOptionWidget(
-                selectedIndex: _selectedSubPage,
-                onItemSelected: (index) {
-                  setState(() {
-                    _selectedSubPage = index;
-                  });
-                },
-              ),
-            ),
-
             SingleChildScrollView(
               child: Container(
                 height: 300, // Altura específica del área de desplazamiento
@@ -121,6 +65,7 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
                 margin: const EdgeInsets.all(16.0),
                 padding: const EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
+                  color: Colors.white,
                   border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
@@ -129,7 +74,7 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
             ),
             const SizedBox(height: 20),
             Container(
-              color: Color.fromARGB(255, 255, 255, 255),
+              color: Color.fromARGB(255, 29, 52, 78),
               width: MediaQuery.of(context).size.width,
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -157,12 +102,6 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
 
             const SizedBox(height: 20),
             _selectedMenuOption == 0
-                ? const CorporalDataPage()
-                : const SizedBox(), // Si _selectedMenuOption no es 0, no mostrar el contenedor
-            _selectedMenuOption == 1
-                ? const AntropometricDataPage()
-                : const SizedBox(), // Si _selectedMenuOption no es 1, no mostrar el contenedor
-            _selectedMenuOption == 2
                 ? Container(
                     color:
                         const Color.fromARGB(255, 0, 0, 255), // Contenedor azul
@@ -170,7 +109,21 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
                     width: MediaQuery.of(context).size.width,
                   )
                 : const SizedBox(), // Si _selectedMenuOption no es 2, no mostrar el contenedor
+            _selectedMenuOption == 1
+                ? const CorporalDataPage()
+                : const SizedBox(), // Si _selectedMenuOption no es 0, no mostrar el contenedor
+            _selectedMenuOption == 2
+                ? const AntropometricDataPage()
+                : const SizedBox(), // Si _selectedMenuOption no es 1, no mostrar el contenedor
             _selectedMenuOption == 3
+                ? Container(
+                    color:
+                        const Color.fromARGB(255, 0, 0, 255), // Contenedor azul
+                    height: 250,
+                    width: MediaQuery.of(context).size.width,
+                  )
+                : const SizedBox(), // Si _selectedMenuOption no es 2, no mostrar el contenedor
+            _selectedMenuOption == 4
                 ? Container(
                     color: const Color.fromARGB(
                         255, 255, 255, 0), // Contenedor amarillo
@@ -189,14 +142,6 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _selectedMenuOption = prefs.getInt('selectedMenuOption') ?? 0;
-    });
-  }
-
-  void _onTabTapped(int index) {
-    var globalVariable =
-        Provider.of<GlobalVariablesProvider>(context, listen: false);
-    setState(() {
-      _selectedPage = index;
     });
   }
 

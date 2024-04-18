@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
-import 'package:gym_check/src/screens/crear/create_page.dart';
-import 'package:gym_check/src/screens/seguimiento/widgets/tracking_option_widget.dart';
-import 'package:gym_check/src/screens/social/feed_page.dart';
+import 'package:gym_check/src/screens/calendar/physical-nutritional/month_view_widget.dart';
 import 'package:gym_check/src/services/user_service.dart';
-import 'package:gym_check/src/widgets/bottom_navigation_menu.dart';
 import 'package:gym_check/src/widgets/custom_app_bar.dart';
-
+import 'package:gym_check/src/screens/seguimiento/widgets/tracking_option_widget.dart';
+import 'package:gym_check/src/widgets/menu_button_option_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NutritionalTrackingPage extends StatefulWidget {
+  const NutritionalTrackingPage({Key? key}) : super(key: key);
+
   @override
-  _NutritionalTrackingPageState createState() => _NutritionalTrackingPageState();
+  _NutritionalTrackingPageState createState() =>
+      _NutritionalTrackingPageState();
 }
 
 class _NutritionalTrackingPageState extends State<NutritionalTrackingPage> {
-  int _selectedPage = 0;
-  int _selectedSubPage = 2;
+
+  int _selectedMenuOption = 0;
   String _nick = '';
   String _urlImagen = '';
 
@@ -25,39 +27,129 @@ class _NutritionalTrackingPageState extends State<NutritionalTrackingPage> {
   void initState() {
     super.initState();
     _loadUserData();
+    _loadSelectedMenuOption();
   }
 
-  void _onTabTapped(int index) {
-    setState(() {
-      _selectedPage = index;
-    });
+  @override
+  Widget build(BuildContext context) {
+    var globalVariable = Provider.of<GlobalVariablesProvider>(context);
+    List<String> options = [
+      'Registro de Alimentos y Bebidas',
+      'Análisis de Macronutrientes',
+      'Seguimiento de Calorías y Macros',
+      'Registro de Suplementos',
+      'Historial y Estadísticas'
+    ];
+    return Scaffold(
+      backgroundColor: Color.fromARGB(255, 29, 52, 78),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SingleChildScrollView(
+              child: Container(
+                height: 300, // Altura específica del área de desplazamiento
+                // Ajusta los márgenes y el tamaño del contenedor según tus necesidades
+                margin: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: const MonthViewWidget(),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              color: Color.fromARGB(255, 29, 52, 78),
+              width: MediaQuery.of(context).size.width,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: <Widget>[
+                    MenuButtonOption(
+                      options: options,
+                      highlightColor: Colors.green,
+                      onItemSelected: (index) async {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        setState(() {
+                          _selectedMenuOption = index;
+                          globalVariable.selectedMenuOptionNutritional =
+                              _selectedMenuOption;
+                        });
+                        await prefs.setInt('selectedMenuOptionNutritional', index);
+                      },
+                    ),
+                    // Aquí puedes agregar más elementos MenuButtonOption según sea necesario
+                  ],
+                ),
+              ),
+            ),
 
-    switch (index) {
-      case 0:
-        // Navegar a la página de FeedPage
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => FeedPage()),
-        );
-        break;
-      case 1:
-        // Navegar a la página de creación de publicaciones
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => CreatePage()),
-        );
-        break;
-      case 2:
-        // Ya estamos en la página de seguimiento, no hay acción necesaria
-        break;
-    }
+            const SizedBox(height: 20),
+            _selectedMenuOption == 0
+                ? Container(
+                    color:
+                        const Color.fromARGB(255, 0, 0, 255), // Contenedor azul
+                    height: 250,
+                    width: MediaQuery.of(context).size.width,
+                  )
+                : const SizedBox(), // Si _selectedMenuOption no es 2, no mostrar el contenedor
+            _selectedMenuOption == 1
+ ? Container(
+                    color:
+                        const Color.fromARGB(255, 0, 0, 255), // Contenedor azul
+                    height: 250,
+                    width: MediaQuery.of(context).size.width,
+                  )
+                : const SizedBox(), // S
+            _selectedMenuOption == 2
+                ? Container(
+                    color:
+                        const Color.fromARGB(255, 0, 0, 255), // Contenedor azul
+                    height: 250,
+                    width: MediaQuery.of(context).size.width,
+                  )
+                : const SizedBox(), // S
+            _selectedMenuOption == 3
+                ? Container(
+                    color:
+                        const Color.fromARGB(255, 0, 0, 255), // Contenedor azul
+                    height: 250,
+                    width: MediaQuery.of(context).size.width,
+                  )
+                : const SizedBox(), // Si _selectedMenuOption no es 2, no mostrar el contenedor
+            _selectedMenuOption == 4
+                ? Container(
+                    color: const Color.fromARGB(
+                        255, 255, 255, 0), // Contenedor amarillo
+                    height: 250,
+                    width: MediaQuery.of(context).size.width,
+                  )
+                : const SizedBox(), // Si _selectedMenuOption no es 3, no mostrar el contenedor
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+
+  Future<void> _loadSelectedMenuOption() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _selectedMenuOption = prefs.getInt('selectedMenuOptionNutritional') ?? 0;
+    });
   }
 
   Future<void> _loadUserData() async {
     try {
-      String userId = Provider.of<UserSessionProvider>(context, listen: false)
-          .userSession!
-          .userId;
+      String userId =
+          Provider.of<UserSessionProvider>(context, listen: false)
+              .userSession!
+              .userId;
       Map<String, dynamic> userData = await UserService.getUserData(userId);
       setState(() {
         _nick = userData['nick'];
@@ -66,84 +158,5 @@ class _NutritionalTrackingPageState extends State<NutritionalTrackingPage> {
     } catch (error) {
       print('Error al cargar los datos del usuario: $error');
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-     var globalVariable = Provider.of<GlobalVariablesProvider>(context); // Obtiene la instancia de GlobalVariable
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Seguimiento',
-        //profileImageUrl: _urlImagen,
-        onProfilePressed: () {},
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search), // Botón de búsqueda
-            onPressed: () {
-              // Acción al presionar el botón de búsqueda
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.notifications), // Botón de notificaciones
-            onPressed: () {
-              // Acción al presionar el botón de notificaciones
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.message), // Botón de mensajes
-            onPressed: () {
-              // Acción al presionar el botón de mensajes
-            },
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              child: TrackingOptionWidget(
-                selectedIndex: _selectedSubPage,
-                onItemSelected: (index) {
-                  setState(() {
-                   // globalVariable.selectedSubPageTracking = 2;
-                    _selectedSubPage = index;
-                    
-                   // print( 'Provider en nutrional '+globalVariable.selectedSubPageTracking.toString());
-                  });
-                },
-              ),
-            ),
-            SizedBox(height: 20),
-            Container(
-              color: Color.fromARGB(255, 172, 197, 13),
-              height: 250,
-              width: MediaQuery.of(context).size.width,
-            ),
-            SizedBox(height: 20),
-            Container(
-              color: const Color.fromARGB(255, 239, 241, 239),
-              height: 250,
-              width: MediaQuery.of(context).size.width,
-            ),
-            SizedBox(height: 20),
-            Container(
-              color: Color.fromARGB(255, 0, 0, 0),
-              height: 250,
-              width: MediaQuery.of(context).size.width,
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          BottomNavigationMenu(
-            selectedIndex: 2,
-            onTabTapped: _onTabTapped,
-          ),
-        ],
-      ),
-    );
   }
 }
