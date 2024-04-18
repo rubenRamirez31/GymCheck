@@ -200,6 +200,7 @@ class _AntropometricDataPageState extends State<AntropometricDataPage> {
           _buildDataTrackingContainers(),
           const SizedBox(height: 20),
           CreateButton(
+            textColor: Colors.white,
             text: 'Agregar',
             buttonColor: Colors.green,
             onPressed: () {

@@ -4,6 +4,7 @@ class CreateButton extends StatefulWidget {
   final String text;
   final Color buttonColor;
   final Color iconColor;
+  final Color textColor; // Nuevo parámetro para el color del texto
   final IconData iconData;
   final List<SecondaryButton> secondaryButtons;
   final double width;
@@ -16,6 +17,7 @@ class CreateButton extends StatefulWidget {
     required this.iconData,
     required this.onPressed,
     required this.iconColor,
+    required this.textColor, // Nuevo parámetro
     this.secondaryButtons = const [],
     this.width = 45,
     this.height = 45,
@@ -67,6 +69,7 @@ class _CreateButtonState extends State<CreateButton> {
             widget.text,
             style: TextStyle(
               fontSize: 18.0,
+              color: widget.textColor, // Se aplica el color especificado
             ),
           ),
         ),
@@ -98,13 +101,12 @@ class _CreateButtonState extends State<CreateButton> {
 }
 
 class SecondaryButton {
-
   final String text;
   final Color buttonColor;
   final Color iconColor;
   final IconData iconData;
   final VoidCallback onPressed;
-    final double width;
+  final double width;
   final double height;
 
   SecondaryButton({

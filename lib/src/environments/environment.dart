@@ -1,6 +1,6 @@
 class Environment {
   //static const String API_URL = 'http://172.16.20.85:3000';
-  static const String API_URL = 'http://172.16.25.120:3000';
+  static const String API_URL = 'http://192.168.56.1:3000';
 
   // Opcionalmente, puedes tener diferentes URLs para diferentes entornos
   // static const String apiUrl = 'http://api.tu-app.com'; // Para producción

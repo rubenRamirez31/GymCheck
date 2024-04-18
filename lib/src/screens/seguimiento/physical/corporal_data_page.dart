@@ -201,7 +201,9 @@ class _CorporalDataPageState extends State<CorporalDataPage> {
           _buildDataTrackingContainers(),
           const SizedBox(height: 20),
           CreateButton(
+
             text: 'Agregar',
+            textColor: Colors.white,
             buttonColor: Colors.green,
             onPressed: () {
               _showAddData(context);

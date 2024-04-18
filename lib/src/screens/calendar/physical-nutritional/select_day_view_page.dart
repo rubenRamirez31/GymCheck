@@ -25,6 +25,36 @@ class _SelectDayViewPageState extends State<SelectDayViewPage> {
         selectedView: CalendarView.day,
       ),
       mobileWidget: Scaffold(
+        appBar: AppBar(
+        backgroundColor: const Color(0xff0C1C2E),
+        title: const Text(
+          'Vista Semanal',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 26,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(Icons.notifications, color: Colors.white),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(
+              Icons.info,
+              color: Colors.white,
+            ),
+            onPressed: () {},
+          ),
+        ],
+      ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           elevation: 8,

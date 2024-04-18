@@ -11,6 +11,8 @@ import 'package:gym_check/src/widgets/custom_app_bar.dart';
 import 'package:provider/provider.dart';
 
 class EmotionalTrackingPage extends StatefulWidget {
+
+  const EmotionalTrackingPage({super.key});
   @override
   _EmotionalTrackingPageState createState() => _EmotionalTrackingPageState();
 }
