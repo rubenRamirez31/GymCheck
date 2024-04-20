@@ -43,7 +43,6 @@ class PostHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GestureDetector(
           onTap: () {
@@ -59,7 +58,7 @@ class PostHeader extends StatelessWidget {
                 decoration: TextDecoration.underline),
           ),
         ),
-        const Spacer(),
+        /* const Spacer(), */
         /*  if (isOwner(context,
             postUserId)) // Verifica si el usuario es el propietario del post
           IconButton(
@@ -150,7 +149,6 @@ class PostWidget extends StatelessWidget {
               ),
               Expanded(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     PostHeader(
                         nick: post.nick,
@@ -174,8 +172,7 @@ class PostWidget extends StatelessWidget {
                             BorderRadius.circular(15), // Borde redondeado
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(
-                            15), // Borde redondeado para la imagen
+                        borderRadius: BorderRadius.circular(15),
                         child: post.urlImagen != null && post.urlImagen!.isEmpty
                             ? Container()
                             : Image.network(

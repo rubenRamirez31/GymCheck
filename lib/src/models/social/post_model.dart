@@ -12,14 +12,6 @@ class Post {
   final File? imagen;
   final bool editad;
 
-  //FechaFormateada
-  String getDate() {
-    DateTime ahora = DateTime.now();
-    DateFormat formato = DateFormat('yy-MM-dd HH:mm');
-    String fechaFormateada = formato.format(ahora);
-    return fechaFormateada;
-  }
-
   Post(
       {required this.userId,
       this.lugar,
@@ -31,7 +23,7 @@ class Post {
       required this.editad,
       required this.id});
 
-  factory Post.getFirebase(String idd, Map json) {
+  factory Post.getFirebaseId(String idd, Map json) {
     return Post(
       id: json['id'],
       userId: json['userIdAuth'],
