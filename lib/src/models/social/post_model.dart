@@ -25,7 +25,7 @@ class Post {
 
   factory Post.getFirebaseId(String idd, Map json) {
     return Post(
-      id: json['id'],
+      id: idd,
       userId: json['userIdAuth'],
       lugar: json['lugar'],
       texto: json['texto'],
