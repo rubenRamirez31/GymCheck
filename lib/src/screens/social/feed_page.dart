@@ -64,7 +64,7 @@ class _FeedPageState extends State<FeedPage> {
         slivers: [
           SliverAppBar(
             title: const Text(
-              'GymCheck',
+              'LifeCheck',
               style: TextStyle(color: Colors.white),
             ),
             backgroundColor: AppColors.darkestBlue,

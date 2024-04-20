@@ -23,26 +23,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
   //String _selectedLugar = 'Agregar lugar'; // Cambiado de 'Puebla' a 'Agregar lugar'
   File? _image;
 
-  Future<void> _getImageGallery() async {
-    final picker = ImagePicker();
-    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedImage != null) {
-      setState(() {
-        _image = File(pickedImage.path);
-      });
-    }
-  }
-
-  Future<void> _getImageCamera() async {
-    final picker = ImagePicker();
-    final pickedImage = await picker.pickImage(source: ImageSource.camera);
-    if (pickedImage != null) {
-      setState(() {
-        _image = File(pickedImage.path);
-      });
-    }
-  }
-
   Future<void> _createPost() async {
     try {
       if (_textoController.text.isEmpty) {
@@ -102,7 +82,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 Navigator.pop(context);
                 Navigator.pop(context); // Regresar a la página anterior
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         ),
@@ -126,9 +106,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     }
   }
 
-  Future<void> _getFotoPerfil() async{
-    
-  }
+  Future<void> _getFotoPerfil() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -151,11 +129,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
       ),
       body: SingleChildScrollView(
           padding: const EdgeInsets.all(10),
-          child: Row(
-            children: [
-              SizedBox(
-                height: 570,
-                child: Column(
+          child: IntrinsicHeight(
+            child: Row(
+              children: [
+                Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     ClipRRect(
@@ -168,71 +145,68 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    TextFormField(
-                      controller: _textoController,
-                      maxLines: 5,
-                      decoration: const InputDecoration(
-                        labelText: 'Comparte algo con los demas',
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    _image != null
-                        ? Stack(
-                            children: [
-                              Container(
-                                height: 400,
-                                width: double.maxFinite,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                      15), // Borde redondeado
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(
-                                      15), // Borde redondeado para la imagen
-                                  child: Image.file(_image!, fit: BoxFit.cover),
-                                ),
-                              ),
-                              Positioned(
-                                top: 5,
-                                right: 5,
-                                child: Container(
-                                  height: 40,
-                                  width: 40,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(25),
-                                    color: const Color.fromARGB(
-                                        198, 197, 185, 185),
-                                  ),
-                                  child: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _image = null;
-                                      });
-                                    },
-                                    icon: const Icon(Icons.close),
-                                  ),
-                                ),
-                              )
-                            ],
-                          )
-                        : Container(
-                            height: 400,
-                          )
-                  ],
+                const SizedBox(
+                  width: 10,
                 ),
-              )
-            ],
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      TextFormField(
+                        controller: _textoController,
+                        maxLines: 5,
+                        decoration: const InputDecoration(
+                          labelText: 'Comparte algo con los demas',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      _image != null
+                          ? Stack(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(
+                                        15), // Borde redondeado
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(
+                                        15), // Borde redondeado para la imagen
+                                    child:
+                                        Image.file(_image!, fit: BoxFit.cover),
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 5,
+                                  right: 5,
+                                  child: Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(25),
+                                      color: const Color.fromARGB(
+                                          198, 197, 185, 185),
+                                    ),
+                                    child: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _image = null;
+                                        });
+                                      },
+                                      icon: const Icon(Icons.close),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            )
+                          : Container()
+                    ],
+                  ),
+                )
+              ],
+            ),
           )),
       bottomNavigationBar: Padding(
           padding: MediaQuery.of(context).viewInsets,
@@ -266,5 +240,25 @@ class _CreatePostPageState extends State<CreatePostPage> {
             ),
           )),
     );
+  }
+
+  Future<void> _getImageGallery() async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      setState(() {
+        _image = File(pickedImage.path);
+      });
+    }
+  }
+
+  Future<void> _getImageCamera() async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.pickImage(source: ImageSource.camera);
+    if (pickedImage != null) {
+      setState(() {
+        _image = File(pickedImage.path);
+      });
+    }
   }
 }
