@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gym_check/src/screens/seguimiento/physical/view_corporal_data_page.dart';
 
 class DataTracking extends StatelessWidget {
   final IconData icon;
@@ -70,6 +71,7 @@ class DataTracking extends StatelessWidget {
               alignment: Alignment.bottomRight,
               child: ElevatedButton(
                 onPressed: () {
+                  _showViweData(context, name);
                   // Aquí podrías navegar a la pestaña correspondiente
                   // dependiendo del dataType
                   print('Se presionó el botón de Ver más para $name');
@@ -80,6 +82,25 @@ class DataTracking extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+    void _showViweData(BuildContext context, String data) {
+    showModalBottomSheet(
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(15),
+        ),
+      ),
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return FractionallySizedBox(
+          heightFactor: 0.95,
+          child: ViewCorporalDataPage(data: data),
+        );
+      },
     );
   }
 }

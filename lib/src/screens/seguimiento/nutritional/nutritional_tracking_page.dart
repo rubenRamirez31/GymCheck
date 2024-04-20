@@ -34,9 +34,9 @@ class _NutritionalTrackingPageState extends State<NutritionalTrackingPage> {
   Widget build(BuildContext context) {
     var globalVariable = Provider.of<GlobalVariablesProvider>(context);
     List<String> options = [
-      'Registro de Alimentos y Bebidas',
-      'Análisis de Macronutrientes',
-      'Seguimiento de Calorías y Macros',
+      'Alimentos y Bebidas',
+      'Macronutrientes',
+      'Calorías y Macros',
       'Registro de Suplementos',
       'Historial y Estadísticas'
     ];
@@ -81,6 +81,7 @@ class _NutritionalTrackingPageState extends State<NutritionalTrackingPage> {
                         });
                         await prefs.setInt('selectedMenuOptionNutritional', index);
                       },
+                      selectedMenuOptionGlobal: globalVariable.selectedMenuOptionNutritional
                     ),
                     // Aquí puedes agregar más elementos MenuButtonOption según sea necesario
                   ],
