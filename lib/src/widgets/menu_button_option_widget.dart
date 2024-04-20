@@ -8,11 +8,13 @@ class MenuButtonOption extends StatefulWidget {
   final List<String> options; // Lista de opciones
   final Function(int) onItemSelected; // Función de devolución de llamada cuando se selecciona una opción
   final Color highlightColor; // Color de resaltado cuando se selecciona una opción
+  final int selectedMenuOptionGlobal;
 
   MenuButtonOption({
     required this.options, // Requiere la lista de opciones
     required this.onItemSelected, // Requiere la función de devolución de llamada
     required this.highlightColor, // Requiere el color de resaltado
+    required this.selectedMenuOptionGlobal, // Requiere el color de resaltado
   });
 
   @override
@@ -22,6 +24,7 @@ class MenuButtonOption extends StatefulWidget {
 class _MenuButtonOptionState extends State<MenuButtonOption> {
   late String selectedOption; // Opción seleccionada
   late int _selectedMenuOption; // Opción de menú seleccionada
+ // late int _global = widget.selectedMenuOptionGlobal; // Opción de menú seleccionada
 
   @override
   void initState() {
@@ -29,7 +32,7 @@ class _MenuButtonOptionState extends State<MenuButtonOption> {
     var globalVariable = Provider.of<GlobalVariablesProvider>(
         context,
         listen: false);
-    _selectedMenuOption = globalVariable.selectedMenuOptionTrackingPhysical; // Obtiene la opción de menú seleccionada
+    _selectedMenuOption = widget.selectedMenuOptionGlobal; // Obtiene la opción de menú seleccionada
     selectedOption = widget.options[_selectedMenuOption]; // Establece la opción seleccionada
   }
 

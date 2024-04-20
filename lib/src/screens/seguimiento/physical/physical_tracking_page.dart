@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
-import 'package:gym_check/src/screens/calendar/app_colors.dart';
+
 
 import 'package:gym_check/src/screens/calendar/physical-nutritional/month_view_widget.dart';
-import 'package:gym_check/src/screens/seguimiento/physical/Antropometric_data_page.dart';
+import 'package:gym_check/src/screens/seguimiento/physical/antropometric_data_page.dart';
 
 import 'package:gym_check/src/screens/seguimiento/physical/corporal_data_page.dart';
-import 'package:gym_check/src/screens/seguimiento/widgets/tracking_option_widget.dart';
+
 
 import 'package:gym_check/src/services/user_service.dart';
 
@@ -25,8 +25,7 @@ class PhysicalTrackingPage extends StatefulWidget {
 }
 
 class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
-  int _selectedPage = 0;
-  int _selectedSubPage = 0;
+
   int _selectedMenuOption = 0;
   String _nick = '';
   String _urlImagen = '';
@@ -36,7 +35,7 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
     'Datos corporales',
     'Datos antropométricos',
     'Metas',
-    'Record personal',
+    'Fuerza',
     'Configuraciones'
   ]; // Lista de opciones
 
@@ -82,6 +81,7 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
                   children: <Widget>[
                     MenuButtonOption(
                       options: options,
+                      
                       highlightColor: Colors.green,
                       onItemSelected: (index) async {
                         SharedPreferences prefs =
@@ -93,6 +93,7 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
                         });
                         await prefs.setInt('selectedMenuOption', index);
                       },
+                      selectedMenuOptionGlobal: globalVariable.selectedMenuOptionTrackingPhysical
                     ),
                     // Aquí puedes agregar más elementos MenuButtonOption según sea necesario
                   ],

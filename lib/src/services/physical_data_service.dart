@@ -80,8 +80,8 @@ class PhysicalDataService {
   }
 
   // Función para obtener datos físicos con ordenamiento dinámico
-  static Future<Map<String, dynamic>> getDataWithDynamicSorting(String userId, String collectionType, String orderByField, String orderByDirection) async {
-    String apiUrl = '${Environment.API_URL}/api/datos-fisicos/obtener-datos/$userId/$collectionType/$orderByField/$orderByDirection';
+  static Future<Map<String, dynamic>> getDataWithDynamicSorting(String userId, String collectionType, String orderByField, String orderByTipo, String orderByDirection) async {
+    String apiUrl = '${Environment.API_URL}/api/datos-fisicos/obtener-datos/$userId/$collectionType/$orderByField/$orderByTipo/$orderByDirection';
 
     try {
       final response = await http.get(Uri.parse(apiUrl));

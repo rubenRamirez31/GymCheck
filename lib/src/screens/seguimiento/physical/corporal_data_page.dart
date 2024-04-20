@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
-
 import 'package:gym_check/src/screens/seguimiento/physical/add_data_page.dart';
 import 'package:gym_check/src/screens/seguimiento/widgets/data_tracking_widget.dart';
 import 'package:gym_check/src/services/physical_data_service.dart';
 import 'package:gym_check/src/services/user_service.dart';
 import 'package:gym_check/src/widgets/create_button_widget.dart';
-
 import 'package:provider/provider.dart';
+import 'package:gym_check/src/environments/environment.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class CorporalDataPage extends StatefulWidget {
   const CorporalDataPage({Key? key}) : super(key: key);
@@ -28,13 +28,59 @@ class _CorporalDataPageState extends State<CorporalDataPage> {
   final Map<String, String> _datos = {
     'peso': 'Kilogramos:',
     'altura': 'Centimetros:',
-    'porcentajeGrasa': 'Porcentaje:',
+    'grasaCorporal': 'Porcentaje:',
   };
+
+  late IO.Socket socket;
 
   @override
   void initState() {
     super.initState();
     _loadUserDataLastDataPhysical();
+
+    // Establecer la conexión con el servidor de sockets
+    socket = IO.io(Environment.API_URL, <String, dynamic>{
+      'transports': ['websocket'],
+      'autoConnect': false,
+    });
+    socket.connect();
+// Escuchar eventos del servidor de sockets para actualizar datos
+socket.on('getLatestPhysicalData', (data) async {
+  // Verificar si los datos recibidos son válidos
+  //if (data != null && data.containsKey('peso') && data.containsKey('altura') && data.containsKey('grasaCorporal')) {
+    // Actualizar el estado de la página con los datos recibidos
+    for (String dato in _datos.keys) {
+        Map<String, dynamic> data =
+            await PhysicalDataService.getLatestPhysicalData(
+                _nick, _coleccion, dato);
+        setState(() {
+          switch (dato) {
+            case 'peso':
+              _peso = data['peso'];
+              _fechaPeso = data['fecha'];
+              break;
+            case 'altura':
+              _altura = data['altura'];
+              _fechaAltura = data['fecha'];
+              break;
+            case 'grasaCorporal':
+              _grasa = data['grasaCorporal'];
+              _fechaGrasa = data['fecha'];
+              break;
+          }
+        });
+      }
+ 
+});
+
+
+  }
+
+  @override
+  void dispose() {
+    // Desconectar el socket cuando el widget se desmonte
+    socket.disconnect();
+    super.dispose();
   }
 
   Future<void> _loadUserDataLastDataPhysical() async {
@@ -61,8 +107,8 @@ class _CorporalDataPageState extends State<CorporalDataPage> {
               _altura = data['altura'];
               _fechaAltura = data['fecha'];
               break;
-            case 'porcentajeGrasa':
-              _grasa = data['porcentajeGrasa'];
+            case 'grasaCorporal':
+              _grasa = data['grasaCorporal'];
               _fechaGrasa = data['fecha'];
               break;
           }
@@ -129,7 +175,7 @@ class _CorporalDataPageState extends State<CorporalDataPage> {
         return _peso.toString();
       case 'altura':
         return _altura.toString();
-      case 'porcentajeGrasa':
+      case 'grasaCorporal':
         return '$_grasa%';
       default:
         return '';
@@ -142,7 +188,7 @@ class _CorporalDataPageState extends State<CorporalDataPage> {
         return "Peso";
       case 'altura':
         return "Altura";
-      case 'porcentajeGrasa':
+      case 'grasaCorporal':
         return 'Porcentaje de Grasa';
       default:
         return '';
@@ -155,7 +201,7 @@ class _CorporalDataPageState extends State<CorporalDataPage> {
         return _fechaPeso;
       case 'altura':
         return _fechaAltura;
-      case 'porcentajeGrasa':
+      case 'grasaCorporal':
         return _fechaGrasa;
       default:
         return '';
@@ -168,7 +214,7 @@ class _CorporalDataPageState extends State<CorporalDataPage> {
         return Icons.accessibility;
       case 'altura':
         return Icons.height;
-      case 'porcentajeGrasa':
+      case 'grasaCorporal':
         return Icons.opacity;
       default:
         return Icons.error;
@@ -187,7 +233,10 @@ class _CorporalDataPageState extends State<CorporalDataPage> {
                 padding: const EdgeInsets.all(16),
                 child: const Text(
                   'Mis Registros',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
                 ),
               ),
               IconButton(
@@ -201,7 +250,6 @@ class _CorporalDataPageState extends State<CorporalDataPage> {
           _buildDataTrackingContainers(),
           const SizedBox(height: 20),
           CreateButton(
-
             text: 'Agregar',
             textColor: Colors.white,
             buttonColor: Colors.green,
@@ -211,38 +259,12 @@ class _CorporalDataPageState extends State<CorporalDataPage> {
             iconData: Icons.add,
             iconColor: Colors.white,
           ),
-
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     Container(
-          //       padding: const EdgeInsets.all(16),
-          //       child: const Text(
-          //         'Analizar informacion corporal',
-          //         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          //       ),
-          //     ),
-          //     IconButton(
-          //       icon: const Icon(Icons.info),
-          //       onPressed: () {},
-          //     ),
-          //   ],
-          // ),
         ],
       ),
     );
   }
 
   void _showAddData(BuildContext context) {
-    /* showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Container(
-          child: AddDataPage(tipoDeRegistro: "corporales")
-        );
-      },
-    ); */
-
     showModalBottomSheet(
       showDragHandle: true,
       shape: const RoundedRectangleBorder(
