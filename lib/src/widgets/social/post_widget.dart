@@ -180,11 +180,6 @@ class PostWidget extends StatelessWidget {
                             ),
                     ),
                   ),
-
-                  /* Container(
-                      height: 200,
-                    ),
-                    if (post.urlImagen != "") Image.network(post.urlImagen!), */
                   const SizedBox(height: 10),
                   Text(
                     'Fecha de Creación: ${post.fechaCreacion}',
