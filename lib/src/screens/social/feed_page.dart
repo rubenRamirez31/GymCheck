@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
 import 'package:gym_check/src/services/api_service.dart';
@@ -27,7 +28,6 @@ class _FeedPageState extends State<FeedPage> {
   void initState() {
     super.initState();
     _loadUserData();
-    _loadPosts();
   }
 
   Future<void> _loadUserData() async {
@@ -45,19 +45,11 @@ class _FeedPageState extends State<FeedPage> {
     }
   }
 
-  Future<void> _loadPosts() async {
-    try {
-      List<Post> posts = await ApiService.getAllPosts();
-      setState(() {
-        _posts = posts;
-      });
-    } catch (error) {
-      print('Error al cargar las publicaciones: $error');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final Stream<QuerySnapshot> postStream =
+        FirebaseFirestore.instance.collection("Publicaciones").snapshots();
+
     return Scaffold(
       backgroundColor: AppColors.darkestBlue,
       body: CustomScrollView(
@@ -85,14 +77,37 @@ class _FeedPageState extends State<FeedPage> {
             snap:
                 true, // Hace que el AppBar se oculte completamente al hacer scroll hacia abajo
           ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                return PostWidget(post: _posts[index]);
-              },
-              childCount: _posts.length,
-            ),
-          ),
+          StreamBuilder<QuerySnapshot>(
+            stream: postStream,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const SliverToBoxAdapter(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                return SliverToBoxAdapter(
+                  child: Center(
+                    child: Text("Error: ${snapshot.error}"),
+                  ),
+                );
+              } else {
+                final docs = snapshot.data!.docs;
+                return SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final post = docs[index];
+                      final postData = post.data() as Map<String, dynamic>;
+                      final p = Post.getFirebaseId(post.id, postData);
+                      return PostWidget(post: p);
+                    },
+                    childCount: docs.length,
+                  ),
+                );
+              }
+            },
+          )
         ],
       ),
       floatingActionButton: FloatingActionButton(
