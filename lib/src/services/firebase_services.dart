@@ -6,7 +6,7 @@ import 'package:gym_check/src/models/social/post_model.dart';
 FirebaseFirestore db = FirebaseFirestore.instance;
 FirebaseAuth auth = FirebaseAuth.instance;
 
-Future<int> agregarPost(Post p) async {
+Future<int> crearPost(Post p) async {
   CollectionReference coleccion = db.collection("Publicaciones");
   int codigo = 0;
 

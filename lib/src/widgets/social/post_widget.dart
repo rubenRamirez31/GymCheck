@@ -176,10 +176,22 @@ class PostWidget extends StatelessWidget {
                         borderRadius: BorderRadius.circular(15),
                         child:
                             post.urlImagen != null && post.urlImagen!.isNotEmpty
-                                ? FadeInImage.memoryNetwork(
-                                    placeholder: kTransparentImage,
-                                    image: post.urlImagen!,
-                                    fit: BoxFit.cover,
+                                ? Stack(
+                                    children: [
+                                      Container(
+                                        height: 100,
+                                        child: const Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      ),
+                                      Center(
+                                        child: FadeInImage.memoryNetwork(
+                                          placeholder: kTransparentImage,
+                                          image: post.urlImagen!,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )
+                                    ],
                                   )
                                 : Container(),
                       ),
