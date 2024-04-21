@@ -28,7 +28,6 @@ class _FeedPageState extends State<FeedPage> {
   void initState() {
     super.initState();
     _loadUserData();
-    _loadPosts();
   }
 
   Future<void> _loadUserData() async {
@@ -43,17 +42,6 @@ class _FeedPageState extends State<FeedPage> {
       });
     } catch (error) {
       print('Error al cargar los datos del usuario: $error');
-    }
-  }
-
-  Future<void> _loadPosts() async {
-    try {
-      List<Post> posts = await ApiService.getAllPosts();
-      setState(() {
-        _posts = posts;
-      });
-    } catch (error) {
-      print('Error al cargar las publicaciones: $error');
     }
   }
 
@@ -120,14 +108,6 @@ class _FeedPageState extends State<FeedPage> {
               }
             },
           )
-          /* SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                return PostWidget(post: _posts[index]);
-              },
-              childCount: _posts.length,
-            ),
-          ), */
         ],
       ),
       floatingActionButton: FloatingActionButton(

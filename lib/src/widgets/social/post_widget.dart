@@ -6,8 +6,10 @@ import 'package:gym_check/src/screens/social/profile_page.dart';
 import 'package:gym_check/src/values/app_colors.dart';
 import 'package:gym_check/src/widgets/social/comment_box.dart';
 import 'package:gym_check/src/widgets/social/share_box.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class PostHeader extends StatelessWidget {
   final String nick;
@@ -172,18 +174,26 @@ class PostWidget extends StatelessWidget {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(15),
-                        child: post.urlImagen != null && post.urlImagen!.isEmpty
-                            ? Container()
-                            : Image.network(
-                                post.urlImagen!,
-                                fit: BoxFit
-                                    .cover, // Ajustar la imagen para cubrir todo el contenedor
-                              ),
+                        child:
+                            post.urlImagen != null && post.urlImagen!.isNotEmpty
+                                ? FadeInImage.memoryNetwork(
+                                    placeholder: kTransparentImage,
+                                    image: post.urlImagen!,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Container(),
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Text(
-                      'Fecha de Creación: ${post.fechaCreacion}',
+                    Row(
+                      children: [
+                        Text(
+                          post.fechaCreacion != null
+                              ? DateFormat('h:mm a d MMM yy')
+                                  .format(post.fechaCreacion!)
+                              : 'Fecha no disponible',
+                        ),
+                      ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
