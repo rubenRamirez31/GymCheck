@@ -124,7 +124,6 @@ bool isEdited(bool editado) {
 //Widget del post
 class PostWidget extends StatelessWidget {
   final Post post;
-
   const PostWidget({Key? key, required this.post}) : super(key: key);
 
   @override

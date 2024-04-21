@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class Post {
@@ -30,10 +31,7 @@ class Post {
       lugar: json['lugar'],
       texto: json['texto'],
       nick: json['nick'],
-      fechaCreacion: json['fechaCreacion'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(
-              json['fechaCreacion']['seconds'] * 1000)
-          : null,
+      fechaCreacion: (json['fechaCreacion'] as Timestamp).toDate(),
       urlImagen: json['URLimagen'],
       imagen: json['imagen'],
       editad: json['editado'],
@@ -42,14 +40,14 @@ class Post {
 
   Map<String, dynamic> toJson() {
     return {
-      'userId' : userId,
-      'lugar' : lugar,
-      'texto' : texto,
-      'nick' :nick,
-      'fechaCreacion' : fechaCreacion,
-      'urlImagen' : urlImagen,
-      'imagen' : imagen,
-      'editad' : editad
+      'userId': userId,
+      'lugar': lugar,
+      'texto': texto,
+      'nick': nick,
+      'fechaCreacion': fechaCreacion,
+      'urlImagen': urlImagen,
+      'imagen': imagen,
+      'editad': editad
     };
   }
 

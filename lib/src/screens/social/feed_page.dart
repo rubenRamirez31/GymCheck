@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
 import 'package:gym_check/src/services/api_service.dart';
@@ -58,6 +59,9 @@ class _FeedPageState extends State<FeedPage> {
 
   @override
   Widget build(BuildContext context) {
+    final Stream<QuerySnapshot> postStream =
+        FirebaseFirestore.instance.collection("Publicaciones").snapshots();
+
     return Scaffold(
       backgroundColor: AppColors.darkestBlue,
       body: CustomScrollView(
@@ -85,14 +89,45 @@ class _FeedPageState extends State<FeedPage> {
             snap:
                 true, // Hace que el AppBar se oculte completamente al hacer scroll hacia abajo
           ),
-          SliverList(
+          StreamBuilder<QuerySnapshot>(
+            stream: postStream,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const SliverToBoxAdapter(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                return SliverToBoxAdapter(
+                  child: Center(
+                    child: Text("Error: ${snapshot.error}"),
+                  ),
+                );
+              } else {
+                final docs = snapshot.data!.docs;
+                return SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final post = docs[index];
+                      final postData = post.data() as Map<String, dynamic>;
+                      final p = Post.getFirebaseId(post.id, postData);
+                      return PostWidget(post: p);
+                    },
+                    childCount: docs.length,
+                  ),
+                );
+              }
+            },
+          )
+          /* SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 return PostWidget(post: _posts[index]);
               },
               childCount: _posts.length,
             ),
-          ),
+          ), */
         ],
       ),
       floatingActionButton: FloatingActionButton(
