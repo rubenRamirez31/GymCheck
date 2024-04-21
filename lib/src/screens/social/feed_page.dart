@@ -22,8 +22,7 @@ class FeedPage extends StatefulWidget {
 class _FeedPageState extends State<FeedPage> {
   String _nick = '';
   String _urlImagen = '';
-  List<Post> _posts = [];
-
+  
   @override
   void initState() {
     super.initState();
