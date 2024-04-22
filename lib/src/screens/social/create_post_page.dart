@@ -1,5 +1,5 @@
-// ignore_for_file: use_build_context_synchronously
 import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/social/post_model.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
@@ -18,95 +18,12 @@ class CreatePostPage extends StatefulWidget {
 }
 
 class _CreatePostPageState extends State<CreatePostPage> {
+  final formkey = GlobalKey<FormState>();
   final TextEditingController _textoController = TextEditingController();
 
-  //String _selectedLugar = 'Agregar lugar'; // Cambiado de 'Puebla' a 'Agregar lugar'
   File? _image;
-
-  Future<void> _createPost() async {
-    try {
-      if (_textoController.text.isEmpty) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Error'),
-            content:
-                const Text('Por favor ingrese un texto para la publicación.'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-        );
-        return;
-      }
-
-      String _nick = '';
-      String _userIdAuth = '';
-
-      String userId = Provider.of<UserSessionProvider>(context, listen: false)
-          .userSession!
-          .userId;
-
-      Map<String, dynamic> userData = await UserService.getUserData(userId);
-
-      setState(() {
-        _nick = userData['nick'];
-        _userIdAuth = userData['userIdAuth'];
-      });
-      final Post newPost = Post(
-        userId: _userIdAuth,
-        texto: _textoController.text,
-        nick: _nick,
-        fechaCreacion: DateTime.now(),
-        imagen: _image,
-        editad: false,
-        id: "ñeñjeje",
-      );
-
-      // Enviar la publicación al servicio API
-      await ApiService.crearPublicacion(newPost);
-      //print("Imgen"+ imagenBase64);
-
-      // Mostrar un mensaje de éxito
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Éxito'),
-          content: const Text('La publicación se ha creado exitosamente.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context); // Regresar a la página anterior
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-    } catch (error) {
-      // Manejar errores
-      // ignore: use_build_context_synchronously
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Error'),
-          content: Text('Ocurrió un error al crear la publicación: $error'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-    }
-  }
-
-  Future<void> _getFotoPerfil() async {}
+  String link = "";
+  String url = "";
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +40,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
           },
         ),
         actions: [
-          ElevatedButton(onPressed: _createPost, child: const Text('Publicar')),
+          ElevatedButton(
+              onPressed: () {
+                if (formkey.currentState!.validate()) {
+                  final file = File(_image!.path);
+
+                  final metadata = SettableMetadata(contentType: "image/jpeg");
+
+                   final storageRef =
+                          FirebaseStorage.instance.ref("/reportes");
+                }
+              },
+              child: const Text('Publicar')),
           const SizedBox(width: 10)
         ],
       ),
@@ -152,12 +80,16 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      TextFormField(
-                        controller: _textoController,
-                        maxLines: 5,
-                        decoration: const InputDecoration(
-                          labelText: 'Comparte algo con los demas',
-                          border: OutlineInputBorder(),
+                      Form(
+                        key: formkey,
+                        child: TextFormField(
+                          controller: _textoController,
+                          maxLines: 5,
+                          textCapitalization: TextCapitalization.sentences,
+                          decoration: const InputDecoration(
+                            labelText: 'Comparte con los demas',
+                            border: OutlineInputBorder(),
+                          ),
                         ),
                       ),
                       const SizedBox(
@@ -259,6 +191,89 @@ class _CreatePostPageState extends State<CreatePostPage> {
       setState(() {
         _image = File(pickedImage.path);
       });
+    }
+  }
+
+  Future<void> _createPost() async {
+    try {
+      if (_textoController.text.isEmpty) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Error'),
+            content:
+                const Text('Por favor ingrese un texto para la publicación.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+        return;
+      }
+
+      String _nick = '';
+      String _userIdAuth = '';
+
+      String userId = Provider.of<UserSessionProvider>(context, listen: false)
+          .userSession!
+          .userId;
+
+      Map<String, dynamic> userData = await UserService.getUserData(userId);
+
+      setState(() {
+        _nick = userData['nick'];
+        _userIdAuth = userData['userIdAuth'];
+      });
+      final Post newPost = Post(
+        userId: _userIdAuth,
+        texto: _textoController.text,
+        nick: _nick,
+        fechaCreacion: DateTime.now(),
+        imagen: _image,
+        editad: false,
+        id: "ñeñjeje",
+      );
+
+      // Enviar la publicación al servicio API
+      await ApiService.crearPublicacion(newPost);
+      //print("Imgen"+ imagenBase64);
+
+      // Mostrar un mensaje de éxito
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Éxito'),
+          content: const Text('La publicación se ha creado exitosamente.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context); // Regresar a la página anterior
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } catch (error) {
+      // Manejar errores
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Error'),
+          content: Text('Ocurrió un error al crear la publicación: $error'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
     }
   }
 }
