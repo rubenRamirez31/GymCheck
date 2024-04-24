@@ -1,3 +1,4 @@
+import 'package:anim_search_bar/anim_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:gym_check/src/values/app_colors.dart';
@@ -14,6 +15,7 @@ class CreateExercisePage extends StatefulWidget {
 }
 
 class _CreateExercisePageState extends State<CreateExercisePage> {
+    TextEditingController textController = TextEditingController();
   int _selectedIndex = 0;
   int _selectedPage = 0;
 
@@ -76,6 +78,15 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
                 print('Opción seleccionada: $index');
               },
             ),
+            AnimSearchBar(
+        width: 400,
+        textController: textController,
+        onSuffixTap: () {
+          setState(() {
+            textController.clear();
+          });
+        }, onSubmitted: (String ) {  },
+      ),
 
             // Aquí puedes agregar más contenido de la página CreateExercisePage según sea necesario
           ],

@@ -1,5 +1,6 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
+import 'package:gym_check/src/services/reminder_service.dart';
 
 import '../event_details_page.dart';
 
@@ -20,93 +21,52 @@ class SelectDayViewWidget extends StatefulWidget {
 }
 
 class _SelectDayViewWidgetState extends State<SelectDayViewWidget> {
-  late EventController _eventController;
-  List<CalendarEventData> eventsList = [];
+    late EventController _eventController;
+  List<Map<String, dynamic>> _routines = [];
 
   @override
   void initState() {
     super.initState();
     _eventController = EventController();
-    _addEvents(); // Agregar eventos al inicializar la página
+
+    _loadRoutines();
   }
 
-   // Método para agregar eventos a los días del 13/04/2024 al 16/04/2024
-  void _addEvents() {
-    // Lista de eventos
-    eventsList = [
-      CalendarEventData(
-        title: "Evento 1",
-        date: DateTime(2024, 4, 10),
-        description: "Descripción del Evento 1",
-        color: Colors.red,
-        startTime: DateTime(2024, 4, 10, 13, 0), // Hora de inicio del evento
-        endTime:
-            DateTime(2024, 4, 10, 14, 0), // Hora de finalización del evento
-      ),
-      CalendarEventData(
-        title: "Evento 1",
-        date: DateTime(2024, 4, 11),
-        description: "Descripción del Evento 1",
-        color: Colors.red,
-        startTime: DateTime(2024, 4, 11, 10, 0), // Hora de inicio del evento
-        endTime:
-            DateTime(2024, 4, 11, 12, 0), // Hora de finalización del evento
-      ),
-      CalendarEventData(
-        title: "Evento 1",
-        date: DateTime(2024, 4, 12),
-        description: "Descripción del Evento 1",
-        color: Colors.red,
-        startTime: DateTime(2024, 4, 12, 10, 0), // Hora de inicio del evento
-        endTime:
-            DateTime(2024, 4, 12, 12, 0), // Hora de finalización del evento
-      ),
-      CalendarEventData(
-        title: "Ir al Gym",
-        date: DateTime(2024, 4, 13),
-        description: "Toca pata",
-        color: Color.fromARGB(255, 6, 48, 83),
-        startTime: DateTime(2024, 4, 13, 13, 0), // Hora de inicio del evento
-        endTime:
-            DateTime(2024, 4, 13, 15, 30), // Hora de finalización del evento
-      ),
-      CalendarEventData(
-        title: "Ir al Gym",
-        date: DateTime(2024, 4, 13),
-        description: "Toca pata",
-        color: Color.fromARGB(255, 73, 99, 120),
-        startTime: DateTime(2024, 4, 13, 16, 0), // Hora de inicio del evento
-        endTime:
-            DateTime(2024, 4, 13, 17, 30), // Hora de finalización del evento
-      ),
-      CalendarEventData(
-        title: "Ir aladfsdafa Gym",
-        date: DateTime(2024, 4, 13),
-        description: "Toca pata",
-        color: Color.fromARGB(255, 199, 110, 26),
-        startTime: DateTime(2024, 4, 13, 16, 0), // Hora de inicio del evento
-        endTime:
-            DateTime(2024, 4, 13, 18, 0), // Hora de finalización del evento
-      ),
-      CalendarEventData(
-        title: "Ir al Gym",
-        date: DateTime(2024, 4, 13),
-        description: "Toca pata",
-        color: Color.fromARGB(255, 73, 99, 120),
-        startTime: DateTime(2024, 4, 13, 18, 0), // Hora de inicio del evento
-        endTime:
-            DateTime(2024, 4, 13, 19, 30), // Hora de finalización del evento
-      ),
-    ];
+  Future<void> _loadRoutines() async {
+    try {
+      final routines = await ReminderService.getAllReminders(context);
+      setState(() {
+        _routines = routines;
+      });
+      _addEvents(); // Agregar eventos después de cargar las rutinas
+    } catch (error) {
+      print('Error al cargar las rutinas: $error');
+    }
+  }
 
-    // Agregar cada evento al controlador
-    eventsList.forEach((event) {
-      _eventController.add(event);
+  void _addEvents() {
+    // Iterar sobre las rutinas obtenidas y agregar eventos
+    _routines.forEach((routine) {
+      // Convertir el color a un entero
+      //int colorValue = routine['color'] as int;
+      // Construir el objeto CalendarEventData a partir de la rutina
+      CalendarEventData eventData = CalendarEventData(
+        title: routine['title'],
+        date: routine['startTime'],
+        description: routine['description'],
+        color: Color(routine['color']),
+        startTime: routine['startTime'],
+        endTime: routine['endTime'],
+      );
+      // Agregar el evento al controlador
+      _eventController.add(eventData);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+  
+
     return DayView(
       key: widget.state,
       width: widget.width,

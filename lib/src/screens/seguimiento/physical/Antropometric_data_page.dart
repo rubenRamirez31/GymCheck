@@ -11,13 +11,14 @@ class AntropometricDataPage extends StatefulWidget {
   const AntropometricDataPage({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _AntropometricDataPageState createState() => _AntropometricDataPageState();
 }
 
 class _AntropometricDataPageState extends State<AntropometricDataPage> {
   String _nick = '';
-  int _circunferenciaCuello = 0;
-  int _circunferenciaCadera = 0;
+  double _circunferenciaCuello = 0;
+  double _circunferenciaCadera = 0;
   double _imc = 0.0;
   String _fechaCircunferenciaCuello = '';
   String _fechaCircunferenciaCadera = '';
@@ -66,6 +67,7 @@ class _AntropometricDataPageState extends State<AntropometricDataPage> {
         });
       }
     } catch (error) {
+      // ignore: avoid_print
       print('Error loading user antropometric data: $error');
     }
   }
@@ -119,6 +121,7 @@ class _AntropometricDataPageState extends State<AntropometricDataPage> {
         dataType: dataType,
         data: data,
         lastRecordDate: lastRecordDate,
+        coleccion: 'Registro-Antropometrico',
       ),
     );
   }
@@ -187,11 +190,12 @@ class _AntropometricDataPageState extends State<AntropometricDataPage> {
                 padding: const EdgeInsets.all(16),
                 child: const Text(
                   'Mis Registros',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
               ),
               IconButton(
                 icon: const Icon(Icons.info),
+                color: Colors.white,
                 onPressed: () {},
               ),
             ],
@@ -204,34 +208,33 @@ class _AntropometricDataPageState extends State<AntropometricDataPage> {
             text: 'Agregar',
             buttonColor: Colors.green,
             onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return Dialog(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: SingleChildScrollView(
-                      child: Container(
-                        height: 300,
-                        margin: EdgeInsets.all(5),
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(18.0),
-                        ),
-                        child: AddDataPage(tipoDeRegistro: "antropométricos"),
-                      ),
-                    ),
-                  );
-                },
-              );
+              _showAddData(context);
+             
             },
             iconData: Icons.add,
             iconColor: Colors.white,
           ),
         ],
       ),
+    );
+  }
+
+   void _showAddData(BuildContext context) {
+    showModalBottomSheet(
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(15),
+        ),
+      ),
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return FractionallySizedBox(
+          heightFactor: 0.60,
+          child: AddDataPage(tipoDeRegistro: "antropométricos"),
+        );
+      },
     );
   }
 }

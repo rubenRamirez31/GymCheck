@@ -12,12 +12,16 @@ class AddOrEditEventForm extends StatefulWidget {
   final void Function(CalendarEventData)? onEventAdd;
   final CalendarEventData? event;
   final DateTime? defaultStartDate;
+  final DateTime? startTime; // Nuevos parámetros
+  final DateTime? endTime;   // Nuevos parámetros
 
   const AddOrEditEventForm({
     Key? key,
     this.onEventAdd,
     this.event,
     this.defaultStartDate,
+    this.startTime,
+    this.endTime,
   }) : super(key: key);
 
   @override
@@ -25,7 +29,7 @@ class AddOrEditEventForm extends StatefulWidget {
 }
 
 class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
-  late DateTime _startDate;
+   late DateTime _startDate;
   late DateTime _endDate = DateTime.now().withoutTime;
 
   DateTime? _startTime;
@@ -39,12 +43,13 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
   late final _titleController = TextEditingController();
   late final _titleNode = FocusNode();
   late final _descriptionNode = FocusNode();
-
-  @override
+@override
   void initState() {
     super.initState();
     _startDate = widget.defaultStartDate ?? DateTime.now().withoutTime;
     _setDefaults();
+    _startTime = widget.startTime; // Establecer startTime si está disponible
+    _endTime = widget.endTime;     // Establecer endTime si está disponible
   }
 
   @override
@@ -298,22 +303,22 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
     );
   }
 
-  void _setDefaults() {
-  if (widget.event == null) {
-    _startDate = widget.defaultStartDate ?? DateTime.now().withoutTime;
-    _endDate = widget.defaultStartDate ?? DateTime.now().withoutTime;
-    return;
+ void _setDefaults() {
+    if (widget.event == null) {
+      _startDate = widget.defaultStartDate ?? DateTime.now().withoutTime;
+      _endDate = widget.defaultStartDate ?? DateTime.now().withoutTime;
+      return;
+    }
+
+    final event = widget.event!;
+
+    _startDate = event.date;
+    _endDate = event.endDate;
+    _startTime = event.startTime ?? _startTime;
+    _endTime = event.endTime ?? _endTime;
+    _titleController.text = event.title;
+    _descriptionController.text = event.description ?? '';
   }
-
-  final event = widget.event!;
-
-  _startDate = event.date;
-  _endDate = event.endDate;
-  _startTime = event.startTime ?? _startTime;
-  _endTime = event.endTime ?? _endTime;
-  _titleController.text = event.title;
-  _descriptionController.text = event.description ?? '';
-}
 
   void _resetForm() {
     _form.currentState?.reset();
@@ -383,10 +388,13 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
 }
 
 class CreateEventPage extends StatelessWidget {
-  const CreateEventPage({Key? key, this.event, this.defaultStartDate}) : super(key: key);
+  const CreateEventPage({Key? key, this.event, this.defaultStartDate, this.startTime, this.endTime, this.startDate}) : super(key: key);
 
   final CalendarEventData? event;
   final DateTime? defaultStartDate;
+  final DateTime? startTime;
+  final DateTime? endTime;
+  final DateTime? startDate;
 
   @override
   Widget build(BuildContext context) {
@@ -420,10 +428,14 @@ class CreateEventPage extends StatelessWidget {
               print(newEvent);
             },
             event: event,
-            defaultStartDate: defaultStartDate,
+            defaultStartDate: startDate ?? defaultStartDate,
+            startTime: startTime,
+            endTime: endTime,
           ),
         ),
       ),
     );
   }
 }
+
+
