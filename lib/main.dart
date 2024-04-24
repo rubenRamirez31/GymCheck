@@ -1,6 +1,8 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
+import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
 import 'package:gym_check/src/screens/authentication/confirm_email_page.dart';
 import 'package:gym_check/src/screens/authentication/login_page.dart';
@@ -44,10 +46,12 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => UserSessionProvider()),
         ChangeNotifierProvider(create: (_) => GlobalVariablesProvider()),
+        ChangeNotifierProvider(create: (_) => Globales())
       ],
       child: CalendarControllerProvider(
         controller: EventController(), // Aquí asignamos un EventController
         child: MaterialApp(
+          builder: FlutterSmartDialog.init(),
           debugShowCheckedModeBanner: false,
           theme: AppTheme.themeData,
           initialRoute: '/',

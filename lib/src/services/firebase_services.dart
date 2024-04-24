@@ -19,3 +19,17 @@ Future<int> crearPost(Post p) async {
 
   return codigo;
 }
+
+Future<String> login(String correo, String pwd) async {
+  try {
+    UserCredential credenciales =
+        await auth.signInWithEmailAndPassword(email: correo, password: pwd);
+    return "200";
+  } on FirebaseAuthException catch (e) {
+    if (e.code == 'user-not-found' || e.code == 'invalid-credential') {
+      return "Usuario y/o Contraseña incorrecta";
+    } else {
+      return e.code;
+    }
+  }
+}
