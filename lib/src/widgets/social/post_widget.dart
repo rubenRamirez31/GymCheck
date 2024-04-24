@@ -6,8 +6,10 @@ import 'package:gym_check/src/screens/social/profile_page.dart';
 import 'package:gym_check/src/values/app_colors.dart';
 import 'package:gym_check/src/widgets/social/comment_box.dart';
 import 'package:gym_check/src/widgets/social/share_box.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class PostHeader extends StatelessWidget {
   final String nick;
@@ -58,8 +60,8 @@ class PostHeader extends StatelessWidget {
                 decoration: TextDecoration.underline),
           ),
         ),
-        const Spacer(),
-        if (isOwner(context,
+        /* const Spacer(), */
+        /*  if (isOwner(context,
             postUserId)) // Verifica si el usuario es el propietario del post
           IconButton(
             icon: const Icon(Icons.more_vert),
@@ -96,7 +98,7 @@ class PostHeader extends StatelessWidget {
                 ],
               );
             },
-          ),
+          ), */
       ],
     );
   }
@@ -124,18 +126,17 @@ bool isEdited(bool editado) {
 //Widget del post
 class PostWidget extends StatelessWidget {
   final Post post;
-
   const PostWidget({Key? key, required this.post}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Row(
-          children: [
-/*             Container(
-              child: const Column(
+        padding: const EdgeInsets.all(10),
+        child: IntrinsicHeight(
+          child: Row(
+            children: [
+              const Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   CircleAvatar(
@@ -144,106 +145,124 @@ class PostWidget extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
-            const SizedBox(
-              width: 5,
-            ), */
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  PostHeader(
-                      nick: post.nick,
-                      postUserId: post.userId,
-                      editado: post.editad,
-                      postId: post.id),
-                  const SizedBox(height: 10),
-                  Text(
-                    post.texto,
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    // Altura definida
-                    decoration: BoxDecoration(
-                      borderRadius:
-                          BorderRadius.circular(15), // Borde redondeado
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(
-                          15), // Borde redondeado para la imagen
-                      child: post.urlImagen != null && post.urlImagen!.isEmpty
-                          ? Container(height: 10)
-                          : Image.network(
-                              post.urlImagen!,
-                              fit: BoxFit
-                                  .cover, // Ajustar la imagen para cubrir todo el contenedor
-                            ),
-                    ),
-                  ),
-
-                  /* Container(
-                      height: 200,
-                    ),
-                    if (post.urlImagen != "") Image.network(post.urlImagen!), */
-                  const SizedBox(height: 10),
-                  Text(
-                    'Fecha de Creación: ${post.fechaCreacion}',
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.favorite_outline),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          showModalBottomSheet(
-                            showDragHandle: true,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(15),
-                              ),
-                            ),
-                            context: context,
-                            isScrollControlled: true,
-                            builder: (context) {
-                              return const FractionallySizedBox(
-                                heightFactor: 0.95,
-                                child: CommentBox(),
-                              );
-                            },
-                          );
-                        },
-                        icon: const Icon(Icons.mode_comment_outlined),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          showModalBottomSheet(
-                            showDragHandle: true,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(15),
-                              ),
-                            ),
-                            context: context,
-                            isScrollControlled: true,
-                            builder: (context) {
-                              return const FractionallySizedBox(
-                                heightFactor: 0.33,
-                                child: Share(),
-                              );
-                            },
-                          );
-                        },
-                        icon: const Icon(Icons.share_sharp),
-                      )
-                    ],
-                  )
-                ],
+              const SizedBox(
+                width: 10,
               ),
-            ),
-          ],
+              Expanded(
+                child: Column(
+                  children: [
+                    PostHeader(
+                        nick: post.nick,
+                        postUserId: post.userId,
+                        editado: post.editad,
+                        postId: post.id),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            post.texto,
+                            style: const TextStyle(fontSize: 15),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      // Altura definida
+                      decoration: BoxDecoration(
+                        borderRadius:
+                            BorderRadius.circular(15), // Borde redondeado
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child:
+                            post.urlImagen != null && post.urlImagen!.isNotEmpty
+                                ? Stack(
+                                    children: [
+                                      Container(
+                                        height: 100,
+                                        child: const Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      ),
+                                      Center(
+                                        child: FadeInImage.memoryNetwork(
+                                          placeholder: kTransparentImage,
+                                          image: post.urlImagen!,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                : Container(),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Text(
+                          post.fechaCreacion != null
+                              ? DateFormat('h:mm a d MMM yy')
+                                  .format(post.fechaCreacion!)
+                              : 'Fecha no disponible',
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.favorite_outline),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            showModalBottomSheet(
+                              showDragHandle: true,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(15),
+                                ),
+                              ),
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (context) {
+                                return const FractionallySizedBox(
+                                  heightFactor: 0.95,
+                                  child: CommentBox(),
+                                );
+                              },
+                            );
+                          },
+                          icon: const Icon(Icons.mode_comment_outlined),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            showModalBottomSheet(
+                              showDragHandle: true,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(15),
+                                ),
+                              ),
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (context) {
+                                return const FractionallySizedBox(
+                                  heightFactor: 0.33,
+                                  child: Share(),
+                                );
+                              },
+                            );
+                          },
+                          icon: const Icon(Icons.share_sharp),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
