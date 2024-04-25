@@ -33,7 +33,7 @@ Future<void> _loadPostData() async {
       final Post post = posts[0]; // Obtener el primer elemento de la lista
       setState(() {
        
-        _textoController.text = post.texto;
+        _textoController.text = post.texto!;
       });
     }
   } catch (error) {

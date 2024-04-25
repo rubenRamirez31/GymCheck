@@ -22,7 +22,7 @@ class ApiService {
       // Adjuntar los campos de texto al formulario
       request.fields['userId'] = post.userId;
       //request.fields['lugar'] = post.lugar;
-      request.fields['texto'] = post.texto;
+      request.fields['texto'] = post.texto!;
       request.fields['nick'] = post.nick;
 
       // Adjuntar el archivo al formulario si está presente

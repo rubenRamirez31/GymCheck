@@ -6,7 +6,7 @@ class Post {
   String? id;
   String userId;
   String? lugar;
-  String texto;
+  String? texto;
   String nick;
   DateTime? fechaCreacion;
   String? urlImagen;
@@ -15,7 +15,7 @@ class Post {
   Post(
       {required this.userId,
       this.lugar,
-      required this.texto,
+      this.texto,
       required this.nick,
       this.fechaCreacion,
       this.urlImagen,

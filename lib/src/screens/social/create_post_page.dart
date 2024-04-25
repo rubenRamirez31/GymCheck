@@ -23,7 +23,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   final formkey = GlobalKey<FormState>();
   final TextEditingController _textoController = TextEditingController();
 
-  File? _image;
+  File? imagen;
   String link = "";
   String url = "";
 
@@ -54,7 +54,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
             onPressed: () async {
               if (formkey.currentState!.validate()) {
                 //agregar publicacion sin imagen
-                if (_image == null) {
+                if (imagen == null) {
                   try {
                     SmartDialog.showLoading(msg: "Publicando");
 
@@ -84,11 +84,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   }
                   //Agregar publicacion con imagen
                 } else {
-                  final file = File(_image!.path);
+                  final file = File(imagen!.path);
 
                   final metadata = SettableMetadata(contentType: "image/jpeg");
 
-                  final storageRef = FirebaseStorage.instance.ref("/posts");
+                  final storageRef = FirebaseStorage.instance.ref("/post");
 
                   SmartDialog.showLoading(msg: "Publicando");
 
@@ -175,7 +175,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     const SizedBox(
                       height: 20,
                     ),
-                    _image != null
+                    imagen != null
                         ? Stack(
                             children: [
                               Container(
@@ -186,7 +186,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(
                                       15), // Borde redondeado para la imagen
-                                  child: Image.file(_image!, fit: BoxFit.cover),
+                                  child: Image.file(imagen!, fit: BoxFit.cover),
                                 ),
                               ),
                               Positioned(
@@ -203,7 +203,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   child: IconButton(
                                     onPressed: () {
                                       setState(() {
-                                        _image = null;
+                                        imagen = null;
                                       });
                                     },
                                     icon: const Icon(Icons.close),
@@ -246,22 +246,24 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   Future<void> _getImageGallery() async {
-    final picker = ImagePicker();
-    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedImage != null) {
-      setState(() {
-        _image = File(pickedImage.path);
-      });
+    final picture = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (picture == null) {
+      return;
     }
+    setState(() {
+      imagen = File(picture!.path);
+      url = picture.name;
+    });
   }
 
   Future<void> _getImageCamera() async {
-    final picker = ImagePicker();
-    final pickedImage = await picker.pickImage(source: ImageSource.camera);
-    if (pickedImage != null) {
-      setState(() {
-        _image = File(pickedImage.path);
-      });
+    final picture = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (picture == null) {
+      return;
     }
+    setState(() {
+      imagen = File(picture!.path);
+      url = picture.name;
+    });
   }
 }

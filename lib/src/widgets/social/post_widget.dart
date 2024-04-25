@@ -160,7 +160,7 @@ class PostWidget extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            post.texto,
+                            post.texto!,
                             style: const TextStyle(fontSize: 15),
                           ),
                         ),
@@ -267,6 +267,4 @@ class PostWidget extends StatelessWidget {
       ),
     );
   }
-
-  
 }
