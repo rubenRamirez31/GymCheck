@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/registro_fisico_model.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
-import 'package:gym_check/src/screens/seguimiento/physical/physical_tracking_page.dart';
 import 'package:gym_check/src/services/user_service.dart';
 import 'package:gym_check/src/services/physical_data_service.dart';
+import 'package:numberpicker/numberpicker.dart'; // Importa NumberPicker
 import 'package:provider/provider.dart';
 
 class AddDataPage extends StatefulWidget {
@@ -17,76 +17,100 @@ class AddDataPage extends StatefulWidget {
 
 class _AddDataPageState extends State<AddDataPage> {
   String? _selectedField;
-  late TextEditingController _controller;
+  late double _selectedValue = 0; // Nuevo: Almacena el valor seleccionado
+  late int _selectedEntero = 0; // Nuevo: Almacena el valor seleccionado
+  late int _selectedDecimal = 0; // Nuevo: Almacena el valor seleccionado
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
+    _selectedEntero = 50; // Inicializa el valor seleccionado
+    _selectedDecimal = 50; // Inicializa el valor seleccionado
+    _selectedValue = 0;
   }
 
   @override
   Widget build(BuildContext context) {
-    // Obtener el tamaño de la pantalla
     Size screenSize = MediaQuery.of(context).size;
-    return Container(
-      width: screenSize.width,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                DropdownButton<String>(
-                  value: _selectedField,
-                  hint: const Text('Seleccionar tipo de dato'),
-                  items: _getCamposPorRegistro().map((campo) {
-                    return DropdownMenuItem<String>(
-                      value: campo,
-                      child: Text(campo),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    setState(() {
-                      _selectedField = newValue;
-                    });
-                  },
-                ),
-                const SizedBox(height: 10),
-                if (_selectedField != null) ...[
-                  Text(_getDescription(_selectedField!)),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: _controller,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(labelText: _selectedField),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Por favor, ingrese el valor del campo';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        _guardarDatos(context);
-                      }
-                    },
-                    child: const Text('Agregar'),
-                  ),
-                ],
+    return SingleChildScrollView(
+      child: Container(
+        width: screenSize.width,
+        decoration: BoxDecoration(
+          //border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              DropdownButton<String>(
+                value: _selectedField,
+                hint: const Text('Seleccionar tipo de dato'),
+                items: _getCamposPorRegistro().map((campo) {
+                  return DropdownMenuItem<String>(
+                    value: campo,
+                    child: Text(campo),
+                  );
+                }).toList(),
+                onChanged: (newValue) {
+                  setState(() {
+                    _selectedField = newValue;
+                  });
+                },
+              ),
+              const SizedBox(height: 10),
+              if (_selectedField != null) ...[
+                Text(_getDescription(_selectedField!)),
                 const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    NumberPicker(
+                      value: _selectedEntero.toInt(),
+                      minValue: 0,
+                      maxValue: 100,
+                      step: 1,
+                      axis: Axis.vertical, // Opcional: Horizontal
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedEntero = value.toInt();
+                        });
+                      },
+                    ),
+                    Text(
+                      ".",
+                      style: TextStyle(
+                        fontSize: 24, // Tamaño de la fuente deseado
+                      ),
+                    ),
+                    NumberPicker(
+                      value: _selectedDecimal.toInt(),
+                      minValue: 0,
+                      maxValue: 100,
+                      step: 5,
+                      axis: Axis.vertical, // Opcional: Horizontal
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedDecimal = value.toInt();
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      _guardarDatos(context);
+                    }
+                  },
+                  child: const Text('Agregar'),
+                ),
               ],
-            ),
+              const SizedBox(height: 20),
+            ],
           ),
         ),
       ),
@@ -100,8 +124,9 @@ class _AddDataPageState extends State<AddDataPage> {
           .userId;
       Map<String, dynamic> userData = await UserService.getUserData(userId);
       String _nick = userData['nick'];
+      _selectedValue = double.parse("$_selectedEntero.$_selectedDecimal");
 
-      double valor = double.parse(_controller.text);
+      double valor = _selectedValue; // Utiliza el valor seleccionado
       String tipo = _getTipoPorCampo(_selectedField!);
 
       RegistroFisico bodyData = RegistroFisico(tipo: tipo, valor: valor);
@@ -215,7 +240,6 @@ class _AddDataPageState extends State<AddDataPage> {
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
 }

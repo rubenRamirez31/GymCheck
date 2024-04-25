@@ -6,8 +6,6 @@ import 'package:gym_check/src/services/physical_data_service.dart';
 import 'package:gym_check/src/services/user_service.dart';
 import 'package:gym_check/src/widgets/create_button_widget.dart';
 import 'package:provider/provider.dart';
-import 'package:gym_check/src/environments/environment.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class CorporalDataPage extends StatefulWidget {
   const CorporalDataPage({Key? key}) : super(key: key);
@@ -18,9 +16,9 @@ class CorporalDataPage extends StatefulWidget {
 
 class _CorporalDataPageState extends State<CorporalDataPage> {
   String _nick = '';
-  int _peso = 0;
-  int _altura = 0;
-  int _grasa = 0;
+  double _peso = 0;
+  double _altura = 0;
+  double _grasa = 0;
   String _fechaPeso = '';
   String _fechaAltura = '';
   String _fechaGrasa = '';
@@ -31,56 +29,10 @@ class _CorporalDataPageState extends State<CorporalDataPage> {
     'grasaCorporal': 'Porcentaje:',
   };
 
-  late IO.Socket socket;
-
   @override
   void initState() {
     super.initState();
     _loadUserDataLastDataPhysical();
-
-    // Establecer la conexión con el servidor de sockets
-    socket = IO.io(Environment.API_URL, <String, dynamic>{
-      'transports': ['websocket'],
-      'autoConnect': false,
-    });
-    socket.connect();
-// Escuchar eventos del servidor de sockets para actualizar datos
-socket.on('getLatestPhysicalData', (data) async {
-  // Verificar si los datos recibidos son válidos
-  //if (data != null && data.containsKey('peso') && data.containsKey('altura') && data.containsKey('grasaCorporal')) {
-    // Actualizar el estado de la página con los datos recibidos
-    for (String dato in _datos.keys) {
-        Map<String, dynamic> data =
-            await PhysicalDataService.getLatestPhysicalData(
-                _nick, _coleccion, dato);
-        setState(() {
-          switch (dato) {
-            case 'peso':
-              _peso = data['peso'];
-              _fechaPeso = data['fecha'];
-              break;
-            case 'altura':
-              _altura = data['altura'];
-              _fechaAltura = data['fecha'];
-              break;
-            case 'grasaCorporal':
-              _grasa = data['grasaCorporal'];
-              _fechaGrasa = data['fecha'];
-              break;
-          }
-        });
-      }
- 
-});
-
-
-  }
-
-  @override
-  void dispose() {
-    // Desconectar el socket cuando el widget se desmonte
-    socket.disconnect();
-    super.dispose();
   }
 
   Future<void> _loadUserDataLastDataPhysical() async {
@@ -100,16 +52,16 @@ socket.on('getLatestPhysicalData', (data) async {
         setState(() {
           switch (dato) {
             case 'peso':
-              _peso = data['peso'];
-              _fechaPeso = data['fecha'];
+              _peso = data['peso'] ?? 0;
+              _fechaPeso = data['fecha'] ?? '';
               break;
             case 'altura':
-              _altura = data['altura'];
-              _fechaAltura = data['fecha'];
+              _altura = data['altura'] ?? 0;
+              _fechaAltura = data['fecha'] ?? '';
               break;
             case 'grasaCorporal':
-              _grasa = data['grasaCorporal'];
-              _fechaGrasa = data['fecha'];
+              _grasa = data['grasaCorporal'] ?? 0;
+              _fechaGrasa = data['fecha'] ?? '';
               break;
           }
         });
@@ -130,7 +82,6 @@ socket.on('getLatestPhysicalData', (data) async {
           String lastRecordDate = _getDataDate(name);
           IconData icon = _getIcon(name);
 
-          // Check if data is null, if so, return an empty container
           if (lastRecordDate.isEmpty) {
             return const SizedBox();
           }
@@ -155,8 +106,8 @@ socket.on('getLatestPhysicalData', (data) async {
     return Container(
       width: MediaQuery.of(context).size.width - 30,
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 255, 255, 255),
-        border: Border.all(color: const Color.fromARGB(255, 0, 0, 0)),
+        color: Colors.white,
+        border: Border.all(color: Colors.black),
         borderRadius: BorderRadius.circular(8),
       ),
       child: DataTracking(
@@ -165,6 +116,7 @@ socket.on('getLatestPhysicalData', (data) async {
         dataType: dataType,
         data: data,
         lastRecordDate: lastRecordDate,
+        coleccion: 'Registro-Corporal',
       ),
     );
   }

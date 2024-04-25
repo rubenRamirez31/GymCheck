@@ -1,48 +1,32 @@
-import 'dart:convert';
-import 'package:gym_check/src/environments/environment.dart';
-import 'package:http/http.dart' as http;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class PhysicalDataService {
-  // Función para crear datos físicos para un usuario
   static Future<Map<String, dynamic>> createPhysicalData(String nick) async {
-    String apiUrl = '${Environment.API_URL}/api/datos-fisicos/crear-coleccion';
-
     try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        body: jsonEncode(<String, dynamic>{
-          'nick': nick,
-        }),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-      );
+      final userRef = FirebaseFirestore.instance.collection('Datos-Fisicos').doc(nick);
 
-      if (response.statusCode == 201) {
-        return {'message': 'Datos físicos creados exitosamente'};
-      } else {
-        String errorMessage = response.body;
-        return {'error': errorMessage};
-      }
+      await userRef.set({
+        'meta': '',
+        'diaFrecuencia': '',
+      });
+
+      return {'message': 'Datos físicos creados exitosamente'};
     } catch (error) {
       print('Error al crear datos físicos: $error');
       return {'error': 'Error en la solicitud'};
     }
   }
 
-  // Función para obtener datos físicos por nick de usuario
   static Future<Map<String, dynamic>> getPhysicalDataByNick(String nick) async {
-    String apiUrl = '${Environment.API_URL}/api/datos-fisicos/obtener-coleccion/$nick';
-
     try {
-      final response = await http.get(Uri.parse(apiUrl));
+      final userRef = FirebaseFirestore.instance.collection('Datos-Fisicos').doc(nick);
+      final docSnapshot = await userRef.get();
 
-      if (response.statusCode == 200) {
-        final physicalData = jsonDecode(response.body);
-        return {'physicalData': physicalData};
+      if (docSnapshot.exists) {
+        return {'physicalData': docSnapshot.data()};
       } else {
-        String errorMessage = response.body;
-        return {'error': errorMessage};
+        return {'error': 'No se encontraron datos físicos para el usuario'};
       }
     } catch (error) {
       print('Error al obtener datos físicos por nick: $error');
@@ -50,66 +34,58 @@ class PhysicalDataService {
     }
   }
 
-  // Función para agregar un dato a la colección correspondiente
   static Future<Map<String, dynamic>> addData(String nick, String collection, Map<String, dynamic> data) async {
-    String apiUrl = '${Environment.API_URL}/api/datos-fisicos/add-data';
-
     try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        body: jsonEncode(<String, dynamic>{
-          'nick': nick,
-          'coleccion': collection,
-          ...data,
-        }),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-      );
+      final userCollectionRef = FirebaseFirestore.instance.collection('Datos-Fisicos').doc(nick).collection(collection);
+      final typeData = data['tipo'];
+     final currentDate = DateTime.now();
+      //final formattedDate = DateFormat('dd-MM-yyyy').format(currentDate); // Formatear la fecha como "yyyy-MM-dd"
+      data['fecha'] = currentDate;
+      data[typeData] = data['valor'];
 
-      if (response.statusCode == 201) {
-        return {'message': 'Dato $collection agregado exitosamente'};
-      } else {
-        String errorMessage = response.body;
-        return {'error': errorMessage};
-      }
+      await userCollectionRef.add(data);
+
+      return {'message': 'Dato $collection agregado exitosamente'};
     } catch (error) {
       print('Error al agregar dato: $error');
       return {'error': 'Error en la solicitud'};
     }
   }
-
-  // Función para obtener datos físicos con ordenamiento dinámico
-  static Future<Map<String, dynamic>> getDataWithDynamicSorting(String userId, String collectionType, String orderByField, String orderByTipo, String orderByDirection) async {
-    String apiUrl = '${Environment.API_URL}/api/datos-fisicos/obtener-datos/$userId/$collectionType/$orderByField/$orderByTipo/$orderByDirection';
-
-    try {
-      final response = await http.get(Uri.parse(apiUrl));
-
-      if (response.statusCode == 200) {
-        final formattedData = jsonDecode(response.body);
-        return {'formattedData': formattedData};
-      } else {
-        String errorMessage = response.body;
-        return {'error': errorMessage};
-      }
-    } catch (error) {
-      print('Error al obtener datos físicos con ordenamiento dinámico: $error');
-      return {'error': 'Error en la solicitud'};
-    }
-  }
-static Future<Map<String, dynamic>> getLatestPhysicalData(String nick, String collection, String typeData) async {
-  String apiUrl = '${Environment.API_URL}/api/datos-fisicos/ultimo-dato/$nick/$collection/$typeData';
-
+static Future<List<Map<String, dynamic>>> getDataWithDynamicSorting(String nick, String collectionType, String orderByTipo, String orderByDirection, String typeData) async {
   try {
-    final response = await http.get(Uri.parse(apiUrl));
+    final userCollectionRef = FirebaseFirestore.instance.collection('Datos-Fisicos').doc(nick).collection(collectionType);
+    
+    final querySnapshot = await userCollectionRef.where('tipo', isEqualTo: typeData).orderBy(orderByTipo, descending: orderByDirection == 'desc').get();
+    
+    final data = querySnapshot.docs.map((doc) {
+      var formattedData = doc.data();
+      // Formatear la fecha como 'dd-MM-yyyy'
+      formattedData['fecha'] = DateFormat('dd-MM-yyyy').format((formattedData['fecha'] as Timestamp).toDate()); 
+      return formattedData;
+    }).toList();
+    
+    return data;
+  } catch (error) {
+    print('Error al obtener datos físicos con ordenamiento dinámico: $error');
+    throw error;
+  }
+}
 
-    if (response.statusCode == 200) {
-      final latestPhysicalData = jsonDecode(response.body);
-      return latestPhysicalData;
+
+static Future<Map<String, dynamic>> getLatestPhysicalData(String nick, String collection, String typeData) async {
+  try {
+    final userCollectionRef = FirebaseFirestore.instance.collection('Datos-Fisicos').doc(nick).collection(collection);
+    final querySnapshot = await userCollectionRef.where('tipo', isEqualTo: typeData).orderBy('fecha', descending: true).limit(1).get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      final latestData = querySnapshot.docs.first.data();
+      final timestamp = (latestData['fecha'] as Timestamp).toDate();
+      final formattedDate = DateFormat('dd-MM-yyyy').format(timestamp); // Formatear la fecha como "yyyy-MM-dd"
+      latestData['fecha'] = formattedDate;
+
+      return latestData;
     } else {
-      String errorMessage = response.body;
-      return {'error': errorMessage};
+      return {}; // Si no hay datos, devolver un objeto vacío
     }
   } catch (error) {
     print('Error al obtener el último dato físico: $error');
@@ -117,26 +93,12 @@ static Future<Map<String, dynamic>> getLatestPhysicalData(String nick, String co
   }
 }
 
-
-  // Función para actualizar las configuraciones de los datos físicos por nick de usuario
   static Future<Map<String, dynamic>> updatePhysicalDataByNick(String nick, Map<String, dynamic> physicalData) async {
-    String apiUrl = '${Environment.API_URL}/api/datos-fisicos/actualizar-configuraciones/$nick';
-
     try {
-      final response = await http.put(
-        Uri.parse(apiUrl),
-        body: jsonEncode(physicalData),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-      );
+      final userRef = FirebaseFirestore.instance.collection('Datos-Fisicos').doc(nick);
+      await userRef.update(physicalData);
 
-      if (response.statusCode == 200) {
-        return {'message': 'Configuraciones de PhysicalData actualizadas correctamente'};
-      } else {
-        String errorMessage = response.body;
-        return {'error': errorMessage};
-      }
+      return {'message': 'Configuraciones de PhysicalData actualizadas correctamente'};
     } catch (error) {
       print('Error al actualizar PhysicalData: $error');
       return {'error': 'Error en la solicitud'};

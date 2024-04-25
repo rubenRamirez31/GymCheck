@@ -52,7 +52,7 @@ class _DayViewWidgetState extends State<DayViewWidget> {
         title: "Evento 3",
         date: DateTime(2024, 4, 12),
         description: "Descripción del Evento 1",
-        color: Colors.red,
+       // color: Colors.red,
         startTime: DateTime(2024, 4, 12, 10, 0), // Hora de inicio del evento
         endTime: DateTime(2024, 4, 12, 12, 0), // Hora de finalización del evento
       ),

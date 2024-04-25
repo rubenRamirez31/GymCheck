@@ -7,6 +7,7 @@ class DataTracking extends StatelessWidget {
   final String dataType;
   final String data;
   final String lastRecordDate;
+  final String coleccion;
 
   DataTracking({
     required this.icon,
@@ -14,6 +15,7 @@ class DataTracking extends StatelessWidget {
     required this.dataType,
     required this.data,
     required this.lastRecordDate,
+    required this.coleccion
   });
 
   @override
@@ -98,7 +100,7 @@ class DataTracking extends StatelessWidget {
       builder: (context) {
         return FractionallySizedBox(
           heightFactor: 0.95,
-          child: ViewCorporalDataPage(data: data),
+          child: ViewCorporalDataPage(data: data, coleccion: coleccion,),
         );
       },
     );

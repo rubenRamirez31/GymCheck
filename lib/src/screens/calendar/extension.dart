@@ -28,7 +28,7 @@ extension DateUtils on DateTime {
       case DateTime.monday:
         return "Lunes";
       case DateTime.tuesday:
-        return "Tuesday";
+        return "Martes";
       case DateTime.wednesday:
         return "Wednesday";
       case DateTime.thursday:
@@ -49,7 +49,7 @@ extension DateUtils on DateTime {
       case DateTime.monday:
         return "L";
       case DateTime.tuesday:
-        return "T";
+        return "M";
       case DateTime.wednesday:
         return "W";
       case DateTime.thursday:

@@ -1,22 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/screens/crear/ejercicios/create_exercise_page.dart';
-import 'package:gym_check/src/screens/seguimiento/physical/physical_tracking_page.dart';
+import 'package:gym_check/src/screens/seguimiento/physical_tracking_page.dart';
 import 'package:gym_check/src/screens/seguimiento/home_tracking_page.dart';
 import 'package:gym_check/src/screens/social/feed_page.dart';
 
 class PrincipalPage extends StatefulWidget {
-  const PrincipalPage({super.key});
+  final int initialPageIndex;
+
+  const PrincipalPage({Key? key, this.initialPageIndex = 0}) : super(key: key);
 
   @override
   State<PrincipalPage> createState() => _PrincipalPageState();
 }
 
 class _PrincipalPageState extends State<PrincipalPage> {
-  int currentPageIndex = 0;
+  late int currentPageIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    currentPageIndex = widget.initialPageIndex;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.amber[100],
+      //backgroundColor: Colors.amber[100],
+       backgroundColor: Colors.grey,     
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
           setState(() {
@@ -45,13 +55,9 @@ class _PrincipalPageState extends State<PrincipalPage> {
         ],
       ),
       body: <Widget>[
-        //principal
         const FeedPage(),
-
         const CreateExercisePage(),
-
-        const HomeTrackingPage()
-        //Pagina para agregar
+        const HomeTrackingPage(),
       ][currentPageIndex],
     );
   }

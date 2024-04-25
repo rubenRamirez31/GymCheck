@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
-import 'package:gym_check/src/providers/user_session_provider.dart';
-
 
 import 'package:gym_check/src/screens/calendar/physical-nutritional/month_view_widget.dart';
+
 import 'package:gym_check/src/screens/seguimiento/physical/antropometric_data_page.dart';
-
 import 'package:gym_check/src/screens/seguimiento/physical/corporal_data_page.dart';
-
-
-import 'package:gym_check/src/services/user_service.dart';
+import 'package:gym_check/src/screens/seguimiento/physical/week_workout_data_page.dart';
 
 import 'package:gym_check/src/widgets/menu_button_option_widget.dart';
-
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,10 +21,11 @@ class PhysicalTrackingPage extends StatefulWidget {
 }
 
 class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
-
-  int _selectedMenuOption = 0;
-  String _nick = '';
-  String _urlImagen = '';
+  final GlobalKey<LiquidPullToRefreshState> _refreshIndicatorKey =
+      GlobalKey<LiquidPullToRefreshState>();
+  int _selectedMenuOption = 1;
+  //String _nick = '';
+  //String _urlImagen = '';
 
   List<String> options = [
     'Rutinas',
@@ -36,13 +33,11 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
     'Datos antropométricos',
     'Metas',
     'Fuerza',
-    'Configuraciones'
   ]; // Lista de opciones
 
   @override
   void initState() {
     super.initState();
-    _loadUserData();
     _loadSelectedMenuOption(); // Cargar el estado guardado de _selectedMenuOption
   }
 
@@ -52,7 +47,7 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
         context); // Obtiene la instancia de GlobalVariable
 
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 29, 52, 78),
+      backgroundColor: const Color.fromARGB(255, 29, 52, 78),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -73,49 +68,43 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
             ),
             const SizedBox(height: 20),
             Container(
-              color: Color.fromARGB(255, 29, 52, 78),
+              color: const Color.fromARGB(255, 29, 52, 78),
               width: MediaQuery.of(context).size.width,
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: <Widget>[
                     MenuButtonOption(
-                      options: options,
-                      
-                      highlightColor: Colors.green,
-                      onItemSelected: (index) async {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        setState(() {
-                          _selectedMenuOption = index;
-                          globalVariable.selectedMenuOptionTrackingPhysical =
-                              _selectedMenuOption;
-                        });
-                        await prefs.setInt('selectedMenuOption', index);
-                      },
-                      selectedMenuOptionGlobal: globalVariable.selectedMenuOptionTrackingPhysical
-                    ),
+                        options: options,
+                        highlightColor: Colors.green,
+                        onItemSelected: (index) async {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          setState(() {
+                            _selectedMenuOption = index;
+                            globalVariable.selectedMenuOptionTrackingPhysical =
+                                _selectedMenuOption;
+                          });
+                          await prefs.setInt('selectedMenuOption', index);
+                        },
+                        selectedMenuOptionGlobal:
+                            globalVariable.selectedMenuOptionTrackingPhysical),
                     // Aquí puedes agregar más elementos MenuButtonOption según sea necesario
                   ],
                 ),
               ),
             ),
-
+      
             const SizedBox(height: 20),
             _selectedMenuOption == 0
-                ? Container(
-                    color:
-                        const Color.fromARGB(255, 0, 0, 255), // Contenedor azul
-                    height: 250,
-                    width: MediaQuery.of(context).size.width,
-                  )
-                : const SizedBox(), // Si _selectedMenuOption no es 2, no mostrar el contenedor
+                ? const WorkOutDataPage()
+                : const SizedBox(), 
             _selectedMenuOption == 1
                 ? const CorporalDataPage()
-                : const SizedBox(), // Si _selectedMenuOption no es 0, no mostrar el contenedor
+                : const SizedBox(), 
             _selectedMenuOption == 2
                 ? const AntropometricDataPage()
-                : const SizedBox(), // Si _selectedMenuOption no es 1, no mostrar el contenedor
+                : const SizedBox(), 
             _selectedMenuOption == 3
                 ? Container(
                     color:
@@ -146,18 +135,5 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
     });
   }
 
-  Future<void> _loadUserData() async {
-    try {
-      String userId = Provider.of<UserSessionProvider>(context, listen: false)
-          .userSession!
-          .userId;
-      Map<String, dynamic> userData = await UserService.getUserData(userId);
-      setState(() {
-        _nick = userData['nick'];
-        _urlImagen = userData['urlImagen'];
-      });
-    } catch (error) {
-      print('Error al cargar los datos del usuario: $error');
-    }
-  }
+ 
 }

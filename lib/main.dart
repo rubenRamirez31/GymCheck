@@ -9,7 +9,7 @@ import 'package:gym_check/src/screens/authentication/login_page.dart';
 import 'package:gym_check/src/screens/authentication/register_page.dart';
 import 'package:gym_check/src/screens/crear/create_page.dart';
 import 'package:gym_check/src/screens/principal.dart';
-import 'package:gym_check/src/screens/seguimiento/physical/physical_tracking_page.dart';
+import 'package:gym_check/src/screens/seguimiento/physical_tracking_page.dart';
 
 import 'package:gym_check/src/screens/social/create_post_page.dart';
 import 'package:gym_check/src/screens/social/edit_post_page.dart';
