@@ -1,15 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:gym_check/src/models/social/post_model.dart';
 import 'package:gym_check/src/providers/globales.dart';
-import 'package:gym_check/src/providers/user_session_provider.dart';
-import 'package:gym_check/src/services/api_service.dart';
 import 'package:gym_check/src/services/firebase_services.dart';
-import 'package:gym_check/src/services/user_service.dart';
 import 'package:gym_check/src/values/app_colors.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -50,87 +46,91 @@ class _CreatePostPageState extends State<CreatePostPage> {
         ),
         actions: [
           ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(AppColors.darkestBlue),
-                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-              ),
-              onPressed: () async {
-                if (formkey.currentState!.validate()) {
-                  if (_image == null) {
-                    try {
-                      SmartDialog.showLoading(msg: "Publicando");
-
-                      Post newPost = Post(
-                        userId: globales.idAuth,
-                        texto: _textoController.text,
-                        nick: globales.nick,
-                        lugar: "",
-                        fechaCreacion: DateTime.now(),
-                        urlImagen: link,
-                        editad: false,
-                      );
-
-                      int resultado = await crearPost(newPost);
-
-                      if (!mounted) return;
-                      if (resultado == 200) {
-                        SmartDialog.showToast("Publicación Creada");
-                        Navigator.of(context).pushNamedAndRemoveUntil(
-                            "/principal", (route) => false);
-                      } else {
-                        SmartDialog.showToast("Ocurrio un error");
-                      }
-                    } catch (e) {
-                      SmartDialog.dismiss();
-                      print(e);
-                    }
-                  } else {
-                    final file = File(_image!.path);
-
-                    final metadata =
-                        SettableMetadata(contentType: "image/jpeg");
-
-                    final storageRef = FirebaseStorage.instance.ref("/posts");
-
+            style: ButtonStyle(
+              backgroundColor:
+                  MaterialStateProperty.all<Color>(AppColors.darkestBlue),
+              foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+            ),
+            onPressed: () async {
+              if (formkey.currentState!.validate()) {
+                //agregar publicacion sin imagen
+                if (_image == null) {
+                  try {
                     SmartDialog.showLoading(msg: "Publicando");
 
-                    try {
-                      final uploadTask =
-                          storageRef.child(url).putFile(file, metadata);
-                      await uploadTask.whenComplete(() => null);
+                    Post newPost = Post(
+                      userId: globales.idAuth,
+                      texto: _textoController.text,
+                      nick: globales.nick,
+                      lugar: "",
+                      fechaCreacion: DateTime.now(),
+                      urlImagen: link,
+                      editad: false,
+                    );
 
-                      // Obtener la URL de descarga después de que la carga sea exitosa
-                      link = await storageRef.child(url).getDownloadURL();
+                    int resultado = await crearPost(newPost);
 
-                      Post newPost = Post(
-                        userId: globales.idAuth,
-                        texto: _textoController.text,
-                        nick: globales.nick,
-                        lugar: "",
-                        fechaCreacion: DateTime.now(),
-                        urlImagen: link,
-                        editad: false,
-                      );
-
-                      int resultado = await crearPost(newPost);
-                      if (!mounted) return;
-                      if (resultado == 200) {
-                        SmartDialog.dismiss();
-                        Navigator.of(context).pushNamedAndRemoveUntil(
-                            "/principal", (route) => false);
-                        SmartDialog.showToast("Publicación Creada");
-                      } else {
-                        SmartDialog.showToast("Ocurrio un error");
-                      }
-                    } catch (e) {
-                      SmartDialog.dismiss();
-                      print(e);
+                    if (!mounted) return;
+                    if (resultado == 200) {
+                      SmartDialog.showToast("Publicación Creada");
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          "/principal", (route) => false);
+                    } else {
+                      SmartDialog.showToast("Ocurrio un error");
                     }
+                  } catch (e) {
+                    SmartDialog.dismiss();
+                    SmartDialog.showToast("Ocurrio un error");
+                  }
+                  //Agregar publicacion con imagen
+                } else {
+                  final file = File(_image!.path);
+
+                  final metadata = SettableMetadata(contentType: "image/jpeg");
+
+                  final storageRef = FirebaseStorage.instance.ref("/posts");
+
+                  SmartDialog.showLoading(msg: "Publicando");
+
+                  try {
+                    final uploadTask =
+                        storageRef.child(url).putFile(file, metadata);
+                    await uploadTask.whenComplete(() => null);
+
+                    // Obtener la URL de descarga después de que la carga sea exitosa
+                    link = await storageRef.child(url).getDownloadURL();
+
+                    Post newPost = Post(
+                      userId: globales.idAuth,
+                      texto: _textoController.text,
+                      nick: globales.nick,
+                      lugar: "",
+                      fechaCreacion: DateTime.now(),
+                      urlImagen: link,
+                      editad: false,
+                    );
+
+                    int resultado = await crearPost(newPost);
+                    if (!mounted) return;
+                    if (resultado == 200) {
+                      SmartDialog.dismiss();
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          "/principal", (route) => false);
+                      SmartDialog.showToast("Publicación Creada");
+                    } else {
+                      SmartDialog.showToast("Ocurrio un error");
+                    }
+                  } catch (e) {
+                    SmartDialog.dismiss();
+                    SmartDialog.showToast("Ocurrio un error");
                   }
                 }
-              },
-              child: const Text('Publicar')),
+              }
+            },
+            child: const Text(
+              'Publicar',
+            ),
+          ),
           const SizedBox(width: 10)
         ],
       ),
@@ -229,12 +229,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               IconButton(
-                color: AppColors.darkestBlue,
+                color: AppColors.white,
                 onPressed: _getImageCamera,
                 icon: const Icon(Icons.camera_alt),
               ),
               IconButton(
-                color: AppColors.darkestBlue,
+                color: AppColors.white,
                 onPressed: _getImageGallery,
                 icon: const Icon(Icons.photo),
               ),
