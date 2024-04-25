@@ -155,7 +155,7 @@ class PostWidget extends StatelessWidget {
                         nick: post.nick,
                         postUserId: post.userId,
                         editado: post.editad,
-                        postId: post.id),
+                        postId: post.id!),
                     Row(
                       children: [
                         Expanded(

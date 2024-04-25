@@ -91,7 +91,6 @@ Future<void> _loadPostData() async {
       lugar: "",
       texto: _textoController.text,
       nick: _nick,
-      imagen: _image,
       editad: true,
       id: widget.postId, // Usar el ID proporcionado por el widget
     );
