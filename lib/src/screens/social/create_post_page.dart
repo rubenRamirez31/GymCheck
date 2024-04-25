@@ -266,6 +266,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     );
   }
 
+//subir imagen desde la galeria
   Future<void> _getImageGallery() async {
     final picture = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (picture == null) {
@@ -278,6 +279,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     });
   }
 
+//subir imagen desde la camara
   Future<void> _getImageCamera() async {
     final picture = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (picture == null) {
@@ -290,6 +292,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     });
   }
 
+//funcion para el estado del boton
   void updateButtonState() {
     setState(() {
       isButtonEnabled = _textoController.text.isNotEmpty || imagen != null;
