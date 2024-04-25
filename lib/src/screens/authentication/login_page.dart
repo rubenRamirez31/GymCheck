@@ -148,11 +148,11 @@ class _LoginPageState extends State<LoginPage> {
                     builder: (_, isValid, __) {
                       return FilledButton(
                         onPressed: () async {
+                          SmartDialog.showLoading(msg: 'Iniciando sesión');
                           String res = await login(
                               emailController.text, passwordController.text);
 
                           if (res == "200") {
-                            SmartDialog.showLoading(msg: 'Iniciando sesion');
                             late User? currentUser;
 
                             FirebaseAuth auth = FirebaseAuth.instance;
@@ -165,6 +165,13 @@ class _LoginPageState extends State<LoginPage> {
                                 .cargarDatosUsuario(currentUserIdAuth);
 
                             SmartDialog.dismiss();
+                            SmartDialog.showToast(
+                                "Sesion iniciada como ${globales.nick}");
+                            primerosPasos(globales.primerosPasos, context);
+                          } else {
+                            SmartDialog.dismiss();
+                            SmartDialog.showToast(
+                                "Verifica tu conexión a internet o tu correo y contraseña");
                           }
                         },
                         child: const Text(AppStrings.login),
@@ -236,5 +243,38 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
     );
+  }
+
+  void primerosPasos(int? valor, BuildContext context) {
+    switch (valor) {
+      case 0:
+        Navigator.pushNamed(context, '/confirm_email');
+        break;
+      case 1:
+        Navigator.pushNamed(context, '/general_data');
+        break;
+      case 2:
+        Navigator.pushNamed(context, '/first_photo');
+        break;
+      case 3:
+        Navigator.pushNamed(context, '/body_data');
+        break;
+      case 4:
+        Navigator.pushNamed(context, '/nutritional_data');
+        break;
+      case 5:
+        Navigator.pushNamed(context, '/emotional_data');
+        break;
+      case 6:
+        Navigator.pushNamed(context, '/recomendar_premium');
+        break;
+      case 7:
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil("/principal", (route) => false);
+        break;
+      default:
+        print("Algo salio mal");
+        break;
+    }
   }
 }

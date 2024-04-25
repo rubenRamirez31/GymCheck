@@ -2,19 +2,21 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/social/post_model.dart';
+import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
 import 'package:gym_check/src/services/api_service.dart';
 import 'package:gym_check/src/services/user_service.dart';
 import 'package:gym_check/src/values/app_colors.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class CreatePostPage extends StatefulWidget {
   const CreatePostPage({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
-  _CreatePostPageState createState() => _CreatePostPageState();
+  State<CreatePostPage> createState() => _CreatePostPageState();
 }
 
 class _CreatePostPageState extends State<CreatePostPage> {
@@ -27,12 +29,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   @override
   Widget build(BuildContext context) {
+    final globales = context.watch<Globales>();
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColors.darkBlue,
         leading: IconButton(
           icon: const Icon(
             Icons.close,
             size: 30,
+            color: AppColors.white,
           ), // Icono de una equis
           onPressed: () {
             // Acción al presionar el botón de la equis
@@ -41,14 +46,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
         ),
         actions: [
           ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(AppColors.darkestBlue),
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+              ),
               onPressed: () {
                 if (formkey.currentState!.validate()) {
                   final file = File(_image!.path);
 
                   final metadata = SettableMetadata(contentType: "image/jpeg");
 
-                   final storageRef =
-                          FirebaseStorage.instance.ref("/reportes");
+                  final storageRef = FirebaseStorage.instance.ref("/posts");
                 }
               },
               child: const Text('Publicar')),
@@ -67,8 +76,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       borderRadius: BorderRadius.circular(25),
                       child: CircleAvatar(
                         radius: 25,
-                        child: Image.network(
-                            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRF1IwK6-SxM83UpFVY6WtUZxXx-phss_gAUfdKbkTfau6VWVkt"),
+                        child: FadeInImage.memoryNetwork(
+                            placeholder: kTransparentImage,
+                            image: globales.fotoPerfil),
                       ),
                     ),
                   ],
@@ -141,36 +151,27 @@ class _CreatePostPageState extends State<CreatePostPage> {
             ),
           )),
       bottomNavigationBar: Padding(
-          padding: MediaQuery.of(context).viewInsets,
-          child: Container(
-            decoration: const BoxDecoration(
-              border: Border(
-                top: BorderSide(
-                    color: AppColors.darkBlue,
-                    width: 1.0), // Borde superior negro
-                bottom: BorderSide(
-                    color: AppColors.darkBlue,
-                    width: 1.0), // Borde inferior negro
+        padding: MediaQuery.of(context).viewInsets,
+        child: Container(
+          height: 45,
+          color: AppColors.primaryColor,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(
+                color: AppColors.darkestBlue,
+                onPressed: _getImageCamera,
+                icon: const Icon(Icons.camera_alt),
               ),
-            ),
-            child: Container(
-              height: 45,
-              color: AppColors.primaryColor,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  IconButton(
-                    onPressed: _getImageCamera,
-                    icon: const Icon(Icons.camera_alt),
-                  ),
-                  IconButton(
-                    onPressed: _getImageGallery,
-                    icon: const Icon(Icons.photo),
-                  ),
-                ],
+              IconButton(
+                color: AppColors.darkestBlue,
+                onPressed: _getImageGallery,
+                icon: const Icon(Icons.photo),
               ),
-            ),
-          )),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

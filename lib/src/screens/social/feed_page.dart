@@ -22,7 +22,7 @@ class FeedPage extends StatefulWidget {
 class _FeedPageState extends State<FeedPage> {
   String _nick = '';
   String _urlImagen = '';
-  
+
   @override
   void initState() {
     super.initState();
@@ -50,7 +50,7 @@ class _FeedPageState extends State<FeedPage> {
         FirebaseFirestore.instance.collection("Publicaciones").snapshots();
 
     return Scaffold(
-      backgroundColor: AppColors.darkestBlue,
+      backgroundColor: AppColors.darkBlue,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -58,7 +58,7 @@ class _FeedPageState extends State<FeedPage> {
               'LifeCheck',
               style: TextStyle(color: Colors.white),
             ),
-            backgroundColor: AppColors.darkestBlue,
+            backgroundColor: AppColors.darkBlue,
             actions: [
               IconButton(
                 color: AppColors.white,

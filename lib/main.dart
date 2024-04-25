@@ -51,6 +51,7 @@ class MyApp extends StatelessWidget {
       child: CalendarControllerProvider(
         controller: EventController(), // Aquí asignamos un EventController
         child: MaterialApp(
+          navigatorObservers: [FlutterSmartDialog.observer],
           builder: FlutterSmartDialog.init(),
           debugShowCheckedModeBanner: false,
           theme: AppTheme.themeData,
