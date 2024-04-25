@@ -22,6 +22,7 @@ class CreatePostPage extends StatefulWidget {
 class _CreatePostPageState extends State<CreatePostPage> {
   final formkey = GlobalKey<FormState>();
   final TextEditingController _textoController = TextEditingController();
+  bool isButtonEnabled = false;
 
   File? imagen;
   String link = "";
@@ -45,92 +46,108 @@ class _CreatePostPageState extends State<CreatePostPage> {
           },
         ),
         actions: [
-          ElevatedButton(
-            style: ButtonStyle(
-              backgroundColor:
-                  MaterialStateProperty.all<Color>(AppColors.darkestBlue),
-              foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-            ),
-            onPressed: () async {
-              if (formkey.currentState!.validate()) {
-                //agregar publicacion sin imagen
-                if (imagen == null) {
-                  try {
-                    SmartDialog.showLoading(msg: "Publicando");
+          isButtonEnabled
+              ? ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        AppColors.primaryColor),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                  onPressed: () async {
+                    if (formkey.currentState!.validate()) {
+                      //agregar publicacion sin imagen
+                      if (imagen == null) {
+                        try {
+                          SmartDialog.showLoading(msg: "Publicando");
 
-                    Post newPost = Post(
-                      userId: globales.idAuth,
-                      texto: _textoController.text,
-                      nick: globales.nick,
-                      lugar: "",
-                      fechaCreacion: DateTime.now(),
-                      urlImagen: link,
-                      editad: false,
-                    );
+                          Post newPost = Post(
+                            userId: globales.idAuth,
+                            texto: _textoController.text,
+                            nick: globales.nick,
+                            lugar: "",
+                            fechaCreacion: DateTime.now(),
+                            urlImagen: link,
+                            editad: false,
+                          );
 
-                    int resultado = await crearPost(newPost);
+                          int resultado = await crearPost(newPost);
 
-                    if (!mounted) return;
-                    if (resultado == 200) {
-                      SmartDialog.showToast("Publicación Creada");
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                          "/principal", (route) => false);
-                    } else {
-                      SmartDialog.showToast("Ocurrio un error");
+                          if (!mounted) return;
+                          if (resultado == 200) {
+                            SmartDialog.showToast("Publicación Creada");
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                "/principal", (route) => false);
+                          } else {
+                            SmartDialog.showToast("Ocurrio un error");
+                          }
+                        } catch (e) {
+                          SmartDialog.dismiss();
+                          SmartDialog.showToast("Ocurrio un error");
+                        }
+                        //Agregar publicacion con imagen
+                      } else {
+                        final file = File(imagen!.path);
+
+                        final metadata =
+                            SettableMetadata(contentType: "image/jpeg");
+
+                        final storageRef =
+                            FirebaseStorage.instance.ref("/post");
+
+                        SmartDialog.showLoading(msg: "Publicando");
+
+                        try {
+                          final uploadTask =
+                              storageRef.child(url).putFile(file, metadata);
+                          await uploadTask.whenComplete(() => null);
+
+                          // Obtener la URL de descarga después de que la carga sea exitosa
+                          link = await storageRef.child(url).getDownloadURL();
+
+                          Post newPost = Post(
+                            userId: globales.idAuth,
+                            texto: _textoController.text,
+                            nick: globales.nick,
+                            lugar: "",
+                            fechaCreacion: DateTime.now(),
+                            urlImagen: link,
+                            editad: false,
+                          );
+
+                          int resultado = await crearPost(newPost);
+                          if (!mounted) return;
+                          if (resultado == 200) {
+                            SmartDialog.dismiss();
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                "/principal", (route) => false);
+                            SmartDialog.showToast("Publicación Creada");
+                          } else {
+                            SmartDialog.showToast("Ocurrio un error");
+                          }
+                        } catch (e) {
+                          SmartDialog.dismiss();
+                          SmartDialog.showToast("Ocurrio un error");
+                        }
+                      }
                     }
-                  } catch (e) {
-                    SmartDialog.dismiss();
-                    SmartDialog.showToast("Ocurrio un error");
-                  }
-                  //Agregar publicacion con imagen
-                } else {
-                  final file = File(imagen!.path);
-
-                  final metadata = SettableMetadata(contentType: "image/jpeg");
-
-                  final storageRef = FirebaseStorage.instance.ref("/post");
-
-                  SmartDialog.showLoading(msg: "Publicando");
-
-                  try {
-                    final uploadTask =
-                        storageRef.child(url).putFile(file, metadata);
-                    await uploadTask.whenComplete(() => null);
-
-                    // Obtener la URL de descarga después de que la carga sea exitosa
-                    link = await storageRef.child(url).getDownloadURL();
-
-                    Post newPost = Post(
-                      userId: globales.idAuth,
-                      texto: _textoController.text,
-                      nick: globales.nick,
-                      lugar: "",
-                      fechaCreacion: DateTime.now(),
-                      urlImagen: link,
-                      editad: false,
-                    );
-
-                    int resultado = await crearPost(newPost);
-                    if (!mounted) return;
-                    if (resultado == 200) {
-                      SmartDialog.dismiss();
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                          "/principal", (route) => false);
-                      SmartDialog.showToast("Publicación Creada");
-                    } else {
-                      SmartDialog.showToast("Ocurrio un error");
-                    }
-                  } catch (e) {
-                    SmartDialog.dismiss();
-                    SmartDialog.showToast("Ocurrio un error");
-                  }
-                }
-              }
-            },
-            child: const Text(
-              'Publicar',
-            ),
-          ),
+                  },
+                  child: const Text(
+                    'Publicar',
+                  ),
+                )
+              : ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        AppColors.primaryColor),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.grey),
+                  ),
+                  onPressed: () {
+                    SmartDialog.showToast("Ingresa una imagen o un texto");
+                  },
+                  child: const Text("Publicar"),
+                ),
           const SizedBox(width: 10)
         ],
       ),
@@ -170,6 +187,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           labelText: 'Comparte con los demas',
                           border: OutlineInputBorder(),
                         ),
+                        onChanged: (_) {
+                          updateButtonState();
+                        },
                       ),
                     ),
                     const SizedBox(
@@ -204,6 +224,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                     onPressed: () {
                                       setState(() {
                                         imagen = null;
+                                        updateButtonState();
                                       });
                                     },
                                     icon: const Icon(Icons.close),
@@ -253,6 +274,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     setState(() {
       imagen = File(picture!.path);
       url = picture.name;
+      updateButtonState();
     });
   }
 
@@ -264,6 +286,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
     setState(() {
       imagen = File(picture!.path);
       url = picture.name;
+      updateButtonState();
+    });
+  }
+
+  void updateButtonState() {
+    setState(() {
+      isButtonEnabled = _textoController.text.isNotEmpty || imagen != null;
     });
   }
 }
