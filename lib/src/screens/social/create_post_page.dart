@@ -135,91 +135,91 @@ class _CreatePostPageState extends State<CreatePostPage> {
         ],
       ),
       body: SingleChildScrollView(
-          padding: const EdgeInsets.all(10),
-          child: IntrinsicHeight(
-            child: Row(
-              children: [
-                Column(
+        padding: const EdgeInsets.all(10),
+        child: IntrinsicHeight(
+          child: Row(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(25),
+                    child: CircleAvatar(
+                      radius: 25,
+                      child: FadeInImage.memoryNetwork(
+                          placeholder: kTransparentImage,
+                          image: globales.fotoPerfil),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(25),
-                      child: CircleAvatar(
-                        radius: 25,
-                        child: FadeInImage.memoryNetwork(
-                            placeholder: kTransparentImage,
-                            image: globales.fotoPerfil),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Form(
-                        key: formkey,
-                        child: TextFormField(
-                          controller: _textoController,
-                          maxLines: 5,
-                          textCapitalization: TextCapitalization.sentences,
-                          decoration: const InputDecoration(
-                            labelText: 'Comparte con los demas',
-                            border: OutlineInputBorder(),
-                          ),
+                    Form(
+                      key: formkey,
+                      child: TextFormField(
+                        controller: _textoController,
+                        maxLines: 5,
+                        textCapitalization: TextCapitalization.sentences,
+                        decoration: const InputDecoration(
+                          labelText: 'Comparte con los demas',
+                          border: OutlineInputBorder(),
                         ),
                       ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      _image != null
-                          ? Stack(
-                              children: [
-                                Container(
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    _image != null
+                        ? Stack(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                      15), // Borde redondeado
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      15), // Borde redondeado para la imagen
+                                  child: Image.file(_image!, fit: BoxFit.cover),
+                                ),
+                              ),
+                              Positioned(
+                                top: 5,
+                                right: 5,
+                                child: Container(
+                                  height: 40,
+                                  width: 40,
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                        15), // Borde redondeado
+                                    borderRadius: BorderRadius.circular(25),
+                                    color: const Color.fromARGB(
+                                        198, 197, 185, 185),
                                   ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(
-                                        15), // Borde redondeado para la imagen
-                                    child:
-                                        Image.file(_image!, fit: BoxFit.cover),
+                                  child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _image = null;
+                                      });
+                                    },
+                                    icon: const Icon(Icons.close),
                                   ),
                                 ),
-                                Positioned(
-                                  top: 5,
-                                  right: 5,
-                                  child: Container(
-                                    height: 40,
-                                    width: 40,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(25),
-                                      color: const Color.fromARGB(
-                                          198, 197, 185, 185),
-                                    ),
-                                    child: IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          _image = null;
-                                        });
-                                      },
-                                      icon: const Icon(Icons.close),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            )
-                          : Container()
-                    ],
-                  ),
-                )
-              ],
-            ),
-          )),
+                              )
+                            ],
+                          )
+                        : Container()
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
       bottomNavigationBar: Padding(
         padding: MediaQuery.of(context).viewInsets,
         child: Container(
