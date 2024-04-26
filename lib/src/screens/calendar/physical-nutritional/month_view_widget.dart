@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_check/src/screens/calendar/physical-nutritional/create_event_page.dart';
 import 'package:gym_check/src/screens/seguimiento/add_remider_page.dart';
 import 'package:gym_check/src/screens/seguimiento/physical/modify_routine_page.dart';
+import 'package:gym_check/src/screens/seguimiento/view_remider_page.dart';
 import 'package:gym_check/src/services/reminder_service.dart';
 
 import '../event_details_page.dart';
@@ -25,7 +26,8 @@ class MonthViewWidget extends StatefulWidget {
 class _MonthViewWidgetState extends State<MonthViewWidget> {
   late EventController _eventController;
   List<Map<String, dynamic>> _routines = [];
-  Map<String, CalendarEventData> _eventMap = {}; // Mapa local para asociar IDs con eventos
+  Map<String, CalendarEventData> _eventMap =
+      {}; // Mapa local para asociar IDs con eventos
 
   @override
   void initState() {
@@ -74,6 +76,11 @@ class _MonthViewWidgetState extends State<MonthViewWidget> {
     return MonthView(
       key: widget.state,
       width: widget.width,
+      cellAspectRatio: .5,
+
+      // weekDayBuilder: (day) => 1,
+      // startDay: WeekDays.monday,
+      // pageTransitionDuration: Durations.long1,
       initialMonth: DateTime.now(),
       borderSize: 1,
       controller: _eventController,
@@ -84,14 +91,25 @@ class _MonthViewWidgetState extends State<MonthViewWidget> {
           orElse: () => '',
         );
         if (eventId.isNotEmpty) {
-          // Pasar el ID del evento a la página de detalles
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => ModifyRoutinePage(routineId: eventId,)),
+          showModalBottomSheet(
+            showDragHandle: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(15),
+              ),
+            ),
+            context: context,
+            isScrollControlled: true,
+            builder: (context) {
+              return FractionallySizedBox(
+                heightFactor: 0.60,
+                child: ViewReminder(
+                  reminderId: eventId,
+                ),
+              );
+            },
           );
         }
-
-        print(event);
-        print(eventId);
       },
       onCellTap: (events, date) {
         Navigator.of(context).push(
@@ -126,22 +144,25 @@ class _MonthViewWidgetState extends State<MonthViewWidget> {
                 leading: Icon(Icons.add_alert),
                 title: Text('Agregar Recordatorio'),
                 onTap: () {
-                   showModalBottomSheet(
-                      showDragHandle: true,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(15),
-                        ),
+                  showModalBottomSheet(
+                    showDragHandle: true,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(15),
                       ),
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (context) {
-                        return FractionallySizedBox(
-                          heightFactor: 0.90,
-                          child: AddReminderPage(selectedDate: selectedDay, tipo: "Recordatorio",),
-                        );
-                      },
-                    );
+                    ),
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (context) {
+                      return FractionallySizedBox(
+                        heightFactor: 0.90,
+                        child: AddReminderPage(
+                          selectedDate: selectedDay,
+                          tipo: "Recordatorio",
+                        ),
+                      );
+                    },
+                  );
                 },
               ),
               ListTile(
@@ -160,7 +181,10 @@ class _MonthViewWidgetState extends State<MonthViewWidget> {
                       builder: (context) {
                         return FractionallySizedBox(
                           heightFactor: 0.90,
-                          child: AddReminderPage(selectedDate: selectedDay, tipo: "Rutina",),
+                          child: AddReminderPage(
+                            selectedDate: selectedDay,
+                            tipo: "Rutina",
+                          ),
                         );
                       },
                     );

@@ -11,10 +11,10 @@ class Reminder {
   DateTime startTime;
   DateTime endTime;
 
-  Color color; // Nuevo campo para el color
-  String? workoutID; // Nuevo campo de tipo String opcional
-  String? dietID; // Nuevo campo de tipo String opcional
-
+  Color color; 
+  String? workoutID; 
+  String? dietID; 
+  
   Reminder({
     this.day,
     required this.title,

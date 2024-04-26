@@ -18,6 +18,8 @@ class SelectDayViewPage extends StatefulWidget {
 }
 
 class _SelectDayViewPageState extends State<SelectDayViewPage> {
+
+
   @override
   Widget build(BuildContext context) {
     return ResponsiveWidget(
@@ -65,4 +67,7 @@ class _SelectDayViewPageState extends State<SelectDayViewPage> {
       ),
     );
   }
+
+
+  
 }

@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/user_model.dart';
+import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
 import 'package:gym_check/src/services/user_service.dart';
 import 'package:gym_check/src/utils/common_widgets/gradient_background.dart';
@@ -133,16 +134,13 @@ class _FirstPhotoPageState extends State<FirstPhotoPage> {
 
   Future<void> _subirDespues(BuildContext context) async {
     try {
-      // Obtener el ID de usuario
-      String userId = Provider.of<UserSessionProvider>(context, listen: false)
-          .userSession!
-          .userId;
+     final globales = Provider.of<Globales>(context, listen: false);
 
       // Crear objeto User con el campo 'primerosPasos' igual a 3
       User user = User(primerosPasos: 3);
 
       // Actualizar usuario con el campo 'primerosPasos'
-      await UserService.updateUser(userId, user);
+      await UserService.updateUser(globales.idAuth, user);
 
       // Redirigir a la página de body_data_page
       // ignore: use_build_context_synchronously

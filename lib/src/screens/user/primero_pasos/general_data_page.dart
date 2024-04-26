@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/components/app_text_form_field.dart';
 import 'package:gym_check/src/models/user_model.dart';
+import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
 import 'package:gym_check/src/services/physical_data_service.dart';
 import 'package:gym_check/src/services/user_service.dart';
@@ -117,6 +118,8 @@ class _GeneralDataPageState extends State<GeneralDataPage> {
 
   Future<void> _primerosDatos(BuildContext context) async {
     try {
+       final globales = Provider.of<Globales>(context, listen: false);
+     
       User user = User(
           primerNombre: txtPrimerNombre.text,
           segundoNombre: txtSegundoNombre.text,
@@ -124,17 +127,16 @@ class _GeneralDataPageState extends State<GeneralDataPage> {
           genero: txtGenero.text,
           primerosPasos: 2,
           verificado: true);
-      String userId = Provider.of<UserSessionProvider>(context, listen: false)
-          .userSession!
-          .userId;
-      await UserService.updateUser(userId, user);
+    
 
-      Map<String, dynamic> userData = await UserService.getUserData(userId);
-      String _nick = userData['nick'];
+      await UserService.updateUser(globales.idAuth, user);
+
+      Map<String, dynamic> userData = await UserService.getUserData(globales.idAuth);
+      
 
       //crear la estructura de datos-fisicos
 
-      await PhysicalDataService.createPhysicalData(_nick);
+      await PhysicalDataService.createPhysicalData(context);
 
       Navigator.pushNamed(context, '/first_photo');
     } catch (error) {

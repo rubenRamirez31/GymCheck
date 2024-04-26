@@ -102,9 +102,8 @@ class _AddDataPageState extends State<AddDataPage> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      _guardarDatos(context);
-                    }
+                     _guardarDatos(context);
+                   
                   },
                   child: const Text('Agregar'),
                 ),
@@ -119,11 +118,7 @@ class _AddDataPageState extends State<AddDataPage> {
 
   void _guardarDatos(BuildContext context) async {
     try {
-      String userId = Provider.of<UserSessionProvider>(context, listen: false)
-          .userSession!
-          .userId;
-      Map<String, dynamic> userData = await UserService.getUserData(userId);
-      String _nick = userData['nick'];
+     
       _selectedValue = double.parse("$_selectedEntero.$_selectedDecimal");
 
       double valor = _selectedValue; // Utiliza el valor seleccionado
@@ -134,7 +129,7 @@ class _AddDataPageState extends State<AddDataPage> {
       String coleccion = _getColeccion();
 
       final response = await PhysicalDataService.addData(
-          _nick, coleccion, bodyData.toJson());
+          context, coleccion, bodyData.toJson());
 
       showDialog(
         context: context,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/user_model.dart';
+import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
 import 'package:gym_check/src/services/user_service.dart';
 import 'package:gym_check/src/utils/common_widgets/gradient_background.dart';
@@ -78,16 +79,13 @@ class _EmotionalDataPageState extends State<EmotionalDataPage> {
 
   void _agregarDespues(BuildContext context) async {
     try {
-      // Obtener el ID de usuario
-      String userId = Provider.of<UserSessionProvider>(context, listen: false)
-          .userSession!
-          .userId;
+      final globales = Provider.of<Globales>(context, listen: false);
 
       // Crear objeto User con el campo 'primerosPasos' igual a 6
       User user = User(primerosPasos: 6);
 
       // Actualizar usuario con el campo 'primerosPasos'
-      await UserService.updateUser(userId, user);
+      await UserService.updateUser(globales.idAuth, user);
 
       // Mostrar mensaje de éxito
       showDialog(

@@ -5,7 +5,7 @@ import 'package:gym_check/src/screens/calendar/physical-nutritional/month_view_w
 
 import 'package:gym_check/src/screens/seguimiento/physical/antropometric_data_page.dart';
 import 'package:gym_check/src/screens/seguimiento/physical/corporal_data_page.dart';
-import 'package:gym_check/src/screens/seguimiento/physical/week_workout_data_page.dart';
+import 'package:gym_check/src/screens/seguimiento/physical/workout_day.dart';
 
 import 'package:gym_check/src/widgets/menu_button_option_widget.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';

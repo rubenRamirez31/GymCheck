@@ -48,7 +48,7 @@ class _AntropometricDataPageState extends State<AntropometricDataPage> {
 
       for (String dato in _datos.keys) {
         Map<String, dynamic> data =
-            await PhysicalDataService.getLatestPhysicalData(_nick, _coleccion, dato);
+            await PhysicalDataService.getLatestPhysicalData(context, _coleccion, dato);
         setState(() {
           switch (dato) {
             case 'circunferenciaCuello':

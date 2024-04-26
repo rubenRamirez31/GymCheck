@@ -183,7 +183,7 @@ class _ViewCorporalDataPageState extends State<ViewCorporalDataPage> {
       Map<String, dynamic> userData = await UserService.getUserData(userId);
       String nick = userData['nick'];
       final response = await PhysicalDataService.getDataWithDynamicSorting(
-        nick,
+        context,
         _coleccion,
         _orderBy,
         _orderByDirection,

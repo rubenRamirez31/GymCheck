@@ -21,8 +21,8 @@ class SelectDayViewWidget extends StatefulWidget {
 }
 
 class _SelectDayViewWidgetState extends State<SelectDayViewWidget> {
-    late EventController _eventController;
-  List<Map<String, dynamic>> _routines = [];
+  late EventController _eventController;
+  List<Map<String, dynamic>> _remider = [];
 
   @override
   void initState() {
@@ -36,7 +36,7 @@ class _SelectDayViewWidgetState extends State<SelectDayViewWidget> {
     try {
       final routines = await ReminderService.getAllReminders(context);
       setState(() {
-        _routines = routines;
+        _remider = routines;
       });
       _addEvents(); // Agregar eventos después de cargar las rutinas
     } catch (error) {
@@ -45,11 +45,8 @@ class _SelectDayViewWidgetState extends State<SelectDayViewWidget> {
   }
 
   void _addEvents() {
-    // Iterar sobre las rutinas obtenidas y agregar eventos
-    _routines.forEach((routine) {
-      // Convertir el color a un entero
-      //int colorValue = routine['color'] as int;
-      // Construir el objeto CalendarEventData a partir de la rutina
+    
+    _remider.forEach((routine) {
       CalendarEventData eventData = CalendarEventData(
         title: routine['title'],
         date: routine['startTime'],
@@ -58,15 +55,13 @@ class _SelectDayViewWidgetState extends State<SelectDayViewWidget> {
         startTime: routine['startTime'],
         endTime: routine['endTime'],
       );
-      // Agregar el evento al controlador
+    
       _eventController.add(eventData);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-  
-
     return DayView(
       key: widget.state,
       width: widget.width,
@@ -88,6 +83,7 @@ class _SelectDayViewWidgetState extends State<SelectDayViewWidget> {
           ),
         );
       },
+      onDateLongPress: (date) => print(date),
       halfHourIndicatorSettings: HourIndicatorSettings(
         color: Theme.of(context).dividerColor,
         lineStyle: LineStyle.dashed,

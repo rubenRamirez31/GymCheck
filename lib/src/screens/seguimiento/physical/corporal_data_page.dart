@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
 import 'package:gym_check/src/screens/seguimiento/physical/add_data_page.dart';
 import 'package:gym_check/src/screens/seguimiento/widgets/data_tracking_widget.dart';
@@ -37,18 +38,16 @@ class _CorporalDataPageState extends State<CorporalDataPage> {
 
   Future<void> _loadUserDataLastDataPhysical() async {
     try {
-      String userId = Provider.of<UserSessionProvider>(context, listen: false)
-          .userSession!
-          .userId;
-      Map<String, dynamic> userData = await UserService.getUserData(userId);
+     final globales = Provider.of<Globales>(context, listen: false);
+      //Map<String, dynamic> userData = await UserService.getUserData(globales.idAuth);
       setState(() {
-        _nick = userData['nick'];
+        //_nick = userData['nick'];
       });
 
       for (String dato in _datos.keys) {
         Map<String, dynamic> data =
             await PhysicalDataService.getLatestPhysicalData(
-                _nick, _coleccion, dato);
+                context, _coleccion, dato);
         setState(() {
           switch (dato) {
             case 'peso':
