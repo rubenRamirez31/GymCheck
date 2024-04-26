@@ -3,26 +3,24 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class Post {
-  final String id;
-  final String userId;
-  final String? lugar;
-  final String texto;
-  final String nick;
-  final DateTime? fechaCreacion;
-  final String? urlImagen;
-  final File? imagen;
-  final bool editad;
+  String? id;
+  String userId;
+  String? lugar;
+  String? texto;
+  String nick;
+  DateTime? fechaCreacion;
+  String? urlImagen;
+  bool editad;
 
   Post(
       {required this.userId,
       this.lugar,
-      required this.texto,
+      this.texto,
       required this.nick,
       this.fechaCreacion,
       this.urlImagen,
-      this.imagen,
       required this.editad,
-      required this.id});
+      this.id});
 
   factory Post.getFirebaseId(String idd, Map json) {
     return Post(
@@ -32,22 +30,20 @@ class Post {
       texto: json['texto'],
       nick: json['nick'],
       fechaCreacion: (json['fechaCreacion'] as Timestamp).toDate(),
-      urlImagen: json['URLimagen'],
-      imagen: json['imagen'],
+      urlImagen: json['urlImagen'],
       editad: json['editado'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'userId': userId,
+      'userIdAuth': userId,
       'lugar': lugar,
       'texto': texto,
       'nick': nick,
       'fechaCreacion': fechaCreacion,
       'urlImagen': urlImagen,
-      'imagen': imagen,
-      'editad': editad
+      'editado': editad
     };
   }
 
@@ -63,7 +59,6 @@ class Post {
               json['fechaCreacion']['seconds'] * 1000)
           : null,
       urlImagen: json['URLimagen'],
-      imagen: json['imagen'],
       editad: json['editado'],
     );
   }

@@ -33,7 +33,7 @@ Future<void> _loadPostData() async {
       final Post post = posts[0]; // Obtener el primer elemento de la lista
       setState(() {
        
-        _textoController.text = post.texto;
+        _textoController.text = post.texto!;
       });
     }
   } catch (error) {
@@ -91,7 +91,6 @@ Future<void> _loadPostData() async {
       lugar: "",
       texto: _textoController.text,
       nick: _nick,
-      imagen: _image,
       editad: true,
       id: widget.postId, // Usar el ID proporcionado por el widget
     );

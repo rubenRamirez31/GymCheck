@@ -1,11 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:gym_check/src/providers/user_session_provider.dart';
-import 'package:gym_check/src/services/api_service.dart';
-import 'package:gym_check/src/services/user_service.dart';
 import 'package:gym_check/src/values/app_colors.dart';
 import 'package:gym_check/src/widgets/social/post_widget.dart';
-import 'package:provider/provider.dart';
 import 'package:gym_check/src/models/social/post_model.dart';
 
 // Importa la página de creación de publicaciones
@@ -15,35 +11,10 @@ class FeedPage extends StatefulWidget {
   const FeedPage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _FeedPageState createState() => _FeedPageState();
+  State<FeedPage> createState() => _FeedPageState();
 }
 
 class _FeedPageState extends State<FeedPage> {
-  String _nick = '';
-  String _urlImagen = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _loadUserData();
-  }
-
-  Future<void> _loadUserData() async {
-    try {
-      String userId = Provider.of<UserSessionProvider>(context, listen: false)
-          .userSession!
-          .userId;
-      Map<String, dynamic> userData = await UserService.getUserData(userId);
-      setState(() {
-        _nick = userData['nick'];
-        _urlImagen = userData['urlImagen'];
-      });
-    } catch (error) {
-      print('Error al cargar los datos del usuario: $error');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final Stream<QuerySnapshot> postStream =
