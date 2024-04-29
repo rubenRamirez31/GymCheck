@@ -6,7 +6,7 @@ class AppStrings {
   static const String register = 'Registrate';
   static const String login = 'Iniciar sesión';
   static const String createYourAccount =
-      'Crea una cuenta para ingresar a GymCheck';
+      'Crea una cuenta para ingresar a LifeCheck';
   static const String doNotHaveAnAccount = '¿No tiene cuenta?';
   static const String facebook = 'Facebook';
   static const String google = 'Google';

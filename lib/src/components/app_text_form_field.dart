@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
 class AppTextFormField extends StatelessWidget {
-  const AppTextFormField({
-    required this.textInputAction,
-    required this.labelText,
-    required this.keyboardType,
-    required this.controller,
-    super.key,
-    this.onChanged,
-    this.validator,
-    this.obscureText,
-    this.suffixIcon,
-    this.onEditingComplete,
-    this.autofocus,
-    this.focusNode,
-  });
+  const AppTextFormField(
+      {required this.textInputAction,
+      required this.labelText,
+      required this.keyboardType,
+      required this.controller,
+      super.key,
+      this.onChanged,
+      this.validator,
+      this.obscureText,
+      this.suffixIcon,
+      this.onEditingComplete,
+      this.autofocus,
+      this.focusNode,
+      this.maxLength});
 
   final void Function(String)? onChanged;
   final String? Function(String?)? validator;
@@ -27,6 +27,7 @@ class AppTextFormField extends StatelessWidget {
   final bool? autofocus;
   final FocusNode? focusNode;
   final void Function()? onEditingComplete;
+  final int? maxLength;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +38,7 @@ class AppTextFormField extends StatelessWidget {
         keyboardType: keyboardType,
         textInputAction: textInputAction,
         focusNode: focusNode,
+        maxLength: maxLength,
         onChanged: onChanged,
         autofocus: autofocus ?? false,
         validator: validator,
