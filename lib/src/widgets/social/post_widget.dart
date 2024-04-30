@@ -1,9 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/social/post_model.dart';
-import 'package:gym_check/src/screens/social/edit_post_page.dart';
-
 import 'package:gym_check/src/screens/social/profile_page.dart';
-import 'package:gym_check/src/values/app_colors.dart';
 import 'package:gym_check/src/widgets/social/comment_box.dart';
 import 'package:gym_check/src/widgets/social/share_box.dart';
 import 'package:intl/intl.dart';
@@ -123,10 +121,26 @@ bool isEdited(bool editado) {
   }
 }
 
-//Widget del post
-class PostWidget extends StatelessWidget {
+class PostWidget extends StatefulWidget {
   final Post post;
-  const PostWidget({Key? key, required this.post}) : super(key: key);
+  const PostWidget({super.key, required this.post});
+
+  @override
+  State<PostWidget> createState() => _PostWidgetState();
+}
+
+class _PostWidgetState extends State<PostWidget> {
+  late int commentCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    getCommentCount(widget.post.id!).then((count) {
+      setState(() {
+        commentCount = count;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -152,15 +166,15 @@ class PostWidget extends StatelessWidget {
                 child: Column(
                   children: [
                     PostHeader(
-                        nick: post.nick,
-                        postUserId: post.userId,
-                        editado: post.editad,
-                        postId: post.id!),
+                        nick: widget.post.nick,
+                        postUserId: widget.post.userId,
+                        editado: widget.post.editad,
+                        postId: widget.post.id!),
                     Row(
                       children: [
                         Expanded(
                           child: Text(
-                            post.texto!,
+                            widget.post.texto!,
                             style: const TextStyle(fontSize: 15),
                           ),
                         ),
@@ -174,35 +188,35 @@ class PostWidget extends StatelessWidget {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(15),
-                        child:
-                            post.urlImagen != null && post.urlImagen!.isNotEmpty
-                                ? Stack(
-                                    children: [
-                                      Container(
-                                        height: 100,
-                                        child: const Center(
-                                          child: CircularProgressIndicator(),
-                                        ),
-                                      ),
-                                      Center(
-                                        child: FadeInImage.memoryNetwork(
-                                          placeholder: kTransparentImage,
-                                          image: post.urlImagen!,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      )
-                                    ],
+                        child: widget.post.urlImagen != null &&
+                                widget.post.urlImagen!.isNotEmpty
+                            ? Stack(
+                                children: [
+                                  const SizedBox(
+                                    height: 100,
+                                    child: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  ),
+                                  Center(
+                                    child: FadeInImage.memoryNetwork(
+                                      placeholder: kTransparentImage,
+                                      image: widget.post.urlImagen!,
+                                      fit: BoxFit.cover,
+                                    ),
                                   )
-                                : Container(),
+                                ],
+                              )
+                            : Container(),
                       ),
                     ),
                     const SizedBox(height: 10),
                     Row(
                       children: [
                         Text(
-                          post.fechaCreacion != null
+                          widget.post.fechaCreacion != null
                               ? DateFormat('h:mm a d MMM yy')
-                                  .format(post.fechaCreacion!)
+                                  .format(widget.post.fechaCreacion!)
                               : 'Fecha no disponible',
                         ),
                       ],
@@ -214,25 +228,38 @@ class PostWidget extends StatelessWidget {
                           onPressed: () {},
                           icon: const Icon(Icons.favorite_outline),
                         ),
-                        IconButton(
-                          onPressed: () {
-                            showModalBottomSheet(
-                              showDragHandle: true,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(15),
-                                ),
-                              ),
-                              context: context,
-                              builder: (context) {
-                                return FractionallySizedBox(
-                                  heightFactor: 0.95,
-                                  child: CommentBox(idpost: post.id),
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: () async {
+                                showModalBottomSheet(
+                                  showDragHandle: true,
+                                  isScrollControlled: true,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(15),
+                                    ),
+                                  ),
+                                  context: context,
+                                  builder: (context) {
+                                    return FractionallySizedBox(
+                                      heightFactor: 0.95,
+                                      child: CommentBox(idpost: widget.post.id),
+                                    );
+                                  },
                                 );
                               },
-                            );
-                          },
-                          icon: const Icon(Icons.mode_comment_outlined),
+                              icon: const Icon(Icons.mode_comment_outlined),
+                            ),
+                            if (commentCount > 0) const SizedBox(width: 0),
+                            Visibility(
+                              visible: commentCount > 0,
+                              child: Text(
+                                commentCount.toString(),
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                            ),
+                          ],
                         ),
                         IconButton(
                           onPressed: () {
@@ -265,5 +292,14 @@ class PostWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<int> getCommentCount(String postId) async {
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection("Publicaciones")
+        .doc(postId)
+        .collection("comentarios")
+        .get();
+    return querySnapshot.size;
   }
 }
