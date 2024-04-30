@@ -30,8 +30,6 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
   List<String> options = [
     'Rutinas',
     'Datos corporales',
-    'Datos antropométricos',
-    'Metas',
     'Fuerza',
   ]; // Lista de opciones
 
@@ -47,7 +45,7 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
         context); // Obtiene la instancia de GlobalVariable
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 29, 52, 78),
+      backgroundColor:  const Color.fromARGB(255, 18, 18,18),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -68,7 +66,7 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
             ),
             const SizedBox(height: 20),
             Container(
-              color: const Color.fromARGB(255, 29, 52, 78),
+               color: const Color.fromARGB(255, 18, 18,18),
               width: MediaQuery.of(context).size.width,
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
-import 'package:gym_check/src/screens/crear/dietas/create_diets_page.dart';
 import 'package:gym_check/src/screens/crear/ejercicios/create_exercise_page.dart';
 // Importa la página de "Mi espacio"
 import 'package:provider/provider.dart';
@@ -46,10 +45,7 @@ class CreateOptionWidget extends StatelessWidget {
             onPressed: () {
               globalVariable.selectedSubPageCreate = 1;
               onItemSelected(1);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CreateDietPage()),
-              );
+             
             },
           ),
           _buildOption(
@@ -60,10 +56,7 @@ class CreateOptionWidget extends StatelessWidget {
             onPressed: () {
               globalVariable.selectedSubPageCreate = 2;
               onItemSelected(2);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CreateDietPage()), // Enlaza con la página de "Mi espacio"
-              );
+             
             },
           ),
         ],

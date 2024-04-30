@@ -59,6 +59,7 @@ dependencies:
   transparent_image: ^2.0.1
   firebase_storage: ^11.6.7
   flutter_smart_dialog: ^4.9.6+1
+  draw_graph: ^1.0.0
 
 dev_dependencies:
   flutter_test:

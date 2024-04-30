@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 class Reminder {
+  int? idRecordar;
   String? day;
   String? routineName;
   String? primaryFocus;
@@ -10,6 +11,7 @@ class Reminder {
   String description;
   DateTime startTime;
   DateTime endTime;
+  bool terminado;
 
   Color color; 
   String? workoutID; 
@@ -17,9 +19,11 @@ class Reminder {
   
   Reminder({
     this.day,
+    this.idRecordar,
     required this.title,
     required this.tipo,
     required this.description,
+    required this.terminado,
     this.routineName,
     this.primaryFocus,
     this.secondaryFocus,
@@ -28,11 +32,14 @@ class Reminder {
     required this.color, // Incluimos el color en el constructor
     this.workoutID, // Campo de tipo String opcional
     this.dietID, // Campo de tipo String opcional
+
   });
 
   factory Reminder.fromJson(Map<String, dynamic> json) {
     return Reminder(
+      idRecordar: json['idRecordar'],
       day: json['day'],
+      terminado: json['terminado'],
       title: json['title'],
       tipo: json['tipo'],
       description: json['description'],
@@ -51,7 +58,9 @@ class Reminder {
 
   Map<String, dynamic> toJson() {
     return {
+      'idRecordar': idRecordar,
       'day': day,
+      'terminado': terminado,
       'tipo': tipo,
       'title': title,
       'description': description,
