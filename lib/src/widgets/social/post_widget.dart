@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/social/post_model.dart';
 import 'package:gym_check/src/screens/social/profile_page.dart';
+import 'package:gym_check/src/values/app_colors.dart';
 import 'package:gym_check/src/widgets/social/comment_box.dart';
 import 'package:gym_check/src/widgets/social/favoritoitem.dart';
 import 'package:gym_check/src/widgets/social/share_box.dart';
@@ -246,7 +247,10 @@ class _PostWidgetState extends State<PostWidget> {
                                   },
                                 );
                               },
-                              icon: const Icon(Icons.mode_comment_outlined),
+                              icon: const Icon(
+                                Icons.mode_comment_outlined,
+                                color: AppColors.primaryColor,
+                              ),
                             ),
 /*                             if (commentCount > 0) const SizedBox(width: 0),
                             Visibility(
@@ -277,7 +281,10 @@ class _PostWidgetState extends State<PostWidget> {
                               },
                             );
                           },
-                          icon: const Icon(Icons.share_sharp),
+                          icon: const Icon(
+                            Icons.share,
+                            color: Colors.cyan,
+                          ),
                         )
                       ],
                     )
