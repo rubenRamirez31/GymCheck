@@ -2,69 +2,66 @@ import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:provider/provider.dart';
 
-// Este archivo define un widget llamado MenuButtonOption que se utiliza para mostrar una serie de botones de opciones horizontales.
-
 class MenuButtonOption extends StatefulWidget {
-  final List<String> options; // Lista de opciones
-  final Function(int) onItemSelected; // Función de devolución de llamada cuando se selecciona una opción
-  final Color highlightColor; // Color de resaltado cuando se selecciona una opción
+  final List<String> options;
+  final Function(int) onItemSelected;
+  final Color highlightColor;
   final int selectedMenuOptionGlobal;
 
   MenuButtonOption({
-    required this.options, // Requiere la lista de opciones
-    required this.onItemSelected, // Requiere la función de devolución de llamada
-    required this.highlightColor, // Requiere el color de resaltado
-    required this.selectedMenuOptionGlobal, // Requiere el color de resaltado
+    required this.options,
+    required this.onItemSelected,
+    required this.highlightColor,
+    required this.selectedMenuOptionGlobal,
   });
 
   @override
-  _MenuButtonOptionState createState() => _MenuButtonOptionState(); // Crea el estado del widget
+  _MenuButtonOptionState createState() => _MenuButtonOptionState();
 }
 
 class _MenuButtonOptionState extends State<MenuButtonOption> {
-  late String selectedOption; // Opción seleccionada
-  late int _selectedMenuOption; // Opción de menú seleccionada
- // late int _global = widget.selectedMenuOptionGlobal; // Opción de menú seleccionada
+  late String selectedOption;
+  late int _selectedMenuOption;
 
   @override
   void initState() {
     super.initState();
-    var globalVariable = Provider.of<GlobalVariablesProvider>(
-        context,
-        listen: false);
-    _selectedMenuOption = widget.selectedMenuOptionGlobal; // Obtiene la opción de menú seleccionada
-    selectedOption = widget.options[_selectedMenuOption]; // Establece la opción seleccionada
+    _selectedMenuOption = widget.selectedMenuOptionGlobal;
+    selectedOption = widget.options[_selectedMenuOption];
   }
 
   @override
   Widget build(BuildContext context) {
-    // Construye la interfaz de usuario del widget
     return SingleChildScrollView(
-      scrollDirection: Axis.horizontal, // Permitir desplazamiento horizontal
+      scrollDirection: Axis.horizontal,
       child: Row(
         children: widget.options.asMap().entries.map((entry) {
-          final int index = entry.key; // Índice de la opción
-          final String option = entry.value; // Valor de la opción
+          final int index = entry.key;
+          final String option = entry.value;
 
           return GestureDetector(
             onTap: () {
-              // Maneja el evento de selección de una opción
               setState(() {
-                selectedOption = option; // Actualiza la opción seleccionada
-                _selectedMenuOption = index; // Actualiza la opción de menú seleccionada
-                widget.onItemSelected(index); // Llama a la función de devolución de llamada con el índice seleccionado
+                selectedOption = option;
+                _selectedMenuOption = index;
+                widget.onItemSelected(index);
               });
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5.0),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(20), // Bordes redondeados del botón
+                borderRadius: BorderRadius.circular(20),
                 child: Container(
-                  padding: EdgeInsets.all(10), // Espaciado interno del botón
+                  padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
                   color: option == selectedOption
-                      ? widget.highlightColor // Color de resaltado si está seleccionado
-                      : Colors.grey[300], // Color de fondo normal
-                  child: Text(option), // Texto de la opción del botón
+                      ? widget.highlightColor
+                      : const Color.fromARGB(255, 83, 83, 83),
+                  child: Text(
+                    option,
+                    style: TextStyle(
+                      color: option == selectedOption ? Colors.black : Colors.white,
+                    ),
+                  ),
                 ),
               ),
             ),

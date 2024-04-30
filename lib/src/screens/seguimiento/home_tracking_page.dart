@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/screens/principal.dart';
+import 'package:gym_check/src/screens/seguimiento/goals/goals_page.dart';
 import 'package:gym_check/src/screens/seguimiento/physical_tracking_page.dart';
-import 'package:gym_check/src/screens/seguimiento/emotional/emotional_tracking_page.dart';
-import 'package:gym_check/src/screens/seguimiento/nutritional/nutritional_tracking_page.dart';
+
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
 class HomeTrackingPage extends StatefulWidget {
@@ -13,23 +13,16 @@ class HomeTrackingPage extends StatefulWidget {
 }
 
 class _HomeTrackingPageState extends State<HomeTrackingPage> {
-    final GlobalKey<LiquidPullToRefreshState> _refreshIndicatorKey =
+  final GlobalKey<LiquidPullToRefreshState> _refreshIndicatorKey =
       GlobalKey<LiquidPullToRefreshState>();
   int currentPageIndex = 0;
-  final List<Widget> pages = [
-    const PhysicalTrackingPage(),
-    const NutritionalTrackingPage(),
-    const EmotionalTrackingPage(),
-   
-  ];
 
   @override
   Widget build(BuildContext context) {
     return LiquidPullToRefresh(
-                key: _refreshIndicatorKey,
-        onRefresh: _handleRefresh,
-        color: Colors.indigo,
-        
+      key: _refreshIndicatorKey,
+      onRefresh: _handleRefresh,
+      color: Colors.indigo,
       child: Scaffold(
         //backgroundColor: Colors.amber[100],
         appBar: AppBar(
@@ -43,6 +36,34 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
           ),
           actions: [
             IconButton(
+              icon: Icon(Icons.flag),
+              onPressed: () {
+                showModalBottomSheet(
+                  showDragHandle: true,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(15),
+                    ),
+                  ),
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (context) {
+                    return FractionallySizedBox(
+                      heightFactor: 0.90,
+                      child: GoalsPage(),
+                    );
+                  },
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.health_and_safety),
+              onPressed: () {
+                // Acción para el botón de Salud
+                print('Botón de Salud presionado');
+              },
+            ),
+            IconButton(
               icon: const Icon(Icons.notifications, color: Colors.white),
               onPressed: () {},
             ),
@@ -55,50 +76,21 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
             ),
           ],
         ),
-        body: Column(
-          children: [
-           
-            BottomNavigationBar(
-               backgroundColor: Colors.grey,              currentIndex: currentPageIndex,
-              onTap: (index) {
-                setState(() {
-                  currentPageIndex = index;
-                });
-              },
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.directions_run),
-                  label: 'Físico',
-                ),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.local_dining),
-                  label: 'Nutricional',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.sentiment_very_satisfied),
-                
-                  label: 'Nutricional',
-                ),
-              ],
-            ),
-             Expanded(
-              child: pages[currentPageIndex],
-            ),
-          ],
-        ),
+        body: PhysicalTrackingPage(),
       ),
     );
   }
 
-   Future<void> _handleRefresh() async {
+  Future<void> _handleRefresh() async {
     // Simula una operación de actualización
     await Future.delayed(const Duration(seconds: 3));
 
-   
     // Reinicia la página
     Navigator.of(context).pushReplacement(
       MaterialPageRoute<void>(
-        builder: (BuildContext context) => PrincipalPage(initialPageIndex: 2,),
+        builder: (BuildContext context) => PrincipalPage(
+          initialPageIndex: 2,
+        ),
       ),
     );
   }

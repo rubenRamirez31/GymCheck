@@ -70,7 +70,7 @@ class _AddDataPageState extends State<AddDataPage> {
                     NumberPicker(
                       value: _selectedEntero.toInt(),
                       minValue: 0,
-                      maxValue: 100,
+                      maxValue: 200,
                       step: 1,
                       axis: Axis.vertical, // Opcional: Horizontal
                       onChanged: (value) {

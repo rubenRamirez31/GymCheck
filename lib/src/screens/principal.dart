@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/screens/crear/ejercicios/create_exercise_page.dart';
-import 'package:gym_check/src/screens/seguimiento/physical_tracking_page.dart';
+
 import 'package:gym_check/src/screens/seguimiento/home_tracking_page.dart';
 import 'package:gym_check/src/screens/social/feed_page.dart';
 

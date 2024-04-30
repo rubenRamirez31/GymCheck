@@ -233,6 +233,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
 
       Reminder reminder = Reminder(
         day: _getDayOfWeek(widget.selectedDate),
+        terminado: false,
         tipo: widget.tipo,
         title: _title,
         description: _description,
@@ -270,6 +271,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
       reminder = Reminder(
         //day: DateFormat('EEEE').format(widget.selectedDate),
         tipo: widget.tipo,
+        terminado: false,
         title: _title,
         description: _description,
         startTime: combinedStartTime,

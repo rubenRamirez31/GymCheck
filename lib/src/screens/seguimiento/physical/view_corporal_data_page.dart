@@ -1,3 +1,4 @@
+import 'package:draw_graph/draw_graph.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
 import 'package:gym_check/src/services/physical_data_service.dart';
@@ -90,7 +91,7 @@ class _ViewCorporalDataPageState extends State<ViewCorporalDataPage> {
             const SizedBox(height: 5),
             buildDataTable(),
             const SizedBox(height: 5),
-            Container(
+              Container(
               width: MediaQuery.of(context).size.width - 10,
               height: 500,
               padding: const EdgeInsets.all(16),
@@ -99,7 +100,7 @@ class _ViewCorporalDataPageState extends State<ViewCorporalDataPage> {
                 borderRadius: BorderRadius.circular(8),
                 color: Colors.amber,
               ),
-              // Aquí puedes colocar tu gráfico
+              
             ),
           ],
         ),
