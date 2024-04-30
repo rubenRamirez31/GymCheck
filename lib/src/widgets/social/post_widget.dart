@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/social/post_model.dart';
 import 'package:gym_check/src/screens/social/profile_page.dart';
 import 'package:gym_check/src/widgets/social/comment_box.dart';
+import 'package:gym_check/src/widgets/social/favoritoitem.dart';
 import 'package:gym_check/src/widgets/social/share_box.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -130,17 +131,18 @@ class PostWidget extends StatefulWidget {
 }
 
 class _PostWidgetState extends State<PostWidget> {
-  late int commentCount = 0;
+/*   late int commentCount = 0;
 
   @override
   void initState() {
     super.initState();
+    // ignore: avoid_types_as_parameter_names
     getCommentCount(widget.post.id!).then((count) {
       setState(() {
         commentCount = count;
       });
     });
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
@@ -181,10 +183,8 @@ class _PostWidgetState extends State<PostWidget> {
                       ],
                     ),
                     Container(
-                      // Altura definida
                       decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(15), // Borde redondeado
+                        borderRadius: BorderRadius.circular(15),
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(15),
@@ -224,10 +224,7 @@ class _PostWidgetState extends State<PostWidget> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.favorite_outline),
-                        ),
+                        FavoritoItem(postId: widget.post.id ?? ''),
                         Row(
                           children: [
                             IconButton(
@@ -251,14 +248,14 @@ class _PostWidgetState extends State<PostWidget> {
                               },
                               icon: const Icon(Icons.mode_comment_outlined),
                             ),
-                            if (commentCount > 0) const SizedBox(width: 0),
+/*                             if (commentCount > 0) const SizedBox(width: 0),
                             Visibility(
                               visible: commentCount > 0,
                               child: Text(
                                 commentCount.toString(),
                                 style: const TextStyle(fontSize: 16),
                               ),
-                            ),
+                            ), */
                           ],
                         ),
                         IconButton(
