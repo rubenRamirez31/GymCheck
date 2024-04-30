@@ -149,31 +149,38 @@ class _LoginPageState extends State<LoginPage> {
                     builder: (_, isValid, __) {
                       return FilledButton(
                         onPressed: () async {
-                          SmartDialog.showLoading(msg: 'Iniciando sesión');
-                          String res = await login(
-                              emailController.text, passwordController.text);
-
-                          if (res == "200") {
-                            late User? currentUser;
-
-                            FirebaseAuth auth = FirebaseAuth.instance;
-                            currentUser = auth.currentUser;
-
-                            String currentUserIdAuth = currentUser!.uid;
-
-                            // ignore: use_build_context_synchronously
-                            await Provider.of<Globales>(context, listen: false)
-                                .cargarDatosUsuario(currentUserIdAuth);
-
-                            SmartDialog.dismiss();
+                          if (emailController.text.isEmpty ||
+                              passwordController.text.isEmpty) {
                             SmartDialog.showToast(
-                                "Sesion iniciada como ${globales.nick}");
-                            // ignore: use_build_context_synchronously
-                            primerosPasos(globales.primerosPasos, context);
+                                "Llena los campos para continuar");
                           } else {
-                            SmartDialog.dismiss();
-                            SmartDialog.showToast(
-                                "Verifica tu conexión a internet o tu correo y contraseña");
+                            SmartDialog.showLoading(msg: 'Iniciando sesión');
+                            String res = await login(
+                                emailController.text, passwordController.text);
+
+                            if (res == "200") {
+                              late User? currentUser;
+
+                              FirebaseAuth auth = FirebaseAuth.instance;
+                              currentUser = auth.currentUser;
+
+                              String currentUserIdAuth = currentUser!.uid;
+
+                              // ignore: use_build_context_synchronously
+                              await Provider.of<Globales>(context,
+                                      listen: false)
+                                  .cargarDatosUsuario(currentUserIdAuth);
+
+                              SmartDialog.dismiss();
+                              SmartDialog.showToast(
+                                  "Sesion iniciada como ${globales.nick}");
+                              // ignore: use_build_context_synchronously
+                              primerosPasos(globales.primerosPasos, context);
+                            } else {
+                              SmartDialog.dismiss();
+                              SmartDialog.showToast(
+                                  "Verifica tu conexión a internet o tu correo y contraseña");
+                            }
                           }
                         },
                         child: const Text(

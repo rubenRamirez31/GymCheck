@@ -224,11 +224,10 @@ class PostWidget extends StatelessWidget {
                                 ),
                               ),
                               context: context,
-                              isScrollControlled: true,
                               builder: (context) {
-                                return const FractionallySizedBox(
+                                return FractionallySizedBox(
                                   heightFactor: 0.95,
-                                  child: CommentBox(),
+                                  child: CommentBox(idpost: post.id),
                                 );
                               },
                             );
