@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:gym_check/src/components/app_text_form_field.dart';
 import 'package:gym_check/src/models/user_model.dart';
+import 'package:gym_check/src/models/usuario/usuario.dart';
+import 'package:gym_check/src/services/firebase_services.dart';
 import 'package:gym_check/src/services/user_service.dart';
 import 'package:gym_check/src/utils/common_widgets/gradient_background.dart';
 import 'package:gym_check/src/values/app_colors.dart';
@@ -97,21 +100,6 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-/*                   AppTextFormField(
-                    autofocus: false,
-                    labelText: AppStrings.fullname,
-                    keyboardType: TextInputType.name,
-                    textInputAction: TextInputAction.next,
-                    onChanged: (value) => _formKey.currentState?.validate(),
-                    validator: (value) {
-                      return value!.isEmpty
-                          ? AppStrings.pleaseEnterName
-                          : value.length < 4
-                              ? AppStrings.invalidName
-                              : null;
-                    },
-                    controller: nameController,
-                  ), */
                   AppTextFormField(
                     labelText: AppStrings.email,
                     controller: emailController,
@@ -131,6 +119,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     labelText: 'Usuario',
                     keyboardType: TextInputType.text,
                     controller: nicknameController,
+                    maxLength: 15,
                     onChanged: (_) => _formKey.currentState?.validate(),
                     validator: (value) {
                       return value!.isEmpty
@@ -235,8 +224,63 @@ class _RegisterPageState extends State<RegisterPage> {
                     valueListenable: fieldValidNotifier,
                     builder: (_, isValid, __) {
                       return FilledButton(
-                        onPressed: isValid ? () => _register() : null,
-                        child: const Text(AppStrings.register),
+                        onPressed: isValid
+                            ? () async {
+                                SmartDialog.showLoading(msg: "Cargando");
+                                //guardar el resultado de la consulta para saber si ya existe el nickname
+                                bool resNick =
+                                    await checkNick(nicknameController.text);
+
+                                if (resNick) {
+                                  //Si es true la consulta significa que se encontro y no se podra continuar
+                                  SmartDialog.dismiss();
+                                  SmartDialog.showToast(
+                                      "Nombre de usuario en uso");
+                                } else {
+                                  String? res = await crearUsuario(
+                                      emailController.text,
+                                      passwordController.text);
+
+                                  if (res == 'Este correo ya esta en uso') {
+                                    SmartDialog.dismiss();
+                                    SmartDialog.showToast(res!);
+                                  } else {
+                                    Usuario newUser = Usuario(
+                                        primerNombre: "",
+                                        segundoNombre: "",
+                                        apellidos: "",
+                                        genero: "",
+                                        nick: nicknameController.text,
+                                        correo: emailController.text,
+                                        fotoPerfil: "",
+                                        idAuth: res!,
+                                        primerosPasos: 0,
+                                        fechaCreacion: DateTime.now(),
+                                        verificado: false);
+
+                                    int resU = await uploadUser(newUser);
+
+                                    if (resU == 200) {
+                                      SmartDialog.dismiss();
+                                      // ignore: use_build_context_synchronously
+                                      Navigator.of(context)
+                                          .pushNamedAndRemoveUntil(
+                                              "/", (route) => false);
+                                      SmartDialog.showToast(
+                                          "Cuenta creada con éxito");
+                                    } else {
+                                      SmartDialog.dismiss();
+                                      SmartDialog.showToast(
+                                          "Revisa tu conexión a internet o intentalo de nuevo");
+                                    }
+                                  }
+                                }
+                              }
+                            : null,
+                        child: const Text(
+                          AppStrings.register,
+                          style: TextStyle(color: AppColors.white),
+                        ),
                       );
                     },
                   ),
@@ -265,7 +309,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Future<void> _register() async {
+/*   Future<void> _register() async {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
     String nick = nicknameController.text.trim();
@@ -315,5 +359,5 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       );
     }
-  }
+  } */
 }

@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:gym_check/src/components/app_text_form_field.dart';
 import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/resources/resources.dart';
+import 'package:gym_check/src/screens/calendar/app_colors.dart';
 import 'package:gym_check/src/services/firebase_services.dart';
 import 'package:gym_check/src/utils/common_widgets/gradient_background.dart';
 import 'package:gym_check/src/values/app_constants.dart';
@@ -167,6 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                             SmartDialog.dismiss();
                             SmartDialog.showToast(
                                 "Sesion iniciada como ${globales.nick}");
+                            // ignore: use_build_context_synchronously
                             primerosPasos(globales.primerosPasos, context);
                           } else {
                             SmartDialog.dismiss();
@@ -174,7 +176,10 @@ class _LoginPageState extends State<LoginPage> {
                                 "Verifica tu conexión a internet o tu correo y contraseña");
                           }
                         },
-                        child: const Text(AppStrings.login),
+                        child: const Text(
+                          AppStrings.login,
+                          style: TextStyle(color: AppColors.white),
+                        ),
                       );
                     },
                   ),
@@ -273,7 +278,8 @@ class _LoginPageState extends State<LoginPage> {
             .pushNamedAndRemoveUntil("/principal", (route) => false);
         break;
       default:
-        print("Algo salio mal");
+        SmartDialog.showToast(
+            "Algo salio mal, contacta con el adminsitrador para más informacion");
         break;
     }
   }
