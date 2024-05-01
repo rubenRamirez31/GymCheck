@@ -132,19 +132,6 @@ class PostWidget extends StatefulWidget {
 }
 
 class _PostWidgetState extends State<PostWidget> {
-/*   late int commentCount = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    // ignore: avoid_types_as_parameter_names
-    getCommentCount(widget.post.id!).then((count) {
-      setState(() {
-        commentCount = count;
-      });
-    });
-  } */
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -252,14 +239,6 @@ class _PostWidgetState extends State<PostWidget> {
                                 color: AppColors.primaryColor,
                               ),
                             ),
-/*                             if (commentCount > 0) const SizedBox(width: 0),
-                            Visibility(
-                              visible: commentCount > 0,
-                              child: Text(
-                                commentCount.toString(),
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                            ), */
                           ],
                         ),
                         IconButton(
