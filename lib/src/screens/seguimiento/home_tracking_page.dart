@@ -49,7 +49,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
                   isScrollControlled: true,
                   builder: (context) {
                     return FractionallySizedBox(
-                      heightFactor: 0.90,
+                      heightFactor: 0.96,
                       child: GoalsPage(),
                     );
                   },

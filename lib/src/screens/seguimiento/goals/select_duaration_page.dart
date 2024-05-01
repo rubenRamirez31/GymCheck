@@ -109,10 +109,10 @@ class _SelectDurationState extends State<SelectDuration> {
                 ],
               ),
 
-              _buildMacroRow('Proteínas', '${widget.macros['proteinas']} g'),
-              _buildMacroRow(
+              _buildDataRow('Proteínas', '${widget.macros['proteinas']} g'),
+              _buildDataRow(
                   'Carbohidratos', '${widget.macros['carbohidratos']} g'),
-              _buildMacroRow('Grasas', '${widget.macros['grasas']} g'),
+              _buildDataRow('Grasas', '${widget.macros['grasas']} g'),
               const SizedBox(height: 20),
 
               Row(
@@ -136,6 +136,27 @@ class _SelectDurationState extends State<SelectDuration> {
               const SizedBox(height: 8),
               _buildSelectedGoalsList(),
               const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Tus datos corporales hasta ahora:',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.info, color: Colors.white),
+                    onPressed: () {
+                      //_showInfoDialog(context);
+                    },
+                  ),
+                ],
+              ),
+              _buildDataRow('Peso', '$_peso kg'),
+              _buildDataRow('Altura', '$_altura cm'),
+              const SizedBox(height: 20),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -158,45 +179,11 @@ class _SelectDurationState extends State<SelectDuration> {
               //const SizedBox(height: 8),
               _buildDurationSelector(),
               const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Fecha de inicio:',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  Text(
-                    DateFormat('dd-MM-yyyy').format(_startDate),
-                    style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Fecha de finalización:',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  Text(
-                    DateFormat('dd-MM-yyyy').format(_endDate),
-                    style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                ],
-              ),
+              _buildDataRow('Fecha de inicio:',
+                  DateFormat('dd-MM-yyyy').format(_startDate)),
+              _buildDataRow('Fecha de finalización:',
+                  DateFormat('dd-MM-yyyy').format(_endDate)),
+
               const SizedBox(height: 16),
 
               Row(
@@ -254,7 +241,7 @@ class _SelectDurationState extends State<SelectDuration> {
     );
   }
 
-  Widget _buildMacroRow(String macro, String cantidad) {
+  Widget _buildDataRow(String macro, String cantidad) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Container(
@@ -458,8 +445,8 @@ class _SelectDurationState extends State<SelectDuration> {
     await GoalsService.agregarMetaPrincipal(context, meta);
   }
 
-
-  Future<void> crearMetasDiarias(BuildContext context, Map<String, Map<String, dynamic>> selectedGoals) async {
+  Future<void> crearMetasDiarias(BuildContext context,
+    Map<String, Map<String, dynamic>> selectedGoals) async {
   try {
     DateTime now = DateTime.now();
     List<MetaDiaria> metasDiarias = [];
@@ -467,7 +454,7 @@ class _SelectDurationState extends State<SelectDuration> {
     selectedGoals.forEach((key, value) {
       bool selected = value['selected'] ?? false;
       DateTime reminderTime = value['reminderTime'] ?? now;
-     double valor = (value['valor'] ?? 0.0).toDouble();
+      double valor = (value['valor'] ?? 0.0).toDouble();
 
       MetaDiaria metaDiaria = MetaDiaria(
         tipo: 'Diaria',
@@ -479,17 +466,26 @@ class _SelectDurationState extends State<SelectDuration> {
         mensaje: key,
         valorMeta: valor, // Puedes establecer este valor según tu lógica
         valorActual: 0, // Puedes establecer este valor según tu lógica
-        porcentajeCumplimiento: 0.0, // Puedes establecer este valor según tu lógica
+        porcentajeCumplimiento:
+            0.0, // Puedes establecer este valor según tu lógica
       );
 
       metasDiarias.add(metaDiaria);
     });
 
+    // Crear un documento para todas las metas diarias
+    Map<String, dynamic> metasDiariasData = {
+      'tipo': 'Diaria',
+      'fechaCreacion': now.toIso8601String(),
+      'metas': metasDiarias.map((meta) => meta.toJson()).toList(),
+    };
+
     // Llama al servicio para agregar las metas diarias a Firebase
-     await GoalsService.agregarMetasDiarias(context, metasDiarias);
+    await GoalsService.agregarMetasDiarias(context, metasDiariasData);
   } catch (error) {
     // Manejo de errores
     print('Error al crear metas diarias: $error');
   }
-  }
+}
+
 }

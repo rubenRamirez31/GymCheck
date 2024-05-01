@@ -30,7 +30,7 @@ class GoalsService {
   }
 
   static Future<void> agregarMetasDiarias(
-      BuildContext context, List<MetaDiaria> metasDiarias) async {
+      BuildContext context, Map<String, dynamic> metasDiarias) async {
     try {
       final globales = Provider.of<Globales>(context, listen: false);
       final userCollectionRef = FirebaseFirestore.instance
@@ -38,10 +38,7 @@ class GoalsService {
           .doc(globales.nick)
           .collection("Metas");
 
-      // Recorre la lista de metas diarias y las agrega a la colección en Firestore
-      await Future.forEach(metasDiarias, (MetaDiaria metaDiaria) async {
-        await userCollectionRef.add(metaDiaria.toJson());
-      });
+      await userCollectionRef.add(metasDiarias);
 
       // Si es necesario, puedes agregar lógica adicional después de agregar las metas diarias
     } catch (error) {
@@ -86,8 +83,40 @@ class GoalsService {
         final metaDoc = querySnapshot.docs.first;
         final meta = metaDoc.data();
 
-       // meta['fechaFinalizacion'] = DateTime.parse(meta['fechaFinalizacion']);
-       // meta['fechaInicio'] = DateTime.parse(meta['fechaInicio']);
+        meta['id'] =
+            metaDoc.id; // Agregar el ID del documento al mapa de resultados
+
+        return meta;
+      } else {
+        return {};
+      }
+    } catch (error) {
+      print('Error al obtener la meta principal activa: $error');
+      return {'error': 'Error en la solicitud'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> obtenerMetaDiariaDeHoy(
+      BuildContext context) async {
+    try {
+      final globales = Provider.of<Globales>(context, listen: false);
+      final userCollectionRef = FirebaseFirestore.instance
+          .collection('Seguimiento')
+          .doc(globales.nick)
+          .collection("Metas");
+      final now = DateTime.now();
+      final today = DateTime(
+          now.year, now.month, now.day); // Obtener solo la fecha actual
+
+      final querySnapshot = await userCollectionRef
+          .where('tipo', isEqualTo: 'Diaria')
+          .where('fechaCreacion', isEqualTo: today)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final metaDoc = querySnapshot.docs.first;
+        final meta = metaDoc.data();
+
         meta['id'] =
             metaDoc.id; // Agregar el ID del documento al mapa de resultados
 

@@ -69,7 +69,7 @@ class _SelectTdeePageState extends State<SelectTdeePage> {
   @override
   Widget build(BuildContext context) {
     final tdee = calculateTdee(gymVisitsPerWeek);
-    final description = getTdeeDescription(tdee);
+    //final description = getTdeeDescription(tdee);
 
     return Scaffold(
       appBar: AppBar(
@@ -91,7 +91,7 @@ class _SelectTdeePageState extends State<SelectTdeePage> {
            // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                'Ingresa la cantidad de veces que vas al gimnasio a la semana:',
+                'Ingresa la cantidad de veces que vas o irás al gimnasio a la semana:',
                 style: TextStyle(fontSize: 18, color: Colors.white),
               ),
               const SizedBox(height: 20),
@@ -142,16 +142,21 @@ class _SelectTdeePageState extends State<SelectTdeePage> {
               //   style: const TextStyle(color: Colors.white),
               // ),
             
-              const Text(
-                'Tu nivel de actividad física es:',
-                style: TextStyle(fontSize: 18, color: Colors.white),
-              ),
+              // const Text(
+              //   'Tu nivel de actividad física es:',
+              //   style: TextStyle(fontSize: 18, color: Colors.white),
+              // ),
+              // Text(
+              //   description,
+              //   textAlign: TextAlign.center,
+              //   style: const TextStyle(color: Colors.white),
+              // ),
+              // const SizedBox(height: 20),
               Text(
-                description,
+                recommendation,
                 textAlign: TextAlign.center,
                 style: const TextStyle(color: Colors.white),
               ),
-              const SizedBox(height: 20),
             ],
           ),
         ),

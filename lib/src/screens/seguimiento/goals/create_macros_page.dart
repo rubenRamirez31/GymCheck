@@ -44,14 +44,15 @@ class _CreateMatricesPageState extends State<CreateMatricesPage> {
       ),
       body: Container(
         color: const Color.fromARGB(255, 18, 18, 18),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
+         padding: const EdgeInsets.all(20.0),
+       
+         
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
                 'Tu ingesta diaria:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                style: TextStyle(fontSize: 18, color: Colors.white),
               ),
               const SizedBox(height: 20),
               _buildMacroRow('Proteínas', '${macros['proteinas']} g'),
@@ -59,7 +60,7 @@ class _CreateMatricesPageState extends State<CreateMatricesPage> {
               _buildMacroRow('Grasas', '${macros['grasas']} g'),
             ],
           ),
-        ),
+        
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
