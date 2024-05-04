@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:gym_check/src/models/social/post_model.dart';
 import 'package:gym_check/src/models/usuario/usuario.dart';
 
@@ -78,4 +79,3 @@ Future<int> uploadUser(Usuario u) async {
 
   return codigo;
 }
-

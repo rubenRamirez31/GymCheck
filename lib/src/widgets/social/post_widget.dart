@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/social/post_model.dart';
 import 'package:gym_check/src/screens/social/profile_page.dart';
+import 'package:gym_check/src/services/firebase_services.dart';
 import 'package:gym_check/src/values/app_colors.dart';
 import 'package:gym_check/src/widgets/social/comment_box.dart';
 import 'package:gym_check/src/widgets/social/favoritoitem.dart';
@@ -132,6 +133,15 @@ class PostWidget extends StatefulWidget {
 }
 
 class _PostWidgetState extends State<PostWidget> {
+  String? userProfileImageUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    // Llamar a la función para obtener la foto de perfil del usuario
+    getUserProfileImageUrl(widget.post.userId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -140,13 +150,18 @@ class _PostWidgetState extends State<PostWidget> {
         child: IntrinsicHeight(
           child: Row(
             children: [
-              const Column(
+              Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  CircleAvatar(
-                    radius: 20,
-                    child: Icon(Icons.person),
-                  ),
+                  userProfileImageUrl != null && userProfileImageUrl!.isNotEmpty
+                      ? CircleAvatar(
+                          radius: 20,
+                          backgroundImage: NetworkImage(userProfileImageUrl!),
+                        )
+                      : const CircleAvatar(
+                          radius: 20,
+                          child: Icon(Icons.person),
+                        ),
                 ],
               ),
               const SizedBox(
@@ -277,12 +292,32 @@ class _PostWidgetState extends State<PostWidget> {
     );
   }
 
-  Future<int> getCommentCount(String postId) async {
+  Future<void> getUserProfileImageUrl(String userId) async {
+    try {
+      QuerySnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('Usuarios')
+          .where("userIdAuth", isEqualTo: userId)
+          .get();
+      if (userSnapshot.docs.isNotEmpty) {
+        var userData = userSnapshot.docs.first.data();
+        // Verificar si el objeto es un mapa antes de verificar si contiene la clave
+        if (userData is Map && userData.containsKey('urlImagen')) {
+          setState(() {
+            userProfileImageUrl = userData['urlImagen'];
+          });
+        }
+      }
+    } catch (e) {
+      print('Error al obtener la foto de perfil del usuario: $e');
+    }
+  }
+
+/*   Future<int> getCommentCount(String postId) async {
     final querySnapshot = await FirebaseFirestore.instance
         .collection("Publicaciones")
         .doc(postId)
         .collection("comentarios")
         .get();
     return querySnapshot.size;
-  }
+  } */
 }
