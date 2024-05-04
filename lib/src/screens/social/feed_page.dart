@@ -29,8 +29,8 @@ class _FeedPageState extends State<FeedPage> {
       backgroundColor: AppColors.darkBlue,
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            leading: GestureDetector(
+/*           SliverAppBar(
+/*             leading: GestureDetector(
               onTap: () {
                 showModalBottomSheet(
                   showDragHandle: true,
@@ -51,7 +51,7 @@ class _FeedPageState extends State<FeedPage> {
                   backgroundImage: NetworkImage(globales.fotoPerfil),
                 ),
               ),
-            ),
+            ), */
             title: const Text(
               'LifeCheck',
               style: TextStyle(color: Colors.white, fontSize: 30),
@@ -73,7 +73,7 @@ class _FeedPageState extends State<FeedPage> {
                 true, // Hace que el AppBar se desplace fuera de la vista al hacer scroll hacia abajo
             snap:
                 true, // Hace que el AppBar se oculte completamente al hacer scroll hacia abajo
-          ),
+          ), */
           StreamBuilder<QuerySnapshot>(
             stream: postStream,
             builder: (context, snapshot) {

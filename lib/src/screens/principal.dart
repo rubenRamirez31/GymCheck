@@ -30,6 +30,9 @@ class _PrincipalPageState extends State<PrincipalPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const Drawer(),
+      appBar: AppBar(),
+
       //backgroundColor: Colors.amber[100],
       backgroundColor: Colors.grey,
       bottomNavigationBar: NavigationBar(
