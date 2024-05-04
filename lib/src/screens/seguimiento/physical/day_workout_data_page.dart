@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:gym_check/src/screens/seguimiento/physical/modify_routine_page.dart';
+import 'package:gym_check/src/screens/seguimiento/remiders/add_remider_page.dart';
+
 import 'package:intl/intl.dart'; // Importa la biblioteca intl para formatear fechas
 import 'package:gym_check/src/screens/calendar/physical-nutritional/create_event_page.dart';
-import 'package:gym_check/src/screens/seguimiento/add_remider_page.dart';
+
 import 'package:gym_check/src/services/reminder_service.dart';
 
 class DayWorkOutDataPage extends StatefulWidget {
@@ -27,10 +28,10 @@ class _DayWorkOutDataPageState extends State<DayWorkOutDataPage> {
 
   Future<void> _loadRoutines() async {
     try {
-      final routines =
-          await ReminderService.getRemindersByDay(context, widget.day, "Rutina");
+      //final routines =
+       //   await ReminderService.getRemindersByDay(context, widget.day, "Rutina");
       setState(() {
-        _routines = routines;
+     //   _routines = routines;
       });
        print(_routines);
     } catch (error) {
