@@ -25,6 +25,25 @@ class _UpdateReminderPageState extends State<UpdateReminderPage> {
     Colors.purple,
   ];
 
+
+  Map<String, dynamic>? _reminderData;
+ 
+
+  @override
+  void initState() {
+    super.initState();
+   
+    _loadReminderData();
+  }
+
+  Future<void> _loadReminderData() async {
+    final reminderData =
+        await ReminderService.getReminderById(context, widget.reminderId);
+    setState(() {
+      _reminderData = reminderData['reminder'];
+    
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,7 +156,7 @@ class _UpdateReminderPageState extends State<UpdateReminderPage> {
 
       // Llamar al servicio para actualizar el recordatorio en el servidor
       final result =
-          await ReminderService.updateReminder(context, widget.reminderId, updatedFields);
+          await ReminderService.updateReminderIdrecordar(context, _reminderData!['idRecordar'], updatedFields);
 
       // Imprimir mensaje o manejar resultado como desees
       print(result);

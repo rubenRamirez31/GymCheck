@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gym_check/src/screens/seguimiento/update_remider_page.dart';
+import 'package:gym_check/src/screens/seguimiento/remiders/update_remider_page.dart';
+
 import 'package:gym_check/src/services/reminder_service.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -56,8 +57,14 @@ class _ViewReminderState extends State<ViewReminder> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text('Eliminar Recordatorio'),
-            content:
-                Text('¿Estás seguro de que deseas eliminar este recordatorio?'),
+            content: Text(
+              '¿Estás seguro de que deseas eliminar este recordatorio? Toma en cuenta que esta acción también eliminará todos los recordatorios asociados. Esta acción no se puede deshacer.',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
             actions: [
               TextButton(
                 onPressed: () {
@@ -84,8 +91,63 @@ class _ViewReminderState extends State<ViewReminder> {
         });
 
         // Eliminar el recordatorio
-        final result =
-            await ReminderService.deleteReminder(context, widget.reminderId);
+        final result = await ReminderService.deleteReminderIdRecordar(
+            context, _reminderData!['idRecordar']);
+
+        // Imprimir mensaje o manejar resultado como desees
+        print(result);
+
+        // Cerrar la página después de eliminar el recordatorio
+        Navigator.of(context).pop();
+      }
+    } catch (error) {
+      print('Error al eliminar recordatorio: $error');
+    }
+  }
+  Future<void> _deleteReminderDay() async {
+    try {
+      // Mostrar diálogo de confirmación antes de eliminar el recordatorio
+      bool confirmDelete = await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Eliminar Recordatorio'),
+            content: Text(
+              '¿Estás seguro de que deseas eliminar este recordatorio? solo se elimnara le recordatorio en esta fecha, los demas no se vrán afectados',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false); // Cancelar eliminación
+                },
+                child: Text('Cancelar'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(true); // Confirmar eliminación
+                },
+                child: Text('Eliminar'),
+              ),
+            ],
+          );
+        },
+      );
+
+      // Si el usuario confirmó la eliminación, proceder con la eliminación del recordatorio
+      if (confirmDelete == true) {
+        // Actualizar el estado para mostrar la animación de eliminación
+        setState(() {
+          _isLoading = true;
+        });
+
+        // Eliminar el recordatorio
+        final result = await ReminderService.deleteReminderById(
+            context, widget.reminderId);
 
         // Imprimir mensaje o manejar resultado como desees
         print(result);
@@ -115,7 +177,7 @@ class _ViewReminderState extends State<ViewReminder> {
             )
           : _reminderData != null
               ? SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
+                  //scrollDirection: Axis.horizontal,
                   child: Padding(
                     padding: const EdgeInsets.all(
                         16.0), // Agregar espaciado alrededor del contenido
@@ -179,46 +241,57 @@ class _ViewReminderState extends State<ViewReminder> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 16.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                _deleteReminder();
-                              },
-                              child: Text('Eliminar Recordatorio'),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                   Navigator.of(context).pop();
 
-                                showModalBottomSheet(
-                                  showDragHandle: true,
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(15),
-                                    ),
-                                  ),
-                                  context: context,
-                                  isScrollControlled: true,
-                                  builder: (context) {
-                                    return FractionallySizedBox(
-                                      heightFactor: 0.60,
-                                      child: UpdateReminderPage(
-                                        reminderId: widget.reminderId,
+                        SizedBox(height: 16.0),
+
+                         SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  _deleteReminder();
+                                },
+                                child: Text('Eliminar Recordatorios'),
+                              ),
+                              _reminderData!['modelo'] == 'clon'
+                                  ?  ElevatedButton(
+                                onPressed: () {
+                                  _deleteReminderDay();
+                                },
+                                child: Text('Eliminar Recordatorio de este dia'),
+                              )
+                                  : const SizedBox(),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                          
+                                  showModalBottomSheet(
+                                    showDragHandle: true,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(15),
                                       ),
-                                    );
-                                  },
-                                );
-                                
-       
-       
-                              },
-                              child: Text('Modificar Recordatorio'),
-                            ),
-                          ],
+                                    ),
+                                    context: context,
+                                    isScrollControlled: true,
+                                    builder: (context) {
+                                      return FractionallySizedBox(
+                                        heightFactor: 0.60,
+                                        child: UpdateReminderPage(
+                                          reminderId: widget.reminderId,
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Text('Modificar Recordatorio'),
+                              ),
+                            ],
+                          ),
                         ),
+                       
                       ],
                     ),
                   ),
@@ -228,10 +301,4 @@ class _ViewReminderState extends State<ViewReminder> {
                 ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: ViewReminder(reminderId: 'tu_id_de_recordatorio_aqui'),
-  ));
 }

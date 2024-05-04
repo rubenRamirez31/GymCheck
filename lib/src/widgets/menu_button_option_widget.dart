@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:gym_check/src/providers/global_variables_provider.dart';
-import 'package:provider/provider.dart';
 
 class MenuButtonOption extends StatefulWidget {
   final List<String> options;
   final Function(int) onItemSelected;
-  final Color highlightColor;
+  final List<Color> highlightColors; // Lista de colores de resaltado
   final int selectedMenuOptionGlobal;
 
   MenuButtonOption({
     required this.options,
     required this.onItemSelected,
-    required this.highlightColor,
+    required this.highlightColors, // Recibe una lista de colores de resaltado
     required this.selectedMenuOptionGlobal,
   });
 
@@ -35,6 +33,8 @@ class _MenuButtonOptionState extends State<MenuButtonOption> {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: widget.options.asMap().entries.map((entry) {
           final int index = entry.key;
           final String option = entry.value;
@@ -54,7 +54,7 @@ class _MenuButtonOptionState extends State<MenuButtonOption> {
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
                   color: option == selectedOption
-                      ? widget.highlightColor
+                      ? widget.highlightColors[index] // Usa el color de resaltado correspondiente
                       : const Color.fromARGB(255, 83, 83, 83),
                   child: Text(
                     option,

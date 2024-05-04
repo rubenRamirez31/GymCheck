@@ -1,7 +1,8 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/screens/calendar/event_details_page.dart';
-import 'package:gym_check/src/screens/seguimiento/add_remider_page.dart';
+import 'package:gym_check/src/screens/seguimiento/remiders/add_remider_page.dart';
+
 import 'package:gym_check/src/services/reminder_service.dart';
 
 class WorkOutCalendarDayWidget extends StatefulWidget {

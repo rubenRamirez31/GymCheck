@@ -17,6 +17,8 @@ class GlobalVariablesProvider extends ChangeNotifier {
   // Variable para guardar el estado de la última opción seleccionada de la subpágina seguimiento nutricional
   int _selectedMenuOptionNutritional = 0;
 
+  int _selectedMenuOptionDias = 0;
+
   // Getter para obtener el estado de la subpágina en seguimiento
   int get selectedSubPageTracking => _selectedSubPageTracking;
   // Getter para obtener el estado de la subpágina en creación
@@ -24,6 +26,7 @@ class GlobalVariablesProvider extends ChangeNotifier {
   
   // Getter para obtener el estado de la última opción seleccionada de la subpágina en seguimiento físico
   int get selectedMenuOptionTrackingPhysical => _selectedMenuOptionTrackingPhysical;
+  int get selectedMenuOptionDias => _selectedMenuOptionDias;
 
   // Getter para obtener el estado de la última opción seleccionada de la subpágina en seguimiento nutricional
   int get selectedMenuOptionNutritional => _selectedMenuOptionNutritional;
@@ -42,6 +45,11 @@ class GlobalVariablesProvider extends ChangeNotifier {
   // Setter para actualizar el estado de la última opción seleccionada de la subpágina en seguimiento físico y notificar a los listeners
   set selectedMenuOptionTrackingPhysical(int newValue) {
     _selectedMenuOptionTrackingPhysical = newValue;
+    notifyListeners(); // Notifica a los widgets que están escuchando los cambios
+  }
+  // Setter para actualizar el estado de la última opción seleccionada de la subpágina en seguimiento físico y notificar a los listeners
+  set selectedMenuOptionDias(int newValue) {
+    _selectedMenuOptionDias = newValue;
     notifyListeners(); // Notifica a los widgets que están escuchando los cambios
   }
 

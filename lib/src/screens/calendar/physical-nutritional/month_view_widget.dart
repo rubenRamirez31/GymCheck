@@ -1,9 +1,11 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/screens/calendar/physical-nutritional/create_event_page.dart';
-import 'package:gym_check/src/screens/seguimiento/add_remider_page.dart';
-import 'package:gym_check/src/screens/seguimiento/physical/modify_routine_page.dart';
-import 'package:gym_check/src/screens/seguimiento/view_remider_page.dart';
+
+
+import 'package:gym_check/src/screens/seguimiento/remiders/add_remider_page.dart';
+import 'package:gym_check/src/screens/seguimiento/remiders/view_remider_page.dart';
+
 import 'package:gym_check/src/services/reminder_service.dart';
 
 import '../event_details_page.dart';
