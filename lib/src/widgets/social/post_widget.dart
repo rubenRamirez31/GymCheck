@@ -155,11 +155,11 @@ class _PostWidgetState extends State<PostWidget> {
                 children: [
                   userProfileImageUrl != null && userProfileImageUrl!.isNotEmpty
                       ? CircleAvatar(
-                          radius: 20,
+                          radius: 25,
                           backgroundImage: NetworkImage(userProfileImageUrl!),
                         )
                       : const CircleAvatar(
-                          radius: 20,
+                          radius: 25,
                           child: Icon(Icons.person),
                         ),
                 ],

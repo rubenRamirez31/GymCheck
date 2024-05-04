@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/screens/crear/ejercicios/create_exercise_page.dart';
-
 import 'package:gym_check/src/screens/seguimiento/home_tracking_page.dart';
 import 'package:gym_check/src/screens/social/feed_page.dart';
+import 'package:provider/provider.dart';
 
 class PrincipalPage extends StatefulWidget {
+  final String? uid;
   final int initialPageIndex;
 
-  const PrincipalPage({Key? key, this.initialPageIndex = 0}) : super(key: key);
+  const PrincipalPage({Key? key, this.initialPageIndex = 0, this.uid})
+      : super(key: key);
 
   @override
   State<PrincipalPage> createState() => _PrincipalPageState();
@@ -20,13 +23,15 @@ class _PrincipalPageState extends State<PrincipalPage> {
   void initState() {
     super.initState();
     currentPageIndex = widget.initialPageIndex;
+    Provider.of<Globales>(context, listen: false)
+        .cargarDatosUsuario(widget!.uid.toString());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       //backgroundColor: Colors.amber[100],
-       backgroundColor: Colors.grey,     
+      backgroundColor: Colors.grey,
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
           setState(() {
@@ -47,10 +52,6 @@ class _PrincipalPageState extends State<PrincipalPage> {
           NavigationDestination(
             icon: Icon(Icons.radar),
             label: 'Seguimiento',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person),
-            label: 'Yo',
           ),
         ],
       ),

@@ -10,10 +10,8 @@ class Share extends StatefulWidget {
 class _ShareState extends State<Share> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Text('Compartir'),
-      ),
+    return const Center(
+      child: Text('Compartir'),
     );
   }
 }
