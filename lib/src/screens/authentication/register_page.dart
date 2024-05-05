@@ -277,7 +277,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       // ignore: use_build_context_synchronously
                                       Navigator.of(context)
                                           .pushNamedAndRemoveUntil(
-                                              "/", (route) => false);
+                                              "/login", (route) => false);
                                       SmartDialog.showToast(
                                           "Cuenta creada con éxito");
                                     } else {

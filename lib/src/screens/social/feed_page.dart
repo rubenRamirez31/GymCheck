@@ -1,14 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/values/app_colors.dart';
 import 'package:gym_check/src/widgets/social/post_widget.dart';
 import 'package:gym_check/src/models/social/post_model.dart';
+import 'package:provider/provider.dart';
 
 // Importa la página de creación de publicaciones
 import 'create_post_page.dart';
 
 class FeedPage extends StatefulWidget {
-  const FeedPage({super.key});
+  final Function? openDrawer;
+  const FeedPage({super.key, this.openDrawer});
 
   @override
   State<FeedPage> createState() => _FeedPageState();
@@ -19,17 +22,35 @@ class _FeedPageState extends State<FeedPage> {
   Widget build(BuildContext context) {
     final Stream<QuerySnapshot> postStream =
         FirebaseFirestore.instance.collection("Publicaciones").snapshots();
+    final globales = context.watch<Globales>();
 
     return Scaffold(
-      backgroundColor: AppColors.darkBlue,
+      backgroundColor: AppColors.darkestBlue,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
+            leading: GestureDetector(
+              onTap: () {
+                widget.openDrawer!();
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: globales.fotoPerfil.isNotEmpty
+                    ? CircleAvatar(
+                        radius: 20,
+                        backgroundImage: NetworkImage(globales.fotoPerfil),
+                      )
+                    : const CircleAvatar(
+                        radius: 25,
+                        child: Icon(Icons.person),
+                      ),
+              ),
+            ),
             title: const Text(
               'LifeCheck',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.white, fontSize: 30),
             ),
-            backgroundColor: AppColors.darkBlue,
+            backgroundColor: AppColors.darkestBlue,
             actions: [
               IconButton(
                 color: AppColors.white,

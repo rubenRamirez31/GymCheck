@@ -2,10 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/social/post_model.dart';
 import 'package:gym_check/src/screens/social/profile_page.dart';
-import 'package:gym_check/src/services/firebase_services.dart';
 import 'package:gym_check/src/values/app_colors.dart';
 import 'package:gym_check/src/widgets/social/comment_box.dart';
+import 'package:gym_check/src/widgets/social/commentcount.dart';
 import 'package:gym_check/src/widgets/social/favoritoitem.dart';
+import 'package:gym_check/src/widgets/social/likecount.dart';
 import 'package:gym_check/src/widgets/social/share_box.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -134,12 +135,23 @@ class PostWidget extends StatefulWidget {
 
 class _PostWidgetState extends State<PostWidget> {
   String? userProfileImageUrl;
+  int commentCount = 0;
 
   @override
   void initState() {
     super.initState();
     // Llamar a la función para obtener la foto de perfil del usuario
     getUserProfileImageUrl(widget.post.userId);
+    loadCommentCount();
+  }
+
+  Future<void> loadCommentCount() async {
+    int count = await getCommentCount(widget.post.id ?? "");
+    if (mounted) {
+      setState(() {
+        commentCount = count;
+      });
+    }
   }
 
   @override
@@ -155,11 +167,11 @@ class _PostWidgetState extends State<PostWidget> {
                 children: [
                   userProfileImageUrl != null && userProfileImageUrl!.isNotEmpty
                       ? CircleAvatar(
-                          radius: 20,
+                          radius: 25,
                           backgroundImage: NetworkImage(userProfileImageUrl!),
                         )
                       : const CircleAvatar(
-                          radius: 20,
+                          radius: 25,
                           child: Icon(Icons.person),
                         ),
                 ],
@@ -227,7 +239,12 @@ class _PostWidgetState extends State<PostWidget> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        FavoritoItem(postId: widget.post.id ?? ''),
+                        Row(
+                          children: [
+                            FavoritoItem(postId: widget.post.id ?? ''),
+                            LikeCount(postId: widget.post.id ?? '')
+                          ],
+                        ),
                         Row(
                           children: [
                             IconButton(
@@ -254,6 +271,7 @@ class _PostWidgetState extends State<PostWidget> {
                                 color: AppColors.primaryColor,
                               ),
                             ),
+                            CommentCount(postId: widget.post.id ?? '')
                           ],
                         ),
                         IconButton(
@@ -302,9 +320,12 @@ class _PostWidgetState extends State<PostWidget> {
         var userData = userSnapshot.docs.first.data();
         // Verificar si el objeto es un mapa antes de verificar si contiene la clave
         if (userData is Map && userData.containsKey('urlImagen')) {
-          setState(() {
-            userProfileImageUrl = userData['urlImagen'];
-          });
+          if (mounted) {
+            // Verificar si el widget está montado antes de llamar a setState
+            setState(() {
+              userProfileImageUrl = userData['urlImagen'];
+            });
+          }
         }
       }
     } catch (e) {
@@ -312,12 +333,12 @@ class _PostWidgetState extends State<PostWidget> {
     }
   }
 
-/*   Future<int> getCommentCount(String postId) async {
+  Future<int> getCommentCount(String postId) async {
     final querySnapshot = await FirebaseFirestore.instance
         .collection("Publicaciones")
         .doc(postId)
         .collection("comentarios")
         .get();
     return querySnapshot.size;
-  } */
+  }
 }

@@ -1,4 +1,6 @@
 import 'package:calendar_view/calendar_view.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
@@ -9,7 +11,6 @@ import 'package:gym_check/src/screens/authentication/login_page.dart';
 import 'package:gym_check/src/screens/authentication/register_page.dart';
 import 'package:gym_check/src/screens/crear/create_page.dart';
 import 'package:gym_check/src/screens/principal.dart';
-
 
 import 'package:gym_check/src/screens/social/create_post_page.dart';
 import 'package:gym_check/src/screens/social/edit_post_page.dart';
@@ -37,11 +38,28 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  // Obtener el token de registro del dispositivo
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+  print("Token de notificaciones push: ${fcmToken}");
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  User? user;
+
+  @override
+  void initState() {
+    super.initState();
+    user = FirebaseAuth.instance.currentUser;
+    print("User Id loggeado : ${user?.uid}");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,16 +70,20 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => Globales())
       ],
       child: CalendarControllerProvider(
-        controller: EventController(), // Aquí asignamos un EventController
+        controller: EventController(),
         child: MaterialApp(
           navigatorObservers: [FlutterSmartDialog.observer],
           builder: FlutterSmartDialog.init(),
           debugShowCheckedModeBanner: false,
           theme: AppTheme.themeData,
-          initialRoute: '/',
+          home: user != null
+              ? PrincipalPage(
+                  uid: user?.uid,
+                )
+              : const LoginPage(),
           routes: {
             // Rutas de autenticación
-            '/': (context) => const LoginPage(),
+            '/login': (context) => const LoginPage(),
             '/register': (context) => const RegisterPage(),
             '/confirm_email': (context) => ConfirmEmailPage(),
 
@@ -89,7 +111,6 @@ class MyApp extends StatelessWidget {
             // Rutas para el módulo de creación
             'create-module': (context) => CreatePage(),
 
-           
             // Rutas para el módulo de "mi espacio"
             'mi-espacio': (context) => MiEspacioPage(),
           },

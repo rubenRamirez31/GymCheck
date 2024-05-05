@@ -11,7 +11,7 @@ class AppStrings {
   static const String facebook = 'Facebook';
   static const String google = 'Google';
   static const String signInToYourNAccount = 'Acceda a su \ncuenta';
-  static const String signInToYourAccount = 'Acceda a su cuenta de GymCheck';
+  static const String signInToYourAccount = 'Acceda a su cuenta de LifeCheck';
   static const String iHaveAnAccount = '¿Tengo una cuenta?';
   static const String forgotPassword = '¿Ha olvidado su contraseña?';
   static const String orLoginWith = 'o inicie sesión con';
