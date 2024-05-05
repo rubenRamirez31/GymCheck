@@ -35,10 +35,15 @@ class _FeedPageState extends State<FeedPage> {
               },
               child: Padding(
                 padding: const EdgeInsets.all(6.0),
-                child: CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(globales.fotoPerfil),
-                ),
+                child: globales.fotoPerfil.isNotEmpty
+                    ? CircleAvatar(
+                        radius: 20,
+                        backgroundImage: NetworkImage(globales.fotoPerfil),
+                      )
+                    : const CircleAvatar(
+                        radius: 25,
+                        child: Icon(Icons.person),
+                      ),
               ),
             ),
             title: const Text(
