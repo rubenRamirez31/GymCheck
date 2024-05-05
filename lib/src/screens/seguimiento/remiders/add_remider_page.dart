@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/reminder_model.dart';
 import 'package:gym_check/src/screens/calendar/widgets/date_time_selector.dart';
+import 'package:gym_check/src/screens/seguimiento/remiders/reminder_scheduler.dart';
 import 'package:gym_check/src/services/reminder_service.dart';
 import 'package:intl/intl.dart';
 
@@ -44,6 +45,8 @@ class _AddReminderPageState extends State<AddReminderPage> {
     Colors.orange,
     Colors.purple,
   ];
+
+  int dropdownValue = 10;
 
   @override
   void initState() {
@@ -201,6 +204,23 @@ class _AddReminderPageState extends State<AddReminderPage> {
               ),
               SizedBox(height: 20.0),
 
+              Text("Seleciona cuantos dias"),
+
+              DropdownButton<int>(
+                value: dropdownValue,
+                onChanged: (value) {
+                  setState(() {
+                    dropdownValue = value!;
+                  });
+                },
+                items: <int>[10, 15, 30, 60].map((int value) {
+                  return DropdownMenuItem<int>(
+                    value: value,
+                    child: Text(value.toString()),
+                  );
+                }).toList(),
+              ),
+
               // if (widget.selectedDate == null) ...[
               SingleChildScrollView(
                 scrollDirection:
@@ -353,6 +373,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
       print(si);
       final response =
           await ReminderService.createReminder(context, reminder.toJson());
+          ReminderScheduler.scheduleReminders(context, reminder, dropdownValue);
 
       if (response.containsKey('message')) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -362,6 +383,13 @@ class _AddReminderPageState extends State<AddReminderPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(response['error']!)),
         );
+      } else {
+        // Si se creó el recordatorio "Prime" correctamente, programar la replicación
+        Reminder clonedReminder = reminder.clone();
+        clonedReminder.modelo = 'clon';
+
+        // Llamar a la función para programar los recordatorios
+       // 
       }
 
       // Mostrar menú para seleccionar rutina

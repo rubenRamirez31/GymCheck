@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:gym_check/src/components/app_text_form_field.dart';
-import 'package:gym_check/src/models/user_model.dart';
 import 'package:gym_check/src/models/usuario/usuario.dart';
 import 'package:gym_check/src/services/firebase_services.dart';
-import 'package:gym_check/src/services/user_service.dart';
 import 'package:gym_check/src/utils/common_widgets/gradient_background.dart';
 import 'package:gym_check/src/values/app_colors.dart';
 import 'package:gym_check/src/values/app_constants.dart';
@@ -101,6 +99,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   AppTextFormField(
+                    textStyle: TextStyle(color: Colors.white), // Texto blanco
+                    fillColor:
+                        Colors.grey[800], // Color claro para el campo de texto
                     labelText: AppStrings.email,
                     controller: emailController,
                     textInputAction: TextInputAction.next,
@@ -115,6 +116,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                   ),
                   AppTextFormField(
+                    textStyle: TextStyle(color: Colors.white), // Texto blanco
+                    fillColor:
+                        Colors.grey[800], // Color claro para el campo de texto
                     textInputAction: TextInputAction.next,
                     labelText: 'Usuario',
                     keyboardType: TextInputType.text,
@@ -133,6 +137,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     valueListenable: passwordNotifier,
                     builder: (_, passwordObscure, __) {
                       return AppTextFormField(
+                        textStyle:
+                            TextStyle(color: Colors.white), // Texto blanco
+                        fillColor: Colors
+                            .grey[800], // Color claro para el campo de texto
                         obscureText: passwordObscure,
                         controller: passwordController,
                         labelText: AppStrings.password,
@@ -177,6 +185,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     valueListenable: confirmPasswordNotifier,
                     builder: (_, confirmPasswordObscure, __) {
                       return AppTextFormField(
+                        textStyle:
+                            TextStyle(color: Colors.white), // Texto blanco
+                        fillColor: Colors
+                            .grey[800], // Color claro para el campo de texto
                         labelText: AppStrings.confirmPassword,
                         controller: confirmPasswordController,
                         obscureText: confirmPasswordObscure,

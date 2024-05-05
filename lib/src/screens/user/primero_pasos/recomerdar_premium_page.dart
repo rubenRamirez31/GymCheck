@@ -1,13 +1,9 @@
+// ignore_for_file: avoid_print, prefer_const_constructors
+
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:gym_check/src/models/user_model.dart';
-import 'package:gym_check/src/providers/globales.dart';
-import 'package:gym_check/src/providers/user_session_provider.dart';
-import 'package:gym_check/src/services/user_service.dart';
+import 'package:gym_check/src/services/firebase_services.dart';
 import 'package:gym_check/src/utils/common_widgets/gradient_background.dart';
 import 'package:gym_check/src/values/app_theme.dart';
-import 'package:provider/provider.dart';
-
 class RecomendarPlanPremiumPage extends StatefulWidget {
   const RecomendarPlanPremiumPage({super.key});
 
@@ -20,6 +16,7 @@ class _RecomendarPlanPremiumPageState extends State<RecomendarPlanPremiumPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: const Color.fromARGB(255, 18, 18, 18),
       body: Column(
         children: [
           const GradientBackground(
@@ -63,14 +60,14 @@ class _RecomendarPlanPremiumPageState extends State<RecomendarPlanPremiumPage> {
 
   void _suscribirseDespues(BuildContext context) async {
     try {
-        final globales = Provider.of<Globales>(context, listen: false);
-      // Crear objeto User con el campo 'primerosPasos' igual a 7
-      User user = User(primerosPasos: 7);
 
-      // Actualizar usuario con el campo 'primerosPasos'
-      await UserService.updateUser(globales.idAuth, user);
+        Map<String, dynamic> userData = {
+          'primeros_pasos': 7,
+       
+        };
 
-      // Navegar a la página Feed
+           await updateUser(userData, context);
+     
       // ignore: use_build_context_synchronously
       Navigator.of(context)
           .pushNamedAndRemoveUntil("/principal", (route) => false);

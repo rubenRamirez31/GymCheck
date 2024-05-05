@@ -93,33 +93,36 @@ class ReminderService {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> getAllReminders(
-      BuildContext context) async {
-    try {
-      Globales globales = Provider.of<Globales>(context, listen: false);
-      String nick = globales.nick;
-      final userCollectionRef = FirebaseFirestore.instance
-          .collection('Seguimiento')
-          .doc(nick)
-          .collection('Recordatorios');
-      final querySnapshot = await userCollectionRef.orderBy('startTime').get();
+static Future<List<Map<String, dynamic>>> getAllRemindersClon(BuildContext context) async {
+  try {
+    Globales globales = Provider.of<Globales>(context, listen: false);
+    String nick = globales.nick;
+    final userCollectionRef = FirebaseFirestore.instance
+        .collection('Seguimiento')
+        .doc(nick)
+        .collection('Recordatorios');
+    final querySnapshot = await userCollectionRef
+        .where('modelo', isEqualTo: 'clon')
+        .orderBy('startTime')
+        .get();
 
-      final reminders = querySnapshot.docs.map((doc) {
-        Map<String, dynamic> data = doc.data();
-        // Convertir las cadenas de texto de startTime y endTime a objetos DateTime
-        data['startTime'] = DateTime.parse(data['startTime']);
-        data['endTime'] = DateTime.parse(data['endTime']);
-        // Agregar el ID del documento al mapa de datos
-        data['id'] = doc.id;
-        return data;
-      }).toList();
+    final reminders = querySnapshot.docs.map((doc) {
+      Map<String, dynamic> data = doc.data();
+      // Convertir las cadenas de texto de startTime y endTime a objetos DateTime
+      data['startTime'] = DateTime.parse(data['startTime']);
+      data['endTime'] = DateTime.parse(data['endTime']);
+      // Agregar el ID del documento al mapa de datos
+      data['id'] = doc.id;
+      return data;
+    }).toList();
 
-      return reminders;
-    } catch (error) {
-      print('Error al obtener todos los recordatorios: $error');
-      throw error;
-    }
+    return reminders;
+  } catch (error) {
+    print('Error al obtener todos los recordatorios de tipo clon: $error');
+    throw error;
   }
+}
+
 
   static Future<Map<String, dynamic>> getReminderById(
       BuildContext context, String reminderId) async {

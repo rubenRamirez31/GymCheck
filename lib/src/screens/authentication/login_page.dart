@@ -92,6 +92,8 @@ class _LoginPageState extends State<LoginPage> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   AppTextFormField(
+                   textStyle: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)), // Texto blanco
+                  fillColor: const Color.fromARGB(255, 255, 255, 255), // Color claro para el campo de texto
                     controller: emailController,
                     labelText: AppStrings.email,
                     keyboardType: TextInputType.emailAddress,
@@ -109,6 +111,8 @@ class _LoginPageState extends State<LoginPage> {
                     valueListenable: passwordNotifier,
                     builder: (_, passwordObscure, __) {
                       return AppTextFormField(
+                         textStyle: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)), // Texto blanco
+                  fillColor: const Color.fromARGB(255, 255, 255, 255), // Color claro para el campo de texto
                         obscureText: passwordObscure,
                         controller: passwordController,
                         labelText: AppStrings.password,
@@ -266,16 +270,16 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.pushNamed(context, '/general_data');
         break;
       case 2:
-        Navigator.pushNamed(context, '/first_photo');
+        Navigator.pushNamed(context, '/edad');
         break;
       case 3:
-        Navigator.pushNamed(context, '/body_data');
+        Navigator.pushNamed(context, '/peso');
         break;
       case 4:
-        Navigator.pushNamed(context, '/nutritional_data');
+        Navigator.pushNamed(context, '/altura');
         break;
       case 5:
-        Navigator.pushNamed(context, '/emotional_data');
+        Navigator.pushNamed(context, '/first_photo');
         break;
       case 6:
         Navigator.pushNamed(context, '/recomendar_premium');

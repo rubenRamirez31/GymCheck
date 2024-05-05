@@ -104,6 +104,7 @@ class _ViewReminderState extends State<ViewReminder> {
       print('Error al eliminar recordatorio: $error');
     }
   }
+
   Future<void> _deleteReminderDay() async {
     try {
       // Mostrar diálogo de confirmación antes de eliminar el recordatorio
@@ -241,10 +242,8 @@ class _ViewReminderState extends State<ViewReminder> {
                             ],
                           ),
                         ),
-
                         SizedBox(height: 16.0),
-
-                         SingleChildScrollView(
+                        SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -256,17 +255,18 @@ class _ViewReminderState extends State<ViewReminder> {
                                 child: Text('Eliminar Recordatorios'),
                               ),
                               _reminderData!['modelo'] == 'clon'
-                                  ?  ElevatedButton(
-                                onPressed: () {
-                                  _deleteReminderDay();
-                                },
-                                child: Text('Eliminar Recordatorio de este dia'),
-                              )
+                                  ? ElevatedButton(
+                                      onPressed: () {
+                                        _deleteReminderDay();
+                                      },
+                                      child: Text(
+                                          'Eliminar Recordatorio de este dia'),
+                                    )
                                   : const SizedBox(),
                               ElevatedButton(
                                 onPressed: () {
                                   Navigator.of(context).pop();
-                          
+
                                   showModalBottomSheet(
                                     showDragHandle: true,
                                     shape: const RoundedRectangleBorder(
@@ -291,7 +291,6 @@ class _ViewReminderState extends State<ViewReminder> {
                             ],
                           ),
                         ),
-                       
                       ],
                     ),
                   ),

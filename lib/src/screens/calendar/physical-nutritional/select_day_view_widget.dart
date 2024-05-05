@@ -34,7 +34,7 @@ class _SelectDayViewWidgetState extends State<SelectDayViewWidget> {
 
   Future<void> _loadRoutines() async {
     try {
-      final routines = await ReminderService.getAllReminders(context);
+      final routines = await ReminderService.getAllRemindersClon(context);
       setState(() {
         _remider = routines;
       });

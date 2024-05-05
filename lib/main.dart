@@ -16,11 +16,14 @@ import 'package:gym_check/src/screens/social/edit_post_page.dart';
 import 'package:gym_check/src/screens/social/feed_page.dart';
 import 'package:gym_check/src/screens/social/profile_page.dart';
 import 'package:gym_check/src/screens/user/mi_espacio/mi_espacio_page.dart';
-import 'package:gym_check/src/screens/user/primero_pasos/body_data_page.dart';
+import 'package:gym_check/src/screens/user/primero_pasos/altura_page.dart';
+
+import 'package:gym_check/src/screens/user/primero_pasos/edad_page.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/emotional_data_page.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/first_photo_page.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/general_data_page.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/nutritional_data_page.dart';
+import 'package:gym_check/src/screens/user/primero_pasos/peso_page.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/recomerdar_premium_page.dart';
 import 'package:gym_check/src/values/app_theme.dart';
 import 'package:gym_check/src/widgets/social/comment_box.dart';
@@ -64,10 +67,11 @@ class MyApp extends StatelessWidget {
 
             // Rutas de primeros pasos del usuario
             '/general_data': (context) => const GeneralDataPage(),
+            '/edad': (context) => const EdadPage(),
+            '/peso': (context) => const PesoPage(),
+            '/altura': (context) => const AlturaPage(),
             '/first_photo': (context) => const FirstPhotoPage(),
-            '/body_data': (context) => const BodyDataPage(),
-            '/nutritional_data': (context) => const NutritionalDataPage(),
-            '/emotional_data': (context) => const EmotionalDataPage(),
+           
             '/recomendar_premium': (context) =>
                 const RecomendarPlanPremiumPage(),
 

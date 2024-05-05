@@ -1,30 +1,31 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'dart:io';
-
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:gym_check/src/models/user_model.dart';
-import 'package:gym_check/src/providers/globales.dart';
-import 'package:gym_check/src/providers/user_session_provider.dart';
-import 'package:gym_check/src/services/user_service.dart';
+import 'package:gym_check/src/screens/user/primero_pasos/recomerdar_premium_page.dart';
+import 'package:gym_check/src/services/firebase_services.dart';
 import 'package:gym_check/src/utils/common_widgets/gradient_background.dart';
 import 'package:gym_check/src/values/app_theme.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
+
 
 class FirstPhotoPage extends StatefulWidget {
   const FirstPhotoPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _FirstPhotoPageState createState() => _FirstPhotoPageState();
 }
 
 class _FirstPhotoPageState extends State<FirstPhotoPage> {
   File? _imageFile;
+  String? url;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 18, 18, 18),
       body: Column(
         children: [
           const GradientBackground(
@@ -101,6 +102,7 @@ class _FirstPhotoPageState extends State<FirstPhotoPage> {
       if (pickedImage != null) {
         setState(() {
           _imageFile = File(pickedImage.path);
+          url = pickedImage.name;
         });
       }
     } catch (error) {
@@ -112,19 +114,28 @@ class _FirstPhotoPageState extends State<FirstPhotoPage> {
   Future<void> _subirFoto(BuildContext context) async {
     try {
       if (_imageFile != null) {
-        // Obtener el ID de usuario
-        String userId = Provider.of<UserSessionProvider>(context, listen: false)
-            .userSession!
-            .userId;
+        // Subir la imagen al almacenamiento en la nube
+        final storageRef = FirebaseStorage.instance.ref("/profile").child(url!);
+        await storageRef.putFile(_imageFile!);
 
-        // Crear objeto User con la foto de perfil
-        User user = User(fotoPerfil: _imageFile, primerosPasos: 3);
+        // Obtener el enlace de descarga de la imagen subida
+        final imageUrl = await storageRef.getDownloadURL();
 
-        // Actualizar usuario con la foto de perfil
-        await UserService.updateUser(userId, user);
+        Map<String, dynamic> userData = {
+          'primeros_pasos': 6,
+          'urlImagen': imageUrl
+        };
 
-        // Redirigir a la página de body_data_page
-        Navigator.pushNamed(context, '/body_data');
+        await updateUser(userData, context);
+
+        // Ahora puedes usar la URL de la imagen para almacenarla en tu base de datos o donde la necesites
+        print(imageUrl);
+        // Redirigir a donde sea necesario después de subir la imagen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const RecomendarPlanPremiumPage()),
+        );
       }
     } catch (error) {
       print('Error al subir la foto de perfil: $error');
@@ -134,17 +145,21 @@ class _FirstPhotoPageState extends State<FirstPhotoPage> {
 
   Future<void> _subirDespues(BuildContext context) async {
     try {
-     final globales = Provider.of<Globales>(context, listen: false);
+      Map<String, dynamic> userData = {
+        'primeros_pasos': 6,
+      };
 
-      // Crear objeto User con el campo 'primerosPasos' igual a 3
-      User user = User(primerosPasos: 3);
+      await updateUser(userData, context);
 
-      // Actualizar usuario con el campo 'primerosPasos'
-      await UserService.updateUser(globales.idAuth, user);
+      // Ahora puedes usar la URL de la imagen para almacenarla en tu base de datos o donde la necesites
 
-      // Redirigir a la página de body_data_page
+      // Redirigir a donde sea necesario después de subir la imagen
       // ignore: use_build_context_synchronously
-      Navigator.pushNamed(context, '/body_data');
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const RecomendarPlanPremiumPage()),
+      );
     } catch (error) {
       print('Error al agregar foto después: $error');
       // Manejar el error si es necesario

@@ -6,34 +6,37 @@ class Usuario {
   String? segundoNombre = "";
   String? apellidos = "";
   String? genero = "";
-  String nick = "";
-  String correo = "";
+  String? nick = "";
+  String? correo = "";
   String? fotoPerfil = "";
-  String idAuth = "";
+  String? idAuth = "";
   int? primerosPasos;
   DateTime? fechaCreacion;
   bool? verificado;
+  int? edad; // Campo de edad opcional
 
-  Usuario(
-      {this.docId,
-       this.primerNombre,
-       this.segundoNombre,
-       this.apellidos,
-       this.genero,
-      required this.nick,
-      required this.correo,
-       this.fotoPerfil,
-      required this.idAuth,
-      this.primerosPasos,
-      this.fechaCreacion,
-      this.verificado});
+  Usuario({
+    this.docId,
+    this.primerNombre,
+    this.segundoNombre,
+    this.apellidos,
+    this.genero,
+    this.nick,
+    this.correo,
+    this.fotoPerfil,
+    this.idAuth,
+    this.primerosPasos,
+    this.fechaCreacion,
+    this.verificado,
+    this.edad, // Agregar campo de edad
+  });
 
   factory Usuario.getFirebaseId(String idd, Map json) {
     return Usuario(
       docId: idd,
       primerNombre: json['primer_nombre'],
       segundoNombre: json['segundo_nombre'],
-      apellidos: json['apellios'],
+      apellidos: json['apellidos'],
       genero: json['genero'],
       nick: json['nick'],
       correo: json['email'],
@@ -42,22 +45,24 @@ class Usuario {
       primerosPasos: json['primeros_pasos'],
       fechaCreacion: (json['fechaCreacion'] as Timestamp).toDate(),
       verificado: json['verificado'],
+      edad: json['edad'], // Asignar el valor del campo de edad si existe
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'primer_nombre' : primerNombre,
-      'segundo_nombre' : segundoNombre,
-      'apellidos' : apellidos,
-      'genero' : genero,
-      'nick' :nick,
-      'email' : correo,
-      'urlImagen' :fotoPerfil,
-      'userIdAuth' : idAuth,
-      'primeros_pasos' : primerosPasos,
-      'fechaCreacion' : fechaCreacion,
-      'verificado' : verificado
+      'primer_nombre': primerNombre,
+      'segundo_nombre': segundoNombre,
+      'apellidos': apellidos,
+      'genero': genero,
+      'nick': nick,
+      'email': correo,
+      'urlImagen': fotoPerfil,
+      'userIdAuth': idAuth,
+      'primeros_pasos': primerosPasos,
+      'fechaCreacion': fechaCreacion,
+      'verificado': verificado,
+      'edad': edad, // Agregar campo de edad al JSON si existe
     };
   }
 }

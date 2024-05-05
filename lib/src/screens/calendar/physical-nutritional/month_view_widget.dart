@@ -41,7 +41,7 @@ class _MonthViewWidgetState extends State<MonthViewWidget> {
 
   Future<void> _loadRoutines() async {
     try {
-      final routines = await ReminderService.getAllReminders(context);
+      final routines = await ReminderService.getAllRemindersClon (context);
       setState(() {
         _routines = routines;
       });
