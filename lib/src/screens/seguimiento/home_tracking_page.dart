@@ -103,7 +103,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
               icon: const Icon(Icons.health_and_safety),
               onPressed: () {
                 // Acción para el botón de Salud
-                ReminderScheduler.scheduleReminders(context);
+               // ReminderScheduler.scheduleReminders(context);
                 print('Botón de Salud presionado debug para recordatorios');
               },
             ),
