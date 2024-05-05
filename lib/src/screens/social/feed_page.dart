@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:gym_check/src/providers/globales.dart';
-import 'package:gym_check/src/screens/social/menuperfil.dart';
 import 'package:gym_check/src/values/app_colors.dart';
 import 'package:gym_check/src/widgets/social/post_widget.dart';
 import 'package:gym_check/src/models/social/post_model.dart';
@@ -12,7 +10,8 @@ import 'package:provider/provider.dart';
 import 'create_post_page.dart';
 
 class FeedPage extends StatefulWidget {
-  const FeedPage({super.key});
+  final Function? openDrawer;
+  const FeedPage({super.key, this.openDrawer});
 
   @override
   State<FeedPage> createState() => _FeedPageState();
@@ -26,23 +25,13 @@ class _FeedPageState extends State<FeedPage> {
     final globales = context.watch<Globales>();
 
     return Scaffold(
-      backgroundColor: AppColors.darkBlue,
+      backgroundColor: AppColors.darkestBlue,
       body: CustomScrollView(
         slivers: [
-/*           SliverAppBar(
-/*             leading: GestureDetector(
+          SliverAppBar(
+            leading: GestureDetector(
               onTap: () {
-                showModalBottomSheet(
-                  showDragHandle: true,
-                  context: context,
-                  isScrollControlled: true,
-                  builder: (context) {
-                    return const FractionallySizedBox(
-                      heightFactor: 0.30,
-                      child: MenuPerfil(),
-                    );
-                  },
-                );
+                widget.openDrawer!();
               },
               child: Padding(
                 padding: const EdgeInsets.all(6.0),
@@ -51,12 +40,12 @@ class _FeedPageState extends State<FeedPage> {
                   backgroundImage: NetworkImage(globales.fotoPerfil),
                 ),
               ),
-            ), */
+            ),
             title: const Text(
               'LifeCheck',
               style: TextStyle(color: Colors.white, fontSize: 30),
             ),
-            backgroundColor: AppColors.darkBlue,
+            backgroundColor: AppColors.darkestBlue,
             actions: [
               IconButton(
                 color: AppColors.white,
@@ -73,7 +62,7 @@ class _FeedPageState extends State<FeedPage> {
                 true, // Hace que el AppBar se desplace fuera de la vista al hacer scroll hacia abajo
             snap:
                 true, // Hace que el AppBar se oculte completamente al hacer scroll hacia abajo
-          ), */
+          ),
           StreamBuilder<QuerySnapshot>(
             stream: postStream,
             builder: (context, snapshot) {

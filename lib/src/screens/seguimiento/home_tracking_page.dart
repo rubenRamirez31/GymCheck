@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
+import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/screens/principal.dart';
 import 'package:gym_check/src/screens/seguimiento/goals/goals_page.dart';
 import 'package:gym_check/src/screens/seguimiento/physical_tracking_page.dart';
@@ -12,10 +13,11 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeTrackingPage extends StatefulWidget {
-  const HomeTrackingPage({Key? key}) : super(key: key);
+  final Function? openDrawer;
+  const HomeTrackingPage({Key? key, this.openDrawer}) : super(key: key);
 
   @override
-  _HomeTrackingPageState createState() => _HomeTrackingPageState();
+  State<HomeTrackingPage> createState() => _HomeTrackingPageState();
 }
 
 class _HomeTrackingPageState extends State<HomeTrackingPage> {
@@ -28,7 +30,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
     'Emocional',
   ]; // Lista de opciones
 
-   List<Color> highlightColors = [
+  List<Color> highlightColors = [
     Colors.green, // Color de resaltado para 'Fisico'
     Colors.yellow, // Color de resaltado para 'Emocional'
     Colors.blue, // Color de resaltado para 'Nutricional'
@@ -44,8 +46,9 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
 
   @override
   Widget build(BuildContext context) {
-    var globalVariable =
-        Provider.of<GlobalVariablesProvider>(context); // Obtiene la instancia de GlobalVariable
+    var globalVariable = Provider.of<GlobalVariablesProvider>(
+        context); // Obtiene la instancia de GlobalVariable
+    final globales = context.watch<Globales>();
 
     return LiquidPullToRefresh(
       key: _refreshIndicatorKey,
@@ -53,20 +56,32 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
       color: Colors.indigo,
       child: Scaffold(
         appBar: AppBar(
+          leading: GestureDetector(
+            onTap: () {
+              widget.openDrawer!();
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: CircleAvatar(
+                radius: 20,
+                backgroundImage: NetworkImage(globales.fotoPerfil),
+              ),
+            ),
+          ),
           backgroundColor: const Color(0xff0C1C2E),
           title: const Text(
             'Seguimiento',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 26,
+              fontSize: 25,
             ),
           ),
           actions: [
             IconButton(
-              icon: Icon(Icons.flag),
+              icon: const Icon(Icons.flag),
               onPressed: () {
                 showModalBottomSheet(
-                  backgroundColor: Color.fromARGB(255, 18, 18, 18),
+                  backgroundColor: const Color.fromARGB(255, 18, 18, 18),
                   showDragHandle: true,
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.vertical(
@@ -85,10 +100,10 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
               },
             ),
             IconButton(
-              icon: Icon(Icons.health_and_safety),
+              icon: const Icon(Icons.health_and_safety),
               onPressed: () {
                 // Acción para el botón de Salud
-                  ReminderScheduler.scheduleReminders(context);
+                ReminderScheduler.scheduleReminders(context);
                 print('Botón de Salud presionado debug para recordatorios');
               },
             ),
@@ -106,13 +121,11 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
           ],
         ),
         body: SingleChildScrollView(
-          
           child: Container(
-             color: const Color.fromARGB(255, 18, 18, 18),
+            color: const Color.fromARGB(255, 18, 18, 18),
             child: Column(
-              
               children: [
-                SizedBox(height: 20, width: 10),
+                const SizedBox(height: 20, width: 10),
                 Container(
                   color: const Color.fromARGB(255, 18, 18, 18),
                   width: MediaQuery.of(context).size.width,
@@ -120,11 +133,11 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                     // crossAxisAlignment: CrossAxisAlignment.center,
+                      // crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         MenuButtonOption(
                           options: options,
-                           highlightColors: highlightColors,
+                          highlightColors: highlightColors,
                           //highlightColor: Colors.green,
                           onItemSelected: (index) async {
                             SharedPreferences prefs =
@@ -137,7 +150,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
                             await prefs.setInt('selectedMenuOption', index);
                           },
                           selectedMenuOptionGlobal:
-                              globalVariable.selectedSubPageTracking ,
+                              globalVariable.selectedSubPageTracking,
                         ),
                         // Aquí puedes agregar más elementos MenuButtonOption según sea necesario
                       ],
@@ -146,14 +159,10 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
                 ),
                 const SizedBox(height: 20),
                 _selectedMenuOption == 0
-                  ? const PhysicalTrackingPage()
-                  : const SizedBox(), 
-              _selectedMenuOption == 1
-                  ? const SizedBox()
-                  : const SizedBox(), 
-              _selectedMenuOption == 2
-                  ? const SizedBox()
-                  : const SizedBox(), 
+                    ? const PhysicalTrackingPage()
+                    : const SizedBox(),
+                _selectedMenuOption == 1 ? const SizedBox() : const SizedBox(),
+                _selectedMenuOption == 2 ? const SizedBox() : const SizedBox(),
               ],
             ),
           ),
@@ -176,7 +185,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
     // Reinicia la página
     Navigator.of(context).pushReplacement(
       MaterialPageRoute<void>(
-        builder: (BuildContext context) => PrincipalPage(
+        builder: (BuildContext context) => const PrincipalPage(
           initialPageIndex: 2,
         ),
       ),

@@ -3,6 +3,8 @@ import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/screens/crear/ejercicios/create_exercise_page.dart';
 import 'package:gym_check/src/screens/seguimiento/home_tracking_page.dart';
 import 'package:gym_check/src/screens/social/feed_page.dart';
+import 'package:gym_check/src/values/app_colors.dart';
+import 'package:gym_check/src/widgets/global/menudrawer.dart';
 import 'package:provider/provider.dart';
 
 class PrincipalPage extends StatefulWidget {
@@ -18,6 +20,7 @@ class PrincipalPage extends StatefulWidget {
 
 class _PrincipalPageState extends State<PrincipalPage> {
   late int currentPageIndex;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -27,13 +30,16 @@ class _PrincipalPageState extends State<PrincipalPage> {
         .cargarDatosUsuario(widget!.uid.toString());
   }
 
+  void openDrawer() {
+    _scaffoldKey.currentState!.openDrawer();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final globales = context.watch<Globales>();
     return Scaffold(
-      drawer: const Drawer(),
-      appBar: AppBar(),
-
-      //backgroundColor: Colors.amber[100],
+      key: _scaffoldKey,
+      drawer: const MenuDrawer(),
       backgroundColor: Colors.grey,
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
@@ -59,9 +65,9 @@ class _PrincipalPageState extends State<PrincipalPage> {
         ],
       ),
       body: <Widget>[
-        const FeedPage(),
-        const CreateExercisePage(),
-        const HomeTrackingPage(),
+        FeedPage(openDrawer: openDrawer),
+         CreateExercisePage(openDrawer: openDrawer),
+         HomeTrackingPage(openDrawer: openDrawer),
       ][currentPageIndex],
     );
   }

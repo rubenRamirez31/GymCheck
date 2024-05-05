@@ -1,5 +1,6 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
@@ -34,6 +35,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  // Obtener el token de registro del dispositivo
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+  print("Token de notificaciones push: ${fcmToken}");
   runApp(const MyApp());
 }
 
