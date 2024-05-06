@@ -26,6 +26,7 @@ import 'package:gym_check/src/screens/user/primero_pasos/general_data_page.dart'
 import 'package:gym_check/src/screens/user/primero_pasos/nutritional_data_page.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/peso_page.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/recomerdar_premium_page.dart';
+import 'package:gym_check/src/services/push_notification.dart';
 import 'package:gym_check/src/values/app_theme.dart';
 import 'package:gym_check/src/widgets/social/comment_box.dart';
 import 'package:gym_check/src/widgets/social/share_box.dart';
@@ -35,12 +36,11 @@ import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await PushNotificationService.initializeApp();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   // Obtener el token de registro del dispositivo
-  final fcmToken = await FirebaseMessaging.instance.getToken();
-  print("Token de notificaciones push: ${fcmToken}");
   runApp(const MyApp());
 }
 
@@ -58,7 +58,6 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     user = FirebaseAuth.instance.currentUser;
-    print("User Id loggeado : ${user?.uid}");
   }
 
   @override
@@ -93,7 +92,7 @@ class _MyAppState extends State<MyApp> {
             '/peso': (context) => const PesoPage(),
             '/altura': (context) => const AlturaPage(),
             '/first_photo': (context) => const FirstPhotoPage(),
-           
+
             '/recomendar_premium': (context) =>
                 const RecomendarPlanPremiumPage(),
 

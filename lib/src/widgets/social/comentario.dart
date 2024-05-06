@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gym_check/src/widgets/social/nick.dart';
 import '../../models/social/comentario.dart';
 
 class ComentarioCard extends StatefulWidget {
@@ -10,6 +12,14 @@ class ComentarioCard extends StatefulWidget {
 }
 
 class _ComentarioCardState extends State<ComentarioCard> {
+  String? userProfileImageUrl;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getUserProfileImageUrl(widget.comentario.userId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -29,10 +39,16 @@ class _ComentarioCardState extends State<ComentarioCard> {
                       Radius.circular(50),
                     ),
                   ),
-                  child: const CircleAvatar(
-                    radius: 50,
-                    child: Icon(Icons.person),
-                  ),
+                  child: userProfileImageUrl != null &&
+                          userProfileImageUrl!.isNotEmpty
+                      ? CircleAvatar(
+                          radius: 25,
+                          backgroundImage: NetworkImage(userProfileImageUrl!),
+                        )
+                      : const CircleAvatar(
+                          radius: 25,
+                          child: Icon(Icons.person),
+                        ),
                 ),
               ],
             ),
@@ -49,7 +65,22 @@ class _ComentarioCardState extends State<ComentarioCard> {
                       color: const Color.fromARGB(255, 250, 241, 246),
                       borderRadius: BorderRadius.circular(12.0),
                     ),
-                    child: Text(widget.comentario.comentario),
+                    child: IntrinsicWidth(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [Nick(userId: widget.comentario.userId)],
+                          ),
+                          Row(
+                            children: [
+                              Flexible(
+                                  child: Text(widget.comentario.comentario)),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -90,6 +121,29 @@ class _ComentarioCardState extends State<ComentarioCard> {
     } else {
       final days = difference.inDays;
       return '$days d';
+    }
+  }
+
+  Future<void> getUserProfileImageUrl(String userId) async {
+    try {
+      QuerySnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('Usuarios')
+          .where("userIdAuth", isEqualTo: userId)
+          .get();
+      if (userSnapshot.docs.isNotEmpty) {
+        var userData = userSnapshot.docs.first.data();
+        // Verificar si el objeto es un mapa antes de verificar si contiene la clave
+        if (userData is Map && userData.containsKey('urlImagen')) {
+          if (mounted) {
+            // Verificar si el widget está montado antes de llamar a setState
+            setState(() {
+              userProfileImageUrl = userData['urlImagen'];
+            });
+          }
+        }
+      }
+    } catch (e) {
+      print('Error al obtener la foto de perfil del usuario: $e');
     }
   }
 }

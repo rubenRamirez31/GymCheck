@@ -142,16 +142,6 @@ class _PostWidgetState extends State<PostWidget> {
     super.initState();
     // Llamar a la función para obtener la foto de perfil del usuario
     getUserProfileImageUrl(widget.post.userId);
-    loadCommentCount();
-  }
-
-  Future<void> loadCommentCount() async {
-    int count = await getCommentCount(widget.post.id ?? "");
-    if (mounted) {
-      setState(() {
-        commentCount = count;
-      });
-    }
   }
 
   @override
@@ -331,14 +321,5 @@ class _PostWidgetState extends State<PostWidget> {
     } catch (e) {
       print('Error al obtener la foto de perfil del usuario: $e');
     }
-  }
-
-  Future<int> getCommentCount(String postId) async {
-    final querySnapshot = await FirebaseFirestore.instance
-        .collection("Publicaciones")
-        .doc(postId)
-        .collection("comentarios")
-        .get();
-    return querySnapshot.size;
   }
 }

@@ -20,8 +20,10 @@ class FeedPage extends StatefulWidget {
 class _FeedPageState extends State<FeedPage> {
   @override
   Widget build(BuildContext context) {
-    final Stream<QuerySnapshot> postStream =
-        FirebaseFirestore.instance.collection("Publicaciones").snapshots();
+    final Stream<QuerySnapshot> postStream = FirebaseFirestore.instance
+        .collection("Publicaciones")
+        .orderBy("fechaCreacion", descending: true)
+        .snapshots();
     final globales = context.watch<Globales>();
 
     return Scaffold(
