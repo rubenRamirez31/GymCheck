@@ -68,11 +68,14 @@ class PushNotificationService {
 
     //Cuando la aplicacion esta funcionando en primer planop
     FirebaseMessaging.onMessage.listen(_onMessageHandler);
+    print("Servicio de notificaciones en primero plano");
 
     //Cuando la aplicacion esta en segundo plano
     FirebaseMessaging.onBackgroundMessage(_onBackgroundHandler);
+    print("Servicio de notificaciones en segundo plano");
 
     //Cuando la aplicacion esta destruida
     FirebaseMessaging.onMessageOpenedApp.listen(_onMessageOpenApp);
+    print("Servicio de notificaciones con la app destruida");
   }
 }

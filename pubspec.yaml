@@ -61,6 +61,7 @@ dependencies:
   flutter_smart_dialog: ^4.9.6+1
   draw_graph: ^1.0.0
   firebase_messaging: ^14.7.19
+  flutter_local_notifications: ^17.1.2
 
 dev_dependencies:
   flutter_test:
