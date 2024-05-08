@@ -1,17 +1,12 @@
+import 'dart:math';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:gym_check/src/services/loca_notification.dart';
 
 class PushNotificationService {
   static FirebaseMessaging messaging = FirebaseMessaging.instance;
   static String? token;
-
-  static Future _onBackgroundHandler(RemoteMessage message) async {
-    print("segundo plano handler ${message.messageId}");
-  }
-
-  static Future _onMessageOpenApp(RemoteMessage message) async {
-    print("aplicacion destruida onMessageOpenApp handler ${message.messageId}");
-  }
 
   //pedir permisos al dispositivo
   static void requestPermission() async {
@@ -24,10 +19,11 @@ class PushNotificationService {
         provisional: false,
         sound: true);
 
+    await LocalNotification.requestPermisionLocalNotifications();
+
     settings.authorizationStatus;
 
     print('User granted permission: ${settings.authorizationStatus}');
-
     getToken();
   }
 
@@ -52,10 +48,53 @@ class PushNotificationService {
     var mensaje = message.data;
     var title = mensaje['title'];
     var body = mensaje['body'];
+
+    Random random = Random();
+    var id = random.nextInt(100000);
+
+    LocalNotification.showLocalNotification(
+      id: id,
+      title: title,
+      body: body,
+    );
+
     print("primer plano handler ${message.messageId}");
-    print("onMessage handler ${title}");
-    print("onMessage handler ${body}");
   }
+
+  //Recibir notificaciones en segundo plano
+  static Future _onBackgroundHandler(RemoteMessage message) async {
+    var mensaje = message.data;
+    var title = mensaje['title'];
+    var body = mensaje['body'];
+
+    Random random = Random();
+    var id = random.nextInt(100000);
+
+    LocalNotification.showLocalNotification(
+      id: id,
+      title: title,
+      body: body,
+    );
+
+    print("segundo plano handler ${message.messageId}");
+  }
+
+/*   //Notificaciones con la aplicacion destruida
+  static Future _onMessageOpenApp(RemoteMessage message) async {
+    var mensaje = message.data;
+    var title = mensaje['title'];
+    var body = mensaje['body'];
+
+    Random random = Random();
+    var id = random.nextInt(100000);
+
+    LocalNotification.showLocalNotification(
+      id: id,
+      title: title,
+      body: body,
+    );
+    print("aplicacion destruida onMessageOpenApp handler ${message.messageId}");
+  } */
 
 //Funcion maestra que se invocara en el main
   static Future initializeApp() async {
@@ -74,8 +113,8 @@ class PushNotificationService {
     FirebaseMessaging.onBackgroundMessage(_onBackgroundHandler);
     print("Servicio de notificaciones en segundo plano");
 
-    //Cuando la aplicacion esta destruida
+/*     //Cuando la aplicacion esta destruida
     FirebaseMessaging.onMessageOpenedApp.listen(_onMessageOpenApp);
-    print("Servicio de notificaciones con la app destruida");
+    print("Servicio de notificaciones con la app destruida"); */
   }
 }
