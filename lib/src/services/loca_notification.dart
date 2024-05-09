@@ -27,8 +27,7 @@ class LocalNotification {
     required int id,
     String? title,
     String? body,
-    String? data,
-  }) {
+  }) async {
     const androidDetails = AndroidNotificationDetails(
       'channelId',
       'channelName',
@@ -38,9 +37,7 @@ class LocalNotification {
     );
 
     const notificationDetails = NotificationDetails(android: androidDetails);
-
     final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
     flutterLocalNotificationsPlugin.show(
       id,
       title,

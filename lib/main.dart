@@ -37,11 +37,12 @@ import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await PushNotificationService.initializeApp();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await PushNotificationService.initializeApp();
   await LocalNotification.inicializeLocalNotifications();
+
   runApp(const MyApp());
 }
 
