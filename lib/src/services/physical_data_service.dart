@@ -97,7 +97,34 @@ class PhysicalDataService {
   }
 
 
-  static Future<Map<String, dynamic>> getLatestPhysicalData(BuildContext context,String collection, String typeData) async {
+ static Stream<Map<String, dynamic>> latestPhysicalDataStream(
+      BuildContext context, String collection, String typeData) {
+    final globales = Provider.of<Globales>(context, listen: false);
+    final userCollectionRef = FirebaseFirestore.instance
+        .collection('Seguimiento')
+        .doc(globales.nick)
+        .collection(collection);
+
+    return userCollectionRef
+        .where('tipo', isEqualTo: typeData)
+        .orderBy('fecha', descending: true)
+        .limit(1)
+        .snapshots()
+        .map((snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        final latestData = snapshot.docs.first.data();
+        final timestamp = (latestData['fecha'] as Timestamp).toDate();
+        final formattedDate = DateFormat('dd-MM-yyyy').format(timestamp);
+        latestData['fecha'] = formattedDate;
+
+        return latestData;
+      } else {
+        return {};
+      }
+    });
+  }
+
+    static Future<Map<String, dynamic>> getLatestPhysicalData(BuildContext context,String collection, String typeData) async {
     try {
       final globales = Provider.of<Globales>(context, listen: false);
       final userCollectionRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.nick).collection(collection);

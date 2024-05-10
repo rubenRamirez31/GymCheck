@@ -61,6 +61,8 @@ dependencies:
   flutter_smart_dialog: ^4.9.6+1
   draw_graph: ^1.0.0
   firebase_messaging: ^14.7.19
+  circular_menu: ^2.0.1
+  floating_action_bubble: ^1.1.4
 
 dev_dependencies:
   flutter_test:

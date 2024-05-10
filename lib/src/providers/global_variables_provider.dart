@@ -5,57 +5,68 @@ import 'package:flutter/material.dart';
 // cuando cambian estas variables.
 
 class GlobalVariablesProvider extends ChangeNotifier {
-  // Variable para guardar el estado de la subpágina en seguimiento
+  // Variables, getters y setters para la subpágina de seguimiento
   int _selectedSubPageTracking = 0;
-
-  // Variable para guardar el estado de la subpágina en creación
-  int _selectedSubPageCreate = 0;
-  
-  // Variable para guardar el estado de la última opción seleccionada de la subpágina seguimiento físico
-  int _selectedMenuOptionTrackingPhysical = 0;
-
-  // Variable para guardar el estado de la última opción seleccionada de la subpágina seguimiento nutricional
-  int _selectedMenuOptionNutritional = 0;
-
-  int _selectedMenuOptionDias = 0;
-
-  // Getter para obtener el estado de la subpágina en seguimiento
   int get selectedSubPageTracking => _selectedSubPageTracking;
-  // Getter para obtener el estado de la subpágina en creación
-  int get selectedSubPageCreate => _selectedSubPageCreate;
-  
-  // Getter para obtener el estado de la última opción seleccionada de la subpágina en seguimiento físico
-  int get selectedMenuOptionTrackingPhysical => _selectedMenuOptionTrackingPhysical;
-  int get selectedMenuOptionDias => _selectedMenuOptionDias;
-
-  // Getter para obtener el estado de la última opción seleccionada de la subpágina en seguimiento nutricional
-  int get selectedMenuOptionNutritional => _selectedMenuOptionNutritional;
-
-  // Setter para actualizar el estado de la subpágina en seguimiento y notificar a los listeners
   set selectedSubPageTracking(int newValue) {
     _selectedSubPageTracking = newValue;
     notifyListeners(); // Notifica a los widgets que están escuchando los cambios
   }
-  // Setter para actualizar el estado de la subpágina en creación y notificar a los listeners
-  set selectedSubPageCreate(int newValue) {
-    _selectedSubPageCreate = newValue;
-    notifyListeners(); // Notifica a los widgets que están escuchando los cambios
-  }
 
-  // Setter para actualizar el estado de la última opción seleccionada de la subpágina en seguimiento físico y notificar a los listeners
+
+  // Variables, getters y setters para la subpágina de seguimiento físico
+  int _selectedMenuOptionTrackingPhysical = 0;
+  int get selectedMenuOptionTrackingPhysical => _selectedMenuOptionTrackingPhysical;
   set selectedMenuOptionTrackingPhysical(int newValue) {
     _selectedMenuOptionTrackingPhysical = newValue;
     notifyListeners(); // Notifica a los widgets que están escuchando los cambios
   }
-  // Setter para actualizar el estado de la última opción seleccionada de la subpágina en seguimiento físico y notificar a los listeners
+
+  // Variables, getters y setters para la subpágina de seguimiento nutricional
+  int _selectedMenuOptionNutritional = 0;
+  int get selectedMenuOptionNutritional => _selectedMenuOptionNutritional;
+  set selectedMenuOptionNutritional(int newValue) {
+    _selectedMenuOptionNutritional = newValue;
+    notifyListeners(); // Notifica a los widgets que están escuchando los cambios
+  }
+
+  // Variable, getter y setter para la opción de días
+  int _selectedMenuOptionDias = 0;
+  int get selectedMenuOptionDias => _selectedMenuOptionDias;
   set selectedMenuOptionDias(int newValue) {
     _selectedMenuOptionDias = newValue;
     notifyListeners(); // Notifica a los widgets que están escuchando los cambios
   }
 
-  // Setter para actualizar el estado de la última opción seleccionada de la subpágina en seguimiento nutricional y notificar a los listeners
-  set selectedMenuOptionNutritional(int newValue) {
-    _selectedMenuOptionNutritional = newValue;
+  ///modulo de creacion
+
+  // Variables, getters y setters para la subpágina de creación
+  int _selectedSubPageCreate = 0;
+  int get selectedSubPageCreate => _selectedSubPageCreate;
+  set selectedSubPageCreate(int newValue) {
+    _selectedSubPageCreate = newValue;
+    notifyListeners(); // Notifica a los widgets que están escuchando los cambios
+  }
+
+
+  int _selectedMenuOptionHomeExercise = 0;
+  int get selectedMenuOptionHomeExercise => _selectedMenuOptionHomeExercise;
+  set selectedMenuOptionHomeExercise(int newValue) {
+    _selectedMenuOptionHomeExercise = newValue;
+    notifyListeners(); // Notifica a los widgets que están escuchando los cambios
+  }
+
+  int _selectedMenuOptionAllExercise = 0;
+  int get selectedMenuOptionAllExercise => _selectedMenuOptionAllExercise;
+  set selectedMenuOptionAllExercise(int newValue) {
+    _selectedMenuOptionAllExercise = newValue;
+    notifyListeners(); // Notifica a los widgets que están escuchando los cambios
+  }
+
+  int _selectedMenuOptionExerciseByFocus = 0;
+  int get selectedMenuOptionExerciseByFocus => _selectedMenuOptionExerciseByFocus;
+  set selectedMenuOptionExerciseByFocus(int newValue) {
+    _selectedMenuOptionExerciseByFocus = newValue;
     notifyListeners(); // Notifica a los widgets que están escuchando los cambios
   }
 }

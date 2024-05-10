@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/globales.dart';
-import 'package:gym_check/src/screens/crear/ejercicios/create_exercise_page.dart';
+
+import 'package:gym_check/src/screens/crear/home_create_page.dart';
 import 'package:gym_check/src/screens/seguimiento/home_tracking_page.dart';
 import 'package:gym_check/src/screens/social/feed_page.dart';
 import 'package:gym_check/src/values/app_colors.dart';
@@ -66,7 +67,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
       ),
       body: <Widget>[
         FeedPage(openDrawer: openDrawer),
-         CreateExercisePage(openDrawer: openDrawer),
+         HomeCreatePage(openDrawer: openDrawer),
          HomeTrackingPage(openDrawer: openDrawer),
       ][currentPageIndex],
     );

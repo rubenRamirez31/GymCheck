@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/update_remider_page.dart';
+import 'package:gym_check/src/screens/seguimiento/tracking_funtions.dart';
 
 import 'package:gym_check/src/services/reminder_service.dart';
 import 'package:intl/intl.dart';
@@ -34,30 +35,15 @@ class _ViewReminderState extends State<ViewReminder> {
     });
   }
 
-  String formatDateTime(String? dateTimeString) {
-    if (dateTimeString != null && dateTimeString.isNotEmpty) {
-      try {
-        DateTime dateTime = DateTime.parse(dateTimeString);
-        String formattedDate =
-            DateFormat('dd \'de\' MMMM \'a las\' hh:mm a', 'es')
-                .format(dateTime);
-        return formattedDate;
-      } catch (error) {
-        print('Error al formatear la fecha: $error');
-      }
-    }
-    return 'Fecha no válida';
-  }
-
-  Future<void> _deleteReminder() async {
+  Future<void> _deleteReminderAll() async {
     try {
       // Mostrar diálogo de confirmación antes de eliminar el recordatorio
       bool confirmDelete = await showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Eliminar Recordatorio'),
-            content: Text(
+            title: const Text('Eliminar Recordatorio'),
+            content: const Text(
               '¿Estás seguro de que deseas eliminar este recordatorio? Toma en cuenta que esta acción también eliminará todos los recordatorios asociados. Esta acción no se puede deshacer.',
               style: TextStyle(
                 fontSize: 16,
@@ -70,13 +56,13 @@ class _ViewReminderState extends State<ViewReminder> {
                 onPressed: () {
                   Navigator.of(context).pop(false); // Cancelar eliminación
                 },
-                child: Text('Cancelar'),
+                child: const Text('Cancelar'),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(true); // Confirmar eliminación
                 },
-                child: Text('Eliminar'),
+                child: const Text('Eliminar'),
               ),
             ],
           );
@@ -112,8 +98,8 @@ class _ViewReminderState extends State<ViewReminder> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Eliminar Recordatorio'),
-            content: Text(
+            title: const Text('Eliminar Recordatorio'),
+            content: const Text(
               '¿Estás seguro de que deseas eliminar este recordatorio? solo se elimnara le recordatorio en esta fecha, los demas no se vrán afectados',
               style: TextStyle(
                 fontSize: 16,
@@ -126,13 +112,13 @@ class _ViewReminderState extends State<ViewReminder> {
                 onPressed: () {
                   Navigator.of(context).pop(false); // Cancelar eliminación
                 },
-                child: Text('Cancelar'),
+                child: const Text('Cancelar'),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(true); // Confirmar eliminación
                 },
-                child: Text('Eliminar'),
+                child: const Text('Eliminar'),
               ),
             ],
           );
@@ -166,14 +152,14 @@ class _ViewReminderState extends State<ViewReminder> {
     final screenWidth = MediaQuery.of(context).size.width;
     // Verificar si _reminderData es nulo antes de acceder a sus propiedades
     final String fechaInicio = _reminderData != null
-        ? formatDateTime(_reminderData!['startTime'])
+        ?  TrackingFunctions.formatDateTime(_reminderData!['startTime'])
         : '';
     final String fechaFin =
-        _reminderData != null ? formatDateTime(_reminderData!['endTime']) : '';
+        _reminderData != null ? TrackingFunctions.formatDateTime(_reminderData!['endTime']) : '';
 
     return Scaffold(
       body: _isLoading
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(),
             )
           : _reminderData != null
@@ -185,17 +171,17 @@ class _ViewReminderState extends State<ViewReminder> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
+                        const Text(
                           'Detalles del Recordatorio',
                           style: TextStyle(
                             fontSize: 18.0,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: 16.0),
+                        const SizedBox(height: 16.0),
                         Container(
                           width: screenWidth - 30,
-                          padding: EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(16.0),
                           decoration: BoxDecoration(
                             color: Color(_reminderData!['color']),
                             borderRadius: BorderRadius.circular(8.0),
@@ -205,44 +191,44 @@ class _ViewReminderState extends State<ViewReminder> {
                             children: [
                               Text(
                                 _reminderData!['title'] ?? 'Sin título',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 20.0,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                 ),
                               ),
-                              SizedBox(height: 8.0),
+                              const SizedBox(height: 8.0),
                               if (_reminderData!['routineName'] != null)
                                 ElevatedButton(
                                   onPressed: () {
                                     // Navegar a la página de la rutina
                                     // Implementa la navegación según tus necesidades
                                   },
-                                  child: Text('Ir a Rutina'),
+                                  child: const Text('Ir a Rutina'),
                                 ),
                               Text(
                                 'Descripción: ${_reminderData!['description'] ?? 'Sin descripción'}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white,
                                 ),
                               ),
-                              SizedBox(height: 8.0),
+                              const SizedBox(height: 8.0),
                               Text(
-                                'Fecha de Inicio: $fechaInicio',
-                                style: TextStyle(
+                                'Hora de Inicio: $fechaInicio',
+                                style: const TextStyle(
                                   color: Colors.white,
                                 ),
                               ),
                               Text(
-                                'Fecha de Fin: $fechaFin',
-                                style: TextStyle(
+                                'Hora de Fin: $fechaFin',
+                                style: const TextStyle(
                                   color: Colors.white,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        SizedBox(height: 16.0),
+                        const SizedBox(height: 16.0),
                         SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Row(
@@ -250,16 +236,16 @@ class _ViewReminderState extends State<ViewReminder> {
                             children: [
                               ElevatedButton(
                                 onPressed: () {
-                                  _deleteReminder();
+                                  _deleteReminderAll();
                                 },
-                                child: Text('Eliminar Recordatorios'),
+                                child: const Text('Eliminar Recordatorios'),
                               ),
                               _reminderData!['modelo'] == 'clon'
                                   ? ElevatedButton(
                                       onPressed: () {
                                         _deleteReminderDay();
                                       },
-                                      child: Text(
+                                      child: const Text(
                                           'Eliminar Recordatorio de este dia'),
                                     )
                                   : const SizedBox(),
@@ -286,7 +272,7 @@ class _ViewReminderState extends State<ViewReminder> {
                                     },
                                   );
                                 },
-                                child: Text('Modificar Recordatorio'),
+                                child: const Text('Modificar Recordatorio'),
                               ),
                             ],
                           ),
@@ -295,7 +281,7 @@ class _ViewReminderState extends State<ViewReminder> {
                     ),
                   ),
                 )
-              : Center(
+              : const Center(
                   child: Text('No se encontró el recordatorio'),
                 ),
     );
