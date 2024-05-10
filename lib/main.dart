@@ -2,6 +2,7 @@ import 'package:calendar_view/calendar_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:gym_check/src/providers/globales.dart';
@@ -23,9 +24,9 @@ import 'package:gym_check/src/screens/user/primero_pasos/edad_page.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/emotional_data_page.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/first_photo_page.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/general_data_page.dart';
-import 'package:gym_check/src/screens/user/primero_pasos/nutritional_data_page.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/peso_page.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/recomerdar_premium_page.dart';
+import 'package:gym_check/src/services/loca_notification.dart';
 import 'package:gym_check/src/services/push_notification.dart';
 import 'package:gym_check/src/values/app_theme.dart';
 import 'package:gym_check/src/widgets/social/comment_box.dart';
@@ -36,11 +37,12 @@ import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await PushNotificationService.initializeApp();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // Obtener el token de registro del dispositivo
+  await PushNotificationService.initializeApp();
+  await LocalNotification.inicializeLocalNotifications();
+
   runApp(const MyApp());
 }
 

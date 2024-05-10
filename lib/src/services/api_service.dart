@@ -1,11 +1,6 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/social/post_model.dart';
-import 'package:gym_check/src/models/user_model.dart';
-
-import 'package:gym_check/src/providers/user_session_provider.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 
 import '../environments/environment.dart';
 

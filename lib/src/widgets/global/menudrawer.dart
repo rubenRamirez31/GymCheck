@@ -36,7 +36,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
               ],
             ),
             Text(
-              "${globales.primerNombre} ${globales.segundoNombre} Luna Santos",
+              "${globales.primerNombre} ${globales.segundoNombre}",
               style: const TextStyle(fontSize: 24, color: AppColors.white),
             ),
             Text("@${globales.nick}", style: AppTheme.bodySmall),
