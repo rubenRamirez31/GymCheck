@@ -1,16 +1,21 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:gym_check/src/models/body_data_model.dart';
 import 'package:gym_check/src/models/social/comentario.dart';
 import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/values/app_colors.dart';
 import 'package:gym_check/src/widgets/social/comentario.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class CommentBox extends StatefulWidget {
   final String? idpost;
-  const CommentBox({super.key, this.idpost});
+  final String? userId;
+  const CommentBox({super.key, this.idpost, this.userId});
 
   @override
   State<CommentBox> createState() => _CommentBoxState();
@@ -21,6 +26,13 @@ class _CommentBoxState extends State<CommentBox> {
   final FocusNode _focusNode = FocusNode();
   final double _maxHeight =
       4 * 24.0; // Máximo 4 líneas, cada línea tiene 24 de altura.
+  String? userToken;
+
+  @override
+  void initState() {
+    super.initState();
+    getUserToken(widget.userId);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,6 +119,24 @@ class _CommentBoxState extends State<CommentBox> {
                         "fecha": DateTime.now(),
                         "comentario": _controller.text
                       });
+
+                      http.post(
+                        Uri.parse(
+                            'https://notificationpushapi-xncc.onrender.com/'),
+                        headers: {"Content-type": "application/json"},
+                        body: jsonEncode(
+                          {
+                            "token": [
+                              userToken
+                            ],
+                            "data": {
+                              "title": globales.nick,
+                              "body": "comentó tu publicacion"
+                            }
+                          },
+                        ),
+                      );
+
                       SmartDialog.dismiss();
                       SmartDialog.showToast('Publicado');
                       _controller.clear();
@@ -122,5 +152,28 @@ class _CommentBoxState extends State<CommentBox> {
         ),
       ),
     );
+  }
+
+  Future<void> getUserToken(String? userId) async {
+    try {
+      QuerySnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('Usuarios')
+          .where("userIdAuth", isEqualTo: userId)
+          .get();
+      if (userSnapshot.docs.isNotEmpty) {
+        var userData = userSnapshot.docs.first.data();
+        // Verificar si el objeto es un mapa antes de verificar si contiene la clave
+        if (userData is Map && userData.containsKey('tokenfcm')) {
+          if (mounted) {
+            // Verificar si el widget está montado antes de llamar a setState
+            setState(() {
+              userToken = userData['tokenfcm'];
+            });
+          }
+        }
+      }
+    } catch (e) {
+      print('Error al obter el token del usuario: $e');
+    }
   }
 }

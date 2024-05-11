@@ -19,7 +19,6 @@ import 'package:gym_check/src/screens/user/mi_espacio/mi_espacio_page.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/altura_page.dart';
 
 import 'package:gym_check/src/screens/user/primero_pasos/edad_page.dart';
-import 'package:gym_check/src/screens/user/primero_pasos/emotional_data_page.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/first_photo_page.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/general_data_page.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/peso_page.dart';

@@ -251,7 +251,9 @@ class _PostWidgetState extends State<PostWidget> {
                                   builder: (context) {
                                     return FractionallySizedBox(
                                       heightFactor: 0.95,
-                                      child: CommentBox(idpost: widget.post.id),
+                                      child: CommentBox(
+                                          idpost: widget.post.id,
+                                          userId: widget.post.userId),
                                     );
                                   },
                                 );
