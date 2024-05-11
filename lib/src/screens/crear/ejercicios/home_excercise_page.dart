@@ -1,47 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
-
 import 'package:gym_check/src/screens/calendar/physical-nutritional/month_view_widget.dart';
-
+import 'package:gym_check/src/screens/crear/ejercicios/all_excercise_page.dart';
+import 'package:gym_check/src/screens/crear/ejercicios/excercise_by_focus.dart';
 import 'package:gym_check/src/screens/seguimiento/physical/corporal_data_page.dart';
 import 'package:gym_check/src/screens/seguimiento/physical/workout_data_page.dart';
-
 import 'package:gym_check/src/widgets/menu_button_option_widget.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class PhysicalTrackingPage extends StatefulWidget {
-  const PhysicalTrackingPage({super.key});
+class HomeExercisePage extends StatefulWidget {
+  const HomeExercisePage({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
-  _PhysicalTrackingPageState createState() => _PhysicalTrackingPageState();
+  _HomeExercisePageState createState() => _HomeExercisePageState();
 }
 
-class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
+class _HomeExercisePageState extends State<HomeExercisePage> {
   final GlobalKey<LiquidPullToRefreshState> _refreshIndicatorKey =
       GlobalKey<LiquidPullToRefreshState>();
   int _selectedMenuOption = 0;
-  //String _nick = '';
-  //String _urlImagen = '';
 
   List<String> options = [
-    'Rutinas',
-    'Datos corporales',
-    'Fuerza',
+    'Todo',
+    'Por enfoque muscular',
+    'Por equipamiento',
   ]; // Lista de opciones
 
   List<Color> highlightColors = [
     Colors.green, // Color de resaltado para 'Fisico'
-    Colors.green, // Color de resaltado para 'Emocional'
-    Colors.green, // Color de resaltado para 'Nutricional'
+    Colors.green, // Color de resaltado para 'Fisico'
+    Colors.green, // Color de resaltado para 'Fisico'
+ 
   ];
 
   @override
   void initState() {
     super.initState();
-    _loadSelectedMenuOption(); // Cargar el estado guardado de _selectedMenuOption
+   // _loadSelectedMenuOption(); // Cargar el estado guardado de _selectedMenuOption
   }
 
   @override
@@ -51,24 +48,12 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
 
     return SingleChildScrollView(
       child: Container(
-        color: const Color.fromARGB(255, 18, 18, 18),
+         color: const Color.fromARGB(255, 18, 18, 18),
+        padding: const EdgeInsets.all(0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SingleChildScrollView(
-              child: Container(
-                height: 300, // Altura específica del área de desplazamiento
-                // Ajusta los márgenes y el tamaño del contenedor según tus necesidades
-                margin: const EdgeInsets.all(16.0),
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: const MonthViewWidget(),
-              ),
-            ),
+           
             const SizedBox(height: 20),
             Container(
               color: const Color.fromARGB(255, 18, 18, 18),
@@ -80,8 +65,6 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
                       .center, // Alinea los botones en el centro horizontal
                   children: <Widget>[
                     MenuButtonOption(
-                    
-                      
                       options: options,
                       highlightColors: highlightColors,
                       onItemSelected: (index) async {
@@ -89,13 +72,12 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
                             await SharedPreferences.getInstance();
                         setState(() {
                           _selectedMenuOption = index;
-                          globalVariable.selectedMenuOptionTrackingPhysical =
+                          globalVariable.selectedMenuOptionHomeExercise =
                               _selectedMenuOption;
                         });
-                        await prefs.setInt('selectedMenuOptionTrackingPhysical', index);
+                        await prefs.setInt('selectedMenuOptionHomeExercise', index);
                       },
-                      selectedMenuOptionGlobal:
-                          globalVariable.selectedMenuOptionTrackingPhysical,
+                      selectedMenuOptionGlobal: globalVariable.selectedMenuOptionHomeExercise,
                     ),
                   ],
                 ),
@@ -104,10 +86,10 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
 
             const SizedBox(height: 20),
             _selectedMenuOption == 0
-                ? const WorkOutDataPage()
+                ? const AllExercisePage()
                 : const SizedBox(),
             _selectedMenuOption == 1
-                ? const CorporalDataPage()
+                ? const ExerciseByFocusPage()
                 : const SizedBox(),
             _selectedMenuOption == 2
                 ? Container(
@@ -135,7 +117,7 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
   Future<void> _loadSelectedMenuOption() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _selectedMenuOption = prefs.getInt('selectedMenuOptionTrackingPhysical') ?? 0;
+      _selectedMenuOption = prefs.getInt('selectedMenuOptionHomeExercise') ?? 0;
     });
   }
 }

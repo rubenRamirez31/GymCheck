@@ -11,31 +11,28 @@ import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class PhysicalTrackingPage extends StatefulWidget {
-  const PhysicalTrackingPage({super.key});
+class NutritionalTrackingPage extends StatefulWidget {
+  const NutritionalTrackingPage({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
-  _PhysicalTrackingPageState createState() => _PhysicalTrackingPageState();
+  _NutritionalTrackingPageState createState() => _NutritionalTrackingPageState();
 }
 
-class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
+class _NutritionalTrackingPageState extends State<NutritionalTrackingPage> {
   final GlobalKey<LiquidPullToRefreshState> _refreshIndicatorKey =
       GlobalKey<LiquidPullToRefreshState>();
   int _selectedMenuOption = 0;
-  //String _nick = '';
-  //String _urlImagen = '';
 
   List<String> options = [
-    'Rutinas',
-    'Datos corporales',
-    'Fuerza',
+    'Dietas',
+    'Macros',
+    'Suplementos',
   ]; // Lista de opciones
 
   List<Color> highlightColors = [
-    Colors.green, // Color de resaltado para 'Fisico'
-    Colors.green, // Color de resaltado para 'Emocional'
-    Colors.green, // Color de resaltado para 'Nutricional'
+    Colors.yellow, // Color de resaltado para 'Fisico'
+    Colors.yellow, // Color de resaltado para 'Emocional'
+    Colors.yellow, // Color de resaltado para 'Nutricional'
   ];
 
   @override
@@ -80,8 +77,6 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
                       .center, // Alinea los botones en el centro horizontal
                   children: <Widget>[
                     MenuButtonOption(
-                    
-                      
                       options: options,
                       highlightColors: highlightColors,
                       onItemSelected: (index) async {
@@ -89,13 +84,13 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
                             await SharedPreferences.getInstance();
                         setState(() {
                           _selectedMenuOption = index;
-                          globalVariable.selectedMenuOptionTrackingPhysical =
+                          globalVariable.selectedMenuOptionNutritional =
                               _selectedMenuOption;
                         });
-                        await prefs.setInt('selectedMenuOptionTrackingPhysical', index);
+                        await prefs.setInt('selectedMenuOptionNutritional', index);
                       },
                       selectedMenuOptionGlobal:
-                          globalVariable.selectedMenuOptionTrackingPhysical,
+                          globalVariable.selectedMenuOptionNutritional,
                     ),
                   ],
                 ),
@@ -104,7 +99,7 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
 
             const SizedBox(height: 20),
             _selectedMenuOption == 0
-                ? const WorkOutDataPage()
+                ? const SizedBox()
                 : const SizedBox(),
             _selectedMenuOption == 1
                 ? const CorporalDataPage()
@@ -135,7 +130,7 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
   Future<void> _loadSelectedMenuOption() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _selectedMenuOption = prefs.getInt('selectedMenuOptionTrackingPhysical') ?? 0;
+      _selectedMenuOption = prefs.getInt('selectedMenuOptionNutritional') ?? 0;
     });
   }
 }

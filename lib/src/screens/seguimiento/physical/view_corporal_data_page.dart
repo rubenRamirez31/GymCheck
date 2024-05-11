@@ -1,4 +1,5 @@
 import 'package:draw_graph/draw_graph.dart';
+import 'package:draw_graph/models/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
 import 'package:gym_check/src/services/physical_data_service.dart';
@@ -24,6 +25,15 @@ class _ViewCorporalDataPageState extends State<ViewCorporalDataPage> {
   String _orderBy = '';
   String _orderByDirection = '';
   String _typeData = 'si';
+  List<double> graphData = [];
+
+  final List<Feature> features = [
+    Feature(
+      title: "Drink Water",
+      color: Colors.blue,
+      data: [0.2, 0.8, 0.4, 0.7, 0.6, 0.9, 0.91, 0.92, 0.93, 0.94],
+    ),
+  ];
 
   @override
   void initState() {
@@ -73,7 +83,12 @@ class _ViewCorporalDataPageState extends State<ViewCorporalDataPage> {
 
   @override
   Widget build(BuildContext context) {
+    weightRecords.forEach((entry) {
+      // Añade el valor del tipo de dato al gráfico (puedes ajustar el campo dependiendo de tu estructura de datos)
+      graphData.add(entry[_typeData]);
+    });
     return Scaffold(
+      // backgroundColor: Colors.black12,
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
@@ -91,17 +106,46 @@ class _ViewCorporalDataPageState extends State<ViewCorporalDataPage> {
             const SizedBox(height: 5),
             buildDataTable(),
             const SizedBox(height: 5),
-              Container(
+            Container(),
+            Container(
               width: MediaQuery.of(context).size.width - 10,
               height: 500,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(8),
-                color: Colors.amber,
+                color: Colors.black,
               ),
-              
+              //color: Colors.black,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: LineGraph(
+                  features: features,
+                  size: Size(320, 400),
+                  labelX: [
+                    '1',
+                    '2',
+                    '3',
+                    '4',
+                    '5',
+                    '1',
+                    '2',
+                    '3',
+                    '4',
+                    '5'
+                  ],
+                  labelY: ['20%', '40%', '60%', '80%', '100%'],
+                  showDescription: true,
+                  graphColor: Colors.white30,
+                  graphOpacity: 0.2,
+                  verticalFeatureDirection: true,
+                  descriptionHeight: 130,
+                ),
+              ),
             ),
+            SizedBox(
+              height: 50,
+            )
           ],
         ),
       ),
@@ -135,6 +179,25 @@ class _ViewCorporalDataPageState extends State<ViewCorporalDataPage> {
         ),
       ),
     );
+  }
+
+  // Método para obtener etiquetas X
+  List<String> _getXLabels() {
+    List<String> labels = [];
+    weightRecords.forEach((entry) {
+      labels.add(entry['fecha']); // Agrega las fechas de weightRecords
+    });
+    return labels;
+  }
+
+  // Método para obtener etiquetas Y
+  List<String> _getYLabels() {
+    List<String> labels = [];
+    weightRecords.forEach((entry) {
+      labels.add(
+          entry[_typeData].toString()); // Agrega las fechas de weightRecords
+    });
+    return labels;
   }
 
   void showSortMenu(BuildContext context) {
@@ -178,11 +241,6 @@ class _ViewCorporalDataPageState extends State<ViewCorporalDataPage> {
 
   void fetchData() async {
     try {
-      String userId = Provider.of<UserSessionProvider>(context, listen: false)
-          .userSession!
-          .userId;
-      Map<String, dynamic> userData = await UserService.getUserData(userId);
-      String nick = userData['nick'];
       final response = await PhysicalDataService.getDataWithDynamicSorting(
         context,
         _coleccion,
