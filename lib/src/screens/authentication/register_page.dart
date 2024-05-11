@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:gym_check/src/components/app_text_form_field.dart';
@@ -257,6 +258,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                     SmartDialog.dismiss();
                                     SmartDialog.showToast(res!);
                                   } else {
+                                    String? token = await FirebaseMessaging
+                                        .instance
+                                        .getToken();
+
                                     Usuario newUser = Usuario(
                                         primerNombre: "",
                                         segundoNombre: "",
@@ -268,7 +273,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                         idAuth: res!,
                                         primerosPasos: 0,
                                         fechaCreacion: DateTime.now(),
-                                        verificado: false);
+                                        verificado: false,
+                                        tokenfcm: token);
 
                                     int resU = await uploadUser(newUser);
 
