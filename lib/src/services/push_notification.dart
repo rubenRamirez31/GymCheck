@@ -21,7 +21,7 @@ class PushNotificationService {
     print("Servicio de notificaciones en primero plano");
 
     //Cuando la aplicacion esta en segundo plano
-    FirebaseMessaging.onBackgroundMessage(_backgroundHandler);
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   }
 
   //pedir permisos al dispositivo
@@ -54,24 +54,29 @@ class PushNotificationService {
     print('token de dispositivo: ${token}');
   }
 
-/*   static Future<void> firebaseMessagingBackgroundHandler(
+  static Future<void> firebaseMessagingBackgroundHandler(
       RemoteMessage message) async {
     Random random = Random();
     var id = random.nextInt(100000);
-    var title = message.notification?.title;
-    var body = message.notification?.body;
+    var mensaje = message.data;
+    var title = mensaje['title'];
+    var body = mensaje['body'];
+
     print("segundo plano handler ${message.messageId}");
+
     LocalNotification.showLocalNotification(id: id, title: title, body: body);
-  } */
+  }
+
   static Future _backgroundHandler(RemoteMessage message) async {
     print('mensaje en segundo plano ${message.messageId}');
   }
 
   static void handleRemoteMessage(RemoteMessage message) {
+    var mensaje = message.data;
     Random random = Random();
     var id = random.nextInt(100000);
-    var title = message.notification?.title;
-    var body = message.notification?.body;
+    var title = mensaje['title'];
+    var body = mensaje['body'];
 
     LocalNotification.showLocalNotification(id: id, title: title, body: body);
     print("Primer plano handler ${message.messageId}");
