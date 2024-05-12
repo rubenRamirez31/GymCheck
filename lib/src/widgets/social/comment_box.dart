@@ -120,6 +120,7 @@ class _CommentBoxState extends State<CommentBox> {
                         "comentario": _controller.text
                       });
 
+                      //enviar notificacion de comentario
                       http.post(
                         Uri.parse(
                             'https://notificationpushapi-xncc.onrender.com/'),

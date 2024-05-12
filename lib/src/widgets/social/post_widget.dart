@@ -231,7 +231,7 @@ class _PostWidgetState extends State<PostWidget> {
                       children: [
                         Row(
                           children: [
-                            FavoritoItem(postId: widget.post.id ?? ''),
+                            FavoritoItem(postId: widget.post.id ?? '', userId: widget.post.userId,),
                             LikeCount(postId: widget.post.id ?? '')
                           ],
                         ),
