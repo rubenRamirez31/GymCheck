@@ -23,7 +23,7 @@ class _NotificatoinsPageState extends State<NotificatoinsPage> {
         .instance
         .collection("Notificaciones")
         .where("destinatario", isEqualTo: globales.correo)
-        .orderBy("fechaCreacion", descending: true)
+        .orderBy("fecha", descending: true)
         .snapshots();
 
     return Scaffold(

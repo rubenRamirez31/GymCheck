@@ -15,7 +15,8 @@ class _NotificationCardState extends State<NotificationCard> {
     return Container(
       child: Column(
         children: [
-          Text(widget.notificacion.remitente)
+          Text(widget.notificacion.remitente),
+          Text(widget.notificacion.contenido)
         ],
       ),
     );

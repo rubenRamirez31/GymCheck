@@ -5,6 +5,7 @@ class Notificacion {
   String? id;
   String remitente;
   String destinatario;
+  String contenido;
   DateTime fecha;
   String referencia;
   bool visto;
@@ -15,13 +16,15 @@ class Notificacion {
       required this.destinatario,
       required this.fecha,
       required this.referencia,
-      required this.visto});
+      required this.visto,
+      required this.contenido});
 
   factory Notificacion.getFirebaseId(String idd, Map json) {
     return Notificacion(
         id: idd,
         remitente: json['remitente'],
         destinatario: json['destinatario'],
+        contenido: json['contenido'],
         fecha: (json['fecha'] as Timestamp).toDate(),
         referencia: json['referencia'],
         visto: json['visto']);
