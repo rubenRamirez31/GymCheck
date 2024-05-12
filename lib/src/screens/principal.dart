@@ -37,7 +37,6 @@ class _PrincipalPageState extends State<PrincipalPage> {
 
   @override
   Widget build(BuildContext context) {
-    final globales = context.watch<Globales>();
     return Scaffold(
       key: _scaffoldKey,
       drawer: const MenuDrawer(),
@@ -67,8 +66,8 @@ class _PrincipalPageState extends State<PrincipalPage> {
       ),
       body: <Widget>[
         FeedPage(openDrawer: openDrawer),
-         HomeCreatePage(openDrawer: openDrawer),
-         HomeTrackingPage(openDrawer: openDrawer),
+        HomeCreatePage(openDrawer: openDrawer),
+        HomeTrackingPage(openDrawer: openDrawer),
       ][currentPageIndex],
     );
   }

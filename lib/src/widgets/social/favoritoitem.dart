@@ -18,6 +18,7 @@ class FavoritoItem extends StatefulWidget {
 class _FavoritoItemState extends State<FavoritoItem> {
   bool favorite = false;
   String? userToken;
+  String? destEmail;
 
   @override
   void initState() {
@@ -67,6 +68,7 @@ class _FavoritoItemState extends State<FavoritoItem> {
                   "fecha": DateTime.now().toString(),
                   "userIdAuth": globales.idAuth
                 });
+
                 favorite = true;
                 //enviar notificacion push de like
                 http.post(
@@ -82,6 +84,21 @@ class _FavoritoItemState extends State<FavoritoItem> {
                     },
                   ),
                 );
+
+                await getDestEmail(userToken);
+
+                //insertar la notificacion en la base de datos (podria simplificarse)
+                await FirebaseFirestore.instance
+                    .collection('Notificaciones')
+                    .doc()
+                    .set({
+                  "remitente": globales.nick,
+                  "destinatario": destEmail,
+                  "fecha": DateTime.now(),
+                  "referencia": widget.postId,
+                  "contenido": "le gustó tu publicación",
+                  "visto": false
+                });
               }
 
               setState(() {});
@@ -131,6 +148,29 @@ class _FavoritoItemState extends State<FavoritoItem> {
       }
     } catch (e) {
       print('Error al obter el token del usuario: $e');
+    }
+  }
+
+  Future<void> getDestEmail(String? tokenfcm) async {
+    try {
+      QuerySnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('Usuarios')
+          .where("tokenfcm", isEqualTo: tokenfcm)
+          .get();
+      if (userSnapshot.docs.isNotEmpty) {
+        var userData = userSnapshot.docs.first.data();
+        // Verificar si el objeto es un mapa antes de verificar si contiene la clave
+        if (userData is Map && userData.containsKey('email')) {
+          if (mounted) {
+            // Verificar si el widget está montado antes de llamar a setState
+            setState(() {
+              destEmail = userData['email'];
+            });
+          }
+        }
+      }
+    } catch (e) {
+      print('Error al obter el email del usuario: $e');
     }
   }
 }

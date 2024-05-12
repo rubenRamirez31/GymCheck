@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:gym_check/src/models/social/post_model.dart';
+import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/screens/social/profile_page.dart';
 import 'package:gym_check/src/values/app_colors.dart';
 import 'package:gym_check/src/widgets/social/comment_box.dart';
@@ -136,6 +140,10 @@ class PostWidget extends StatefulWidget {
 class _PostWidgetState extends State<PostWidget> {
   String? userProfileImageUrl;
   int commentCount = 0;
+  bool isFavorite = false; // Variable para controlar si el post es
+  bool favoriteActionCompleted =
+      false; // Variable para controlar si la acción de agregar a favoritos ya se ha realizado
+  String? globalUserId;
 
   @override
   void initState() {
@@ -146,6 +154,8 @@ class _PostWidgetState extends State<PostWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final globales = context.watch<Globales>();
+    globalUserId = globales.idAuth;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(10),
@@ -187,33 +197,49 @@ class _PostWidgetState extends State<PostWidget> {
                         ),
                       ],
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: widget.post.urlImagen != null &&
-                                widget.post.urlImagen!.isNotEmpty
-                            ? Stack(
-                                children: [
-                                  const SizedBox(
-                                    height: 100,
-                                    child: Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  ),
-                                  Center(
-                                    child: FadeInImage.memoryNetwork(
-                                      placeholder: kTransparentImage,
-                                      image: widget.post.urlImagen!,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  )
-                                ],
-                              )
-                            : Container(),
-                      ),
+                    Stack(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: GestureDetector(
+                            onDoubleTap: () async {
+/*                               if (!isFavorite) {
+                                // Cambiar el estado local para indicar que el post es favorito
+                                agregarAFavoritos(
+                                    globales.correo, globales.idAuth);
+                              }
+                              setState(() {
+                                isFavorite = true;
+                              }); */
+                            },
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: widget.post.urlImagen != null &&
+                                      widget.post.urlImagen!.isNotEmpty
+                                  ? Stack(
+                                      children: [
+                                        const SizedBox(
+                                          height: 100,
+                                          child: Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                        ),
+                                        Center(
+                                          child: FadeInImage.memoryNetwork(
+                                            placeholder: kTransparentImage,
+                                            image: widget.post.urlImagen!,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                  : Container(),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 10),
                     Row(
@@ -231,7 +257,10 @@ class _PostWidgetState extends State<PostWidget> {
                       children: [
                         Row(
                           children: [
-                            FavoritoItem(postId: widget.post.id ?? '', userId: widget.post.userId,),
+                            FavoritoItem(
+                              postId: widget.post.id ?? '',
+                              userId: widget.post.userId,
+                            ),
                             LikeCount(postId: widget.post.id ?? '')
                           ],
                         ),
@@ -324,4 +353,42 @@ class _PostWidgetState extends State<PostWidget> {
       print('Error al obtener la foto de perfil del usuario: $e');
     }
   }
+
+  // Función para agregar el post a favoritos
+  Future<void> agregarAFavoritos(String correo, String idAuth) async {
+    await FirebaseFirestore.instance
+        .collection("Publicaciones")
+        .doc(widget.post.id)
+        .collection("favoritos")
+        .doc()
+        .set({
+      "correo": correo,
+      "fecha": DateTime.now().toString(),
+      "userIdAuth": idAuth
+    });
+  }
+
+/*   // Función para verificar si el post es favorito
+  Future<void> verificarSiEsFavorito() async {
+    bool esFavorito = await verificarLike(widget.post.id, globalUserId);
+    setState(() {
+      isFavorite = esFavorito;
+    });
+  } */
+
+/*   // Función para verificar si el post es favorito
+  Future<bool> verificarLike(String? postId, String? userid) async {
+    try {
+      QuerySnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection("Publicaciones")
+          .doc(postId)
+          .collection("favoritos")
+          .where("userIdAuth", isEqualTo: userid)
+          .get();
+      return userSnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print('Error al verificar si el post es favorito: $e');
+      return false;
+    }
+  } */
 }

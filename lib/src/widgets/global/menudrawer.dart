@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:gym_check/src/providers/globales.dart';
+import 'package:gym_check/src/screens/social/notification_page.dart';
 import 'package:gym_check/src/utils/common_widgets/gradient_background.dart';
 import 'package:gym_check/src/values/app_colors.dart';
 import 'package:gym_check/src/values/app_theme.dart';
@@ -26,12 +27,17 @@ class _MenuDrawerState extends State<MenuDrawer> {
               Row(
                 children: [
                   GestureDetector(
-                    onTap: () {},
-                    child: CircleAvatar(
-                      radius: 30,
-                      backgroundImage: NetworkImage(globales.fotoPerfil),
-                    ),
-                  ),
+                      onTap: () {},
+                      child: globales.fotoPerfil == ""
+                          ? const CircleAvatar(
+                              radius: 30,
+                              child: Icon(Icons.person),
+                            )
+                          : CircleAvatar(
+                              radius: 30,
+                              backgroundImage:
+                                  NetworkImage(globales.fotoPerfil),
+                            )),
                 ],
               ),
               Text(
@@ -77,12 +83,62 @@ class _MenuDrawerState extends State<MenuDrawer> {
                       )
                     ],
                   ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          onTap: () {
+                            // Navegar a la página de destino con la animación de deslizamiento desde la izquierda
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        const NotificatoinsPage(),
+                                transitionsBuilder: (context, animation,
+                                    secondaryAnimation, child) {
+                                  var begin = const Offset(-1.0, 0.0);
+                                  var end = Offset.zero;
+                                  var curve = Curves.ease;
+                                  var tween = Tween(begin: begin, end: end)
+                                      .chain(CurveTween(curve: curve));
+                                  var offsetAnimation = animation.drive(tween);
+                                  return SlideTransition(
+                                    position: offsetAnimation,
+                                    child: child,
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.all(10),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.notifications,
+                                  size: 40,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  "Notificaciones",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ],
               ),
             ),
-          ),
-          const SizedBox(
-            height: 10,
           ),
           const Divider(),
           Row(

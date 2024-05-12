@@ -14,6 +14,7 @@ import 'package:gym_check/src/screens/principal.dart';
 import 'package:gym_check/src/screens/social/create_post_page.dart';
 import 'package:gym_check/src/screens/social/edit_post_page.dart';
 import 'package:gym_check/src/screens/social/feed_page.dart';
+import 'package:gym_check/src/screens/social/notification_page.dart';
 import 'package:gym_check/src/screens/social/profile_page.dart';
 import 'package:gym_check/src/screens/user/mi_espacio/mi_espacio_page.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/altura_page.dart';
@@ -97,6 +98,7 @@ class _MyAppState extends State<MyApp> {
 
             //principal
             '/principal': (context) => const PrincipalPage(),
+            '/notificaciones': (context) => const NotificatoinsPage(),
 
             //Paginas del modulo social
             '/feed': (context) => const FeedPage(),
