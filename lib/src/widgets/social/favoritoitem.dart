@@ -97,6 +97,7 @@ class _FavoritoItemState extends State<FavoritoItem> {
                   "fecha": DateTime.now(),
                   "referencia": widget.postId,
                   "contenido": "le gustó tu publicación",
+                  "tipo": "like",
                   "visto": false
                 });
               }

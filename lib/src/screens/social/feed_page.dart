@@ -58,12 +58,7 @@ class _FeedPageState extends State<FeedPage> {
                 color: AppColors.white,
                 icon: const Icon(Icons.search),
                 onPressed: () {},
-              ),
-              IconButton(
-                color: AppColors.white,
-                icon: const Icon(Icons.notifications),
-                onPressed: () {},
-              ),
+              )
             ],
             floating:
                 true, // Hace que el AppBar se desplace fuera de la vista al hacer scroll hacia abajo

@@ -27,6 +27,7 @@ class _CommentBoxState extends State<CommentBox> {
   final double _maxHeight =
       4 * 24.0; // Máximo 4 líneas, cada línea tiene 24 de altura.
   String? userToken;
+  String? destEmail;
 
   @override
   void initState() {
@@ -127,9 +128,7 @@ class _CommentBoxState extends State<CommentBox> {
                         headers: {"Content-type": "application/json"},
                         body: jsonEncode(
                           {
-                            "token": [
-                              userToken
-                            ],
+                            "token": [userToken],
                             "data": {
                               "title": globales.nick,
                               "body": "comentó tu publicacion"
@@ -137,6 +136,22 @@ class _CommentBoxState extends State<CommentBox> {
                           },
                         ),
                       );
+
+                      await getDestEmail(userToken);
+
+                      //insertar la notificacion en la base de datos (podria simplificarse)
+                      await FirebaseFirestore.instance
+                          .collection('Notificaciones')
+                          .doc()
+                          .set({
+                        "remitente": globales.nick,
+                        "destinatario": destEmail,
+                        "fecha": DateTime.now(),
+                        "referencia": widget.idpost,
+                        "contenido": "comentó tu publicación",
+                        "tipo": "comentario",
+                        "visto": false
+                      });
 
                       SmartDialog.dismiss();
                       SmartDialog.showToast('Publicado');
@@ -175,6 +190,29 @@ class _CommentBoxState extends State<CommentBox> {
       }
     } catch (e) {
       print('Error al obter el token del usuario: $e');
+    }
+  }
+
+  Future<void> getDestEmail(String? tokenfcm) async {
+    try {
+      QuerySnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('Usuarios')
+          .where("tokenfcm", isEqualTo: tokenfcm)
+          .get();
+      if (userSnapshot.docs.isNotEmpty) {
+        var userData = userSnapshot.docs.first.data();
+        // Verificar si el objeto es un mapa antes de verificar si contiene la clave
+        if (userData is Map && userData.containsKey('email')) {
+          if (mounted) {
+            // Verificar si el widget está montado antes de llamar a setState
+            setState(() {
+              destEmail = userData['email'];
+            });
+          }
+        }
+      }
+    } catch (e) {
+      print('Error al obter el email del usuario: $e');
     }
   }
 }

@@ -9,6 +9,7 @@ class Notificacion {
   DateTime fecha;
   String referencia;
   bool visto;
+  String tipo;
 
   Notificacion(
       {this.id,
@@ -17,7 +18,8 @@ class Notificacion {
       required this.fecha,
       required this.referencia,
       required this.visto,
-      required this.contenido});
+      required this.contenido,
+      required this.tipo});
 
   factory Notificacion.getFirebaseId(String idd, Map json) {
     return Notificacion(
@@ -27,7 +29,8 @@ class Notificacion {
         contenido: json['contenido'],
         fecha: (json['fecha'] as Timestamp).toDate(),
         referencia: json['referencia'],
-        visto: json['visto']);
+        visto: json['visto'],
+        tipo: json['tipo']);
   }
 
   Map<String, dynamic> toJson() {

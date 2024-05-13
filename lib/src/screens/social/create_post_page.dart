@@ -171,9 +171,17 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         borderRadius: BorderRadius.circular(25),
                         child: CircleAvatar(
                           radius: 25,
-                          child: FadeInImage.memoryNetwork(
-                              placeholder: kTransparentImage,
-                              image: globales.fotoPerfil),
+                          child: globales.fotoPerfil != null &&
+                                  globales.fotoPerfil != ""
+                              ? FadeInImage.memoryNetwork(
+                                  placeholder: kTransparentImage,
+                                  image: globales.fotoPerfil,
+                                )
+                              : const Icon(
+                                  Icons.person,
+                                  size:
+                                      30, // Puedes ajustar el tamaño según tus necesidades
+                                ),
                         ),
                       ),
                     ],
