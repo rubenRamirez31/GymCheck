@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/excercise_model.dart';
+import 'package:gym_check/src/screens/crear/series/create_serie_page.dart';
 import 'package:gym_check/src/services/excercise_service.dart';
 
 class ViewExercisePage extends StatefulWidget {
@@ -96,16 +97,21 @@ class _ViewExercisePageState extends State<ViewExercisePage> {
                     ),
                   ),
                 ),
-                if (widget.buttons)
+                if (widget.buttons == true)
                   Positioned(
                     top: 80,
                     right: 20,
                     child: FloatingActionButton(
-                      backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+                      backgroundColor: const Color(0xff0C1C2E),
                       tooltip: "hola",
                       onPressed: () {
-                        // Lógica para agregar a la rutina
-                        print('Agregar a la rutina');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CrearSeriePage(
+                                    ejercicioId: widget.id,
+                                  )),
+                        );
                       },
                       child: Icon(
                         Icons.playlist_add,
@@ -113,12 +119,12 @@ class _ViewExercisePageState extends State<ViewExercisePage> {
                       ),
                     ),
                   ),
-                if (widget.buttons)
+                if (widget.buttons  == true)
                   Positioned(
                     top: 20,
                     right: 20,
                     child: FloatingActionButton(
-                      backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+                      backgroundColor: const Color(0xff0C1C2E),
                       onPressed: () {
                         // Lógica para agregar a favoritos
                         print('Agregar a favoritos');
