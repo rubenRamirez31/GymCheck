@@ -3,9 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gym_check/src/models/excercise_model.dart';
-import 'package:provider/provider.dart';
+
 
 class ExerciseService {
+
+  
+
   static Future<void> agregarEjercicio(BuildContext context, Exercise exercise) async {
     try {
       // Accede a la referencia de la colección "Ejercicios" en Firestore
@@ -24,7 +27,9 @@ class ExerciseService {
     }
   }
 
-//que el tambien optenga el id del documento
+
+
+
 static Stream<List<Exercise>> obtenerTodosEjerciciosStream(BuildContext context) {
   final StreamController<List<Exercise>> controller = StreamController<List<Exercise>>();
 
@@ -54,18 +59,6 @@ static Stream<List<Exercise>> obtenerTodosEjerciciosStream(BuildContext context)
   }
 }
 
-
-   static Future<List<Exercise>> obtenerEjerciciosPorEnfoque(BuildContext context, String enfoque) async {
-    try {
-      final exerciseCollectionRef = FirebaseFirestore.instance.collection('Ejercicios');
-      final querySnapshot = await exerciseCollectionRef.where('primaryFocus', isEqualTo: enfoque).get();
-      final exercises = querySnapshot.docs.map((doc) => Exercise.fromFirestore(doc)).toList();
-      return exercises;
-    } catch (error) {
-      print('Error al obtener ejercicios por enfoque: $error');
-      throw error;
-    }
-  }
 
 static Stream<List<Exercise>> obtenerEjerciciosFiltradosStream(BuildContext context, String query) {
   final StreamController<List<Exercise>> controller = StreamController<List<Exercise>>();
@@ -100,6 +93,8 @@ static Stream<List<Exercise>> obtenerEjerciciosFiltradosStream(BuildContext cont
 
   return controller.stream;
 }
+
+
 
 static Future<Exercise?> obtenerEjercicioPorId(BuildContext context, String exerciseId) async {
   try {

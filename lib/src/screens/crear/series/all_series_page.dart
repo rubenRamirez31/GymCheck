@@ -1,38 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:gym_check/src/models/excercise_model.dart';
-import 'package:gym_check/src/screens/crear/ejercicios/view_excercise_page.dart';
-import 'package:gym_check/src/services/excercise_service.dart';
+import 'package:gym_check/src/models/workout_series_model.dart';
+import 'package:gym_check/src/screens/crear/series/view_serie_page.dart';
+
+import 'package:gym_check/src/services/serie_service.dart';
 import 'package:gym_check/src/widgets/menu_button_option_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AllExercisePage extends StatefulWidget {
+class AllSeriePage extends StatefulWidget {
   final bool agregar;
 
-  const AllExercisePage({Key? key, required this.agregar}) : super(key: key);
+  const AllSeriePage({Key? key, required this.agregar}) : super(key: key);
 
   @override
-  _AllExercisePageState createState() => _AllExercisePageState();
+  _AllSeriePageState createState() => _AllSeriePageState();
 }
 
-class _AllExercisePageState extends State<AllExercisePage> {
-  late Stream<List<Exercise>> _exerciseStream;
+class _AllSeriePageState extends State<AllSeriePage> {
+  late Stream<List<WorkoutSeries>> _serieStream;
   TextEditingController _searchController = TextEditingController();
   int _selectedMenuOption = 0;
 
   List<String> options = [
     'Todo',
-    'Por enfoque',
+    'Creados por mi',
     'Favoritos',
   ]; // Lista de opciones
   List<Color> highlightColors = [
-    Colors.green,
-    Colors.green,
-    Colors.green,
+    const Color.fromARGB(255, 94, 24, 246),
+    const Color.fromARGB(255, 94, 24, 246),
+    const Color.fromARGB(255, 94, 24, 246),
   ];
+
   @override
   void initState() {
     super.initState();
-    _exerciseStream = obtenerTodosEjerciciosStream();
+    _serieStream = obtenerTodasSeriesStream();
     _loadSelectedMenuOption();
   }
 
@@ -57,7 +59,7 @@ class _AllExercisePageState extends State<AllExercisePage> {
               controller: _searchController,
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
-                labelText: 'Buscar ejercicio',
+                labelText: 'Buscar serie',
                 suffixIcon: IconButton(
                   onPressed: () => _searchController.clear(),
                   icon: const Icon(Icons.clear),
@@ -65,7 +67,7 @@ class _AllExercisePageState extends State<AllExercisePage> {
               ),
               onChanged: (query) {
                 setState(() {
-                  _exerciseStream = obtenerEjerciciosFiltradosStream(query);
+                  _serieStream = obtenerSeriesFiltradasStream(query);
                 });
               },
             ),
@@ -103,19 +105,19 @@ class _AllExercisePageState extends State<AllExercisePage> {
               ),
             ),
             const SizedBox(height: 16),
-            StreamBuilder<List<Exercise>>(
-              stream: _exerciseStream,
+            StreamBuilder<List<WorkoutSeries>>(
+              stream: _serieStream,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else {
-                  final exercises = snapshot.data!;
+                  final series = snapshot.data!;
                   return Column(
-                    children: exercises.map((exercise) {
-                      return ExerciseContainer(
-                        exercise: exercise,
+                    children: series.map((serie) {
+                      return SerieContainer(
+                        serie: serie,
                         agregar: widget.agregar,
                       );
                     }).toList(),
@@ -129,48 +131,46 @@ class _AllExercisePageState extends State<AllExercisePage> {
     );
   }
 
-  Stream<List<Exercise>> obtenerTodosEjerciciosStream() {
+  Stream<List<WorkoutSeries>> obtenerTodasSeriesStream() {
     try {
-      final exercisesStream =
-          ExerciseService.obtenerTodosEjerciciosStream(context);
-      return exercisesStream;
+      final seriesStream = SerieService.obtenerTodasSeriesStream(context);
+      return seriesStream;
     } catch (error) {
-      print('Error al obtener todos los ejercicios: $error');
+      print('Error al obtener todas las series: $error');
       throw error;
     }
   }
 
-  Stream<List<Exercise>> obtenerEjerciciosFiltradosStream(String query) {
+  Stream<List<WorkoutSeries>> obtenerSeriesFiltradasStream(String query) {
     try {
-      final exercisesStream =
-          ExerciseService.obtenerEjerciciosFiltradosStream(context, query);
-      return exercisesStream;
+      final seriesStream =
+          SerieService.obtenerSeriesFiltradasStream(context, query);
+      return seriesStream;
     } catch (error) {
-      print('Error al obtener los ejercicios filtrados: $error');
+      print('Error al obtener las series filtradas: $error');
       throw error;
     }
   }
 }
 
-class ExerciseContainer extends StatelessWidget {
-  final Exercise exercise;
+class SerieContainer extends StatelessWidget {
+  final WorkoutSeries serie;
   final bool agregar;
 
-  const ExerciseContainer(
-      {Key? key, required this.exercise, required this.agregar})
+  const SerieContainer({Key? key, required this.serie, required this.agregar})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    String primary = exercise.primaryFocus;
-    String secondary = exercise.secondaryFocus;
+    String primary = serie.primaryFocus;
+    String secondary = serie.secondaryFocus;
 
     return GestureDetector(
       onTap: () {
         if (agregar == true) {
-          Navigator.of(context).pop(exercise);
+          Navigator.of(context).pop(serie);
         } else {
-          ///accion
+          //agregar algop aqui
         }
       },
       child: Container(
@@ -185,11 +185,7 @@ class ExerciseContainer extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Column(
-              // crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(
-                  width: 10,
-                ),
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
@@ -197,40 +193,6 @@ class ExerciseContainer extends StatelessWidget {
                   ),
                   width: 100,
                   height: 100,
-                  child: exercise.representativeImageLink.isNotEmpty
-                      ? Image.network(
-                          exercise.representativeImageLink,
-                          loadingBuilder: (BuildContext context, Widget child,
-                              ImageChunkEvent? loadingProgress) {
-                            if (loadingProgress == null) {
-                              return child;
-                            } else {
-                              return const CircularProgressIndicator();
-                            }
-                          },
-                          errorBuilder: (context, error, stackTrace) {
-                            return const Text('No hay imagen');
-                          },
-                          frameBuilder: (BuildContext context, Widget child,
-                              int? frame, bool wasSynchronouslyLoaded) {
-                            if (wasSynchronouslyLoaded) {
-                              return child;
-                            }
-                            return AnimatedOpacity(
-                              child: child,
-                              opacity: frame == null ? 0 : 1,
-                              duration: const Duration(seconds: 1),
-                              curve: Curves.easeOut,
-                            );
-                          },
-                          headers: {
-                            'Accept': '*/*',
-                            'User-Agent': 'your_user_agent',
-                          },
-                        )
-                      : const Center(
-                          child: Text('Imagen no encontrada'),
-                        ),
                 ),
               ],
             ),
@@ -244,7 +206,7 @@ class ExerciseContainer extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          exercise.name,
+                          serie.name,
                           style: const TextStyle(
                             color: Colors.black,
                             fontSize: 18,
@@ -289,8 +251,8 @@ class ExerciseContainer extends StatelessWidget {
                               builder: (context) {
                                 return FractionallySizedBox(
                                   heightFactor: 0.96,
-                                  child: ViewExercisePage(
-                                      id: exercise.id ?? "", buttons: false),
+                                  child: ViewWorkoutSeriesPage(
+                                      id: serie.id ?? "", buttons: false),
                                 );
                               },
                             );
@@ -304,7 +266,7 @@ class ExerciseContainer extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          exercise.name,
+                          serie.name,
                           style: const TextStyle(
                             color: Colors.black,
                             fontSize: 18,
@@ -329,13 +291,15 @@ class ExerciseContainer extends StatelessWidget {
                               builder: (context) {
                                 return FractionallySizedBox(
                                   heightFactor: 0.96,
-                                  child: ViewExercisePage(
-                                      id: exercise.id ?? "", buttons: true),
+                                  child: ViewWorkoutSeriesPage(
+                                      id: serie.id ?? "", buttons: true),
                                 );
                               },
                             );
                           },
-                          icon: const Icon(Icons.more_horiz),
+                          icon: const Icon(
+                            Icons.more_horiz,
+                          ),
                         ),
                       ],
                     ),

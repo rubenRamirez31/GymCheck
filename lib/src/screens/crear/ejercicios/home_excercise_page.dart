@@ -86,7 +86,7 @@ class _HomeExercisePageState extends State<HomeExercisePage> {
 
             const SizedBox(height: 20),
             _selectedMenuOption == 0
-                ? const AllExercisePage()
+                ? const AllExercisePage(agregar: false,)
                 : const SizedBox(),
             _selectedMenuOption == 1
                 ? const ExerciseByFocusPage()
