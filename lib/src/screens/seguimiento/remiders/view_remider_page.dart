@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gym_check/src/screens/seguimiento/remiders/add_remider_page.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/update_remider_page.dart';
 import 'package:gym_check/src/screens/seguimiento/tracking_funtions.dart';
 
@@ -265,8 +266,8 @@ class _ViewReminderState extends State<ViewReminder> {
                                     builder: (context) {
                                       return FractionallySizedBox(
                                         heightFactor: 0.60,
-                                        child: UpdateReminderPage(
-                                          reminderId: widget.reminderId,
+                                        child: AddReminderPage(tipo: "Rutina",
+                                        rutinaId: widget.reminderId,
                                         ),
                                       );
                                     },

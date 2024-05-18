@@ -5,6 +5,7 @@ import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/screens/crear/ejercicios/all_excercise_page.dart';
 import 'package:gym_check/src/services/excercise_service.dart';
 import 'package:gym_check/src/services/serie_service.dart';
+import 'package:numberpicker/numberpicker.dart';
 import 'package:provider/provider.dart';
 
 class CrearSeriePage extends StatefulWidget {
@@ -35,7 +36,7 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
             fontSize: 25,
           ),
         ),
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color:
               Colors.white, // Cambia el color del icono de retroceso a blanco
         ),
@@ -48,6 +49,7 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
           ),
         ],
       ),
+      backgroundColor: const Color.fromARGB(255, 18, 18, 18),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -57,12 +59,17 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(
-                  height: 5,
+                  height: 15,
                 ),
                 TextFormField(
+                  maxLength: 25,
                   controller: _nombreController,
-                  decoration:
-                      const InputDecoration(labelText: 'Nombre de la serie'),
+                  decoration: const InputDecoration(
+                    labelText: 'Nombre de la serie (max. 25 caracteres)',
+                    labelStyle: const TextStyle(color: Colors.white),
+                    counterStyle: TextStyle(color: Colors.white),
+                  ),
+                  style: const TextStyle(color: Colors.white),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor ingresa un nombre para la serie';
@@ -71,11 +78,18 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
                   },
                 ),
                 const SizedBox(
-                  height: 5,
+                  height: 15,
                 ),
                 TextFormField(
+                  maxLength: 120,
+                  maxLines: null,
                   controller: _descripcionController,
-                  decoration: const InputDecoration(labelText: 'Descripción'),
+                  decoration: const InputDecoration(
+                    labelText: 'Descripción (max. 120 caracteres)',
+                    labelStyle: TextStyle(color: Colors.white),
+                    counterStyle: TextStyle(color: Colors.white),
+                  ),
+                  style: const TextStyle(color: Colors.white),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor ingresa una descripción';
@@ -83,37 +97,72 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
                     return null;
                   },
                 ),
-                Row(
-                  children: [
-                    const Text('Sets: '),
-                    DropdownButton<int>(
-                      value: _sets,
-                      onChanged: (value) {
-                        setState(() {
-                          _sets = value!;
-                        });
-                      },
-                      items: List.generate(5, (index) => index + 1)
-                          .map((value) => DropdownMenuItem<int>(
-                                value: value,
-                                child: Text(value.toString()),
-                              ))
-                          .toList(),
-                    ),
-                  ],
-                ),
-                TextFormField(
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                      labelText: 'Descanso entre sets (segundos)'),
-                  onChanged: (value) {
-                    setState(() {
-                      _descansoEntreSets = int.tryParse(value) ?? 0;
-                    });
-                  },
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          // Lógica para mostrar información sobre sets
+                        },
+                        icon: const Icon(Icons.info, color: Colors.white),
+                      ),
+                      const SizedBox(width: 5),
+                      const Text(
+                        'Sets: ',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      SizedBox(
+                        width: 20, // Ancho deseado del NumberPicker
+                        child: NumberPicker(
+                          value: _sets,
+                          minValue: 1,
+                          maxValue: 10,
+                          onChanged: (value) {
+                            setState(() {
+                              _sets = value;
+                            });
+                          },
+                          textStyle: const TextStyle(color: Colors.white),
+                          selectedTextStyle:
+                              const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 50,
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          // Lógica para mostrar información sobre el descanso entre sets
+                        },
+                        icon: const Icon(Icons.info, color: Colors.white),
+                      ),
+                      const SizedBox(width: 5),
+                      const Text(
+                        'Descanso: ',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      SizedBox(
+                        width: 20, // Ancho deseado del NumberPicker
+                        child: NumberPicker(
+                          value: _descansoEntreSets,
+                          minValue: 0,
+                          maxValue: 120,
+                          onChanged: (value) {
+                            setState(() {
+                              _descansoEntreSets = value;
+                            });
+                          },
+                          textStyle: const TextStyle(color: Colors.white),
+                          selectedTextStyle:
+                              const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(
-                  height: 5,
+                  height: 15,
                 ),
                 _ejercicios.isNotEmpty
                     ? Container(
@@ -121,123 +170,148 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
                         decoration: BoxDecoration(
                           color: const Color.fromARGB(255, 18, 18, 18),
                           borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.white, width: 0.5),
                         ),
                         child: ConstrainedBox(
-                          constraints: BoxConstraints(
+                          constraints: const BoxConstraints(
                             maxHeight: 300, // Altura máxima de 300 píxeles
                           ),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: _ejercicios.map((item) {
-                                if (item.containsKey('exercise')) {
-                                  // Ejercicio
-                                  Map<String, dynamic> ejercicio =
-                                      item['exercise'];
-                                  String nombreEjercicio = ejercicio['nombre'];
-                                  int repeticiones = ejercicio['repetitions'];
-                                  String equipamiento =
-                                      ejercicio['equipmentSelect'];
+                          child: ReorderableListView(
+                            padding: EdgeInsets.zero,
+                            physics: const BouncingScrollPhysics(),
+                            children: _ejercicios.asMap().entries.map((entry) {
+                              final int index = entry.key;
+                              final item = entry.value;
+                              if (item.containsKey('exercise')) {
+                                // Ejercicio
+                                Map<String, dynamic> ejercicio =
+                                    item['exercise'];
+                                String nombreEjercicio = ejercicio['nombre'];
+                                int repeticiones = ejercicio['repetitions'];
+                                String equipamiento =
+                                    ejercicio['equipmentSelect'];
 
-                                  return GestureDetector(
-                                    onTap: () {
-                                      _verinformacionItem(item);
-                                    },
-                                    child: Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 5),
-                                      padding: const EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey[200],
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            '$nombreEjercicio: $repeticiones reps',
-                                            style:
-                                                const TextStyle(fontSize: 16),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              IconButton(
-                                                onPressed: () {
-                                                  _editarAtributos(item);
-                                                },
-                                                icon: const Icon(Icons.edit),
-                                              ),
-                                              IconButton(
-                                                onPressed: () {
-                                                  _eliminar(item);
-                                                },
-                                                icon: const Icon(Icons.delete),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                                return GestureDetector(
+                                  onTap: () {
+                                    _verinformacionItem(item);
+                                  },
+                                  key: ValueKey('$index'),
+                                  child: Container(
+                                    margin:
+                                        const EdgeInsets.symmetric(vertical: 5),
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      color:
+                                          const Color.fromARGB(255, 83, 83, 83),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                  );
-                                } else if (item.containsKey('descanso')) {
-                                  // Descanso
-                                  int segundos = item['descanso'];
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          '$nombreEjercicio: $repeticiones reps',
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.white),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            IconButton(
+                                              onPressed: () {
+                                                _editarAtributos(item);
+                                              },
+                                              color: Colors.white,
+                                              icon: const Icon(Icons.edit),
+                                            ),
+                                            IconButton(
+                                              onPressed: () {
+                                                _eliminar(item);
+                                              },
+                                              color: Colors.white,
+                                              icon: const Icon(Icons.delete),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              } else if (item.containsKey('descanso')) {
+                                // Descanso
+                                int segundos = item['descanso'];
 
-                                  return GestureDetector(
-                                    onTap: () {
-                                      _verinformacionItem(item);
-                                    },
-                                    child: Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 5),
-                                      padding: const EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey[200],
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            'Descanso: $segundos segundos',
-                                            style:
-                                                const TextStyle(fontSize: 16),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              IconButton(
-                                                onPressed: () {
-                                                  _editarAtributos(item);
-                                                },
-                                                icon: const Icon(Icons.edit),
-                                              ),
-                                              IconButton(
-                                                onPressed: () {
-                                                  _eliminar(item);
-                                                },
-                                                icon: const Icon(Icons.delete),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                                return GestureDetector(
+                                  onTap: () {
+                                    _verinformacionItem(item);
+                                  },
+                                  key: ValueKey('$index'),
+                                  child: Container(
+                                    margin:
+                                        const EdgeInsets.symmetric(vertical: 5),
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      color:
+                                          const Color.fromARGB(255, 83, 83, 83),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                  );
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Descanso: $segundos segundos',
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.white),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            IconButton(
+                                              color: Colors.white,
+                                              onPressed: () {
+                                                _editarAtributos(item);
+                                              },
+                                              icon: const Icon(Icons.edit),
+                                            ),
+                                            IconButton(
+                                              color: Colors.white,
+                                              onPressed: () {
+                                                _eliminar(item);
+                                              },
+                                              icon: const Icon(Icons.delete),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }
+                              return const SizedBox(); // Agregar otro tipo de widget si es necesario
+                            }).toList(),
+                            onReorder: (oldIndex, newIndex) {
+                              setState(() {
+                                if (newIndex > oldIndex) {
+                                  newIndex -= 1;
                                 }
-                                return const SizedBox(); // Agregar otro tipo de widget si es necesario
-                              }).toList(),
-                            ),
+                                final item = _ejercicios.removeAt(oldIndex);
+                                _ejercicios.insert(newIndex, item);
+                              });
+                            },
                           ),
                         ),
                       )
                     : const SizedBox(),
+                const SizedBox(
+                  height: 15,
+                ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
                       onPressed: () {
@@ -254,7 +328,10 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
                   ],
                 ),
                 CheckboxListTile(
-                  title: const Text('¿Es pública?'),
+                  title: const Text(
+                    '¿Es pública?',
+                    style: const TextStyle(fontSize: 16, color: Colors.white),
+                  ),
                   value: _esPublica,
                   onChanged: (value) {
                     setState(() {
@@ -262,11 +339,16 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
                     });
                   },
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    _crearSerie();
-                  },
-                  child: const Text('Crear serie'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        _crearSerie();
+                      },
+                      child: const Text('Crear serie'),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -325,9 +407,11 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
         selectedEquipment; // Variable para almacenar el equipamiento seleccionado
     int repeticiones = 0;
 
+    GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
     showModalBottomSheet(
       context: context,
-      // backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+      backgroundColor: const Color.fromARGB(255, 18, 18, 18),
       enableDrag: false,
       isScrollControlled:
           true, // Permite el desplazamiento cuando el teclado aparece
@@ -339,82 +423,122 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
           ),
           child: Container(
             padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Configurar Ejercicio',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 20),
-                Text(exercise.name),
-                TextFormField(
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(labelText: 'Repeticiones'),
-                  onChanged: (value) {
-                    repeticiones = int.tryParse(value) ?? 0;
-                  },
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Equipamiento:',
-                  style: TextStyle(fontSize: 16),
-                ),
-                DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    //labelText: 'Equipo',
-                    labelStyle: const TextStyle(color: Colors.white),
-                    fillColor: const Color.fromARGB(255, 18, 18, 18),
-                    border: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                          color: Colors.white), // Color del borde
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Configurar Ejercicio',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
-                  value: selectedEquipment,
-                  onChanged: (String? value) {
-                    setState(() {
-                      selectedEquipment = value!;
-                    });
-                  },
-                  dropdownColor: const Color.fromARGB(255, 55, 55, 55),
-                  items: exercise.equipment.map((item) {
-                    return DropdownMenuItem<String>(
-                      value: item,
-                      child: Text(
-                        item,
-                        style: const TextStyle(
-                            color: Colors
-                                .white), // Establece el color del texto en blanco
+                  const SizedBox(height: 20),
+                  Text(exercise.name,
+                      style: TextStyle(
+                          color: Colors
+                              .white)), // Establece el color del texto en blanco
+                  const SizedBox(height: 15),
+                  TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: 'Repeticiones',
+                      labelStyle: TextStyle(
+                          color: Colors
+                              .white), // Establece el color del texto de la etiqueta en blanco
+                    ),
+                    style: const TextStyle(color: Colors.white),
+                    onChanged: (value) {
+                      repeticiones = int.tryParse(value) ?? 0;
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor ingresa un número de repeticiones';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Equipamiento:',
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Colors
+                            .white), // Establece el color del texto en blanco
+                  ),
+                    const SizedBox(height: 15),
+                  DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      labelText: 'Selecciona un equipamiento',
+                      labelStyle: const TextStyle(color: Colors.white),
+                      fillColor: const Color.fromARGB(255, 18, 18, 18),
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                            color: Colors.white), // Color del borde
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                    );
-                  }).toList(),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Cancelar'),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        _agregarEjercicio(
-                            exercise,
-                            repeticiones,
-                            selectedEquipment ??
-                                ''); // Pasar el equipamiento seleccionado al método _agregarEjercicio
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Aceptar'),
-                    ),
-                  ],
-                ),
-              ],
+                    value: selectedEquipment,
+                    onChanged: (String? value) {
+                      setState(() {
+                        selectedEquipment = value!;
+                      });
+                    },
+                    dropdownColor: const Color.fromARGB(255, 55, 55, 55),
+                    items: exercise.equipment.map((item) {
+                      return DropdownMenuItem<String>(
+                        value: item,
+                        child: Text(
+                          item,
+                          style: const TextStyle(
+                              color: Colors
+                                  .white), // Establece el color del texto en blanco
+                        ),
+                      );
+                    }).toList(),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor selecciona un equipamiento';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Cancelar',
+                            style: TextStyle(
+                                color: Colors
+                                    .white)), // Establece el color del texto en blanco
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            _agregarEjercicio(
+                                exercise,
+                                repeticiones,
+                                selectedEquipment ??
+                                    ''); // Pasar el equipamiento seleccionado al método _agregarEjercicio
+                            Navigator.of(context).pop();
+                          }
+                        },
+                        child: const Text('Aceptar',
+                            style: TextStyle(
+                                color: Colors
+                                    .black)), // Establece el color del texto en blanco
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -425,6 +549,7 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
   void _verinformacionItem(Map<String, dynamic> item) async {
     await showModalBottomSheet(
       context: context,
+      backgroundColor: const Color.fromARGB(255, 18, 18, 18),
       enableDrag: false,
       showDragHandle: true,
       isScrollControlled: true,
@@ -451,15 +576,20 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
                   children: [
                     const Text(
                       'Información del Ejercicio',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
                     ),
                     const SizedBox(height: 20),
-                    Text('Nombre: $nombreEjercicio'),
+                    Text('Nombre: $nombreEjercicio',
+                        style: const TextStyle(color: Colors.white)),
                     const SizedBox(height: 10),
-                    Text('Repeticiones: $repeticiones'),
+                    Text('Repeticiones: $repeticiones',
+                        style: const TextStyle(color: Colors.white)),
                     const SizedBox(height: 10),
-                    Text('Equipamiento: $equipamiento'),
+                    Text('Equipamiento: $equipamiento',
+                        style: const TextStyle(color: Colors.white)),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
@@ -487,11 +617,14 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
                   children: [
                     const Text(
                       'Información del Descanso',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
                     ),
                     const SizedBox(height: 20),
-                    Text('Duración (segundos): $segundos'),
+                    Text('Duración (segundos): $segundos',
+                        style: const TextStyle(color: Colors.white)),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
@@ -519,7 +652,7 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
         'repetitions': repeticiones,
         'equipmentList': exercise.equipment,
         'equipmentSelect': selectedEquipment,
-        'focusLevels': exercise.focusLevels 
+        'focusLevels': exercise.focusLevels
 
         // Aquí puedes agregar más atributos de exercise según sea necesario
       }
@@ -534,10 +667,21 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
         int segundos = 0;
 
         return AlertDialog(
-          title: const Text('Agregar Descanso'),
+          backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+          title: const Text(
+            'Agregar Descanso',
+            style: TextStyle(
+                color: Colors.white), // Cambia el color del texto a blanco
+          ),
           content: TextFormField(
             keyboardType: TextInputType.number,
-            decoration: const InputDecoration(labelText: 'Segundos'),
+            style: TextStyle(color: Colors.white),
+            decoration: const InputDecoration(
+              labelText: 'Segundos',
+              labelStyle: TextStyle(
+                  color: Colors
+                      .white), // Cambia el color del texto de la etiqueta a blanco
+            ),
             onChanged: (value) {
               segundos = int.tryParse(value) ?? 0;
             },
@@ -547,7 +691,11 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancelar'),
+              child: const Text(
+                'Cancelar',
+                style: TextStyle(
+                    color: Colors.white), // Cambia el color del texto a blanco
+              ),
             ),
             ElevatedButton(
               onPressed: () {
@@ -555,7 +703,11 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
                 setState(() {});
                 Navigator.of(context).pop();
               },
-              child: const Text('Aceptar'),
+              child: const Text(
+                'Aceptar',
+                style: TextStyle(
+                    color: Colors.black), // Cambia el color del texto a blanco
+              ),
             ),
           ],
         );
@@ -563,36 +715,65 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
     );
   }
 
-void _crearSerie() {
-  if (_formKey.currentState!.validate()) {
-    // Variables para almacenar la suma de los enfoques de los músculos
-    Map<String, int> muscleFocusSum = {};
+  void _crearSerie() {
+    if (_formKey.currentState!.validate()) {
+      // Mostrar AlertDialog con fondo negro y letras blancas mientras se crea la serie
+      showDialog(
+        context: context,
+        barrierDismissible:
+            false, // Impide que el usuario cierre el AlertDialog tocando fuera de él
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Colors.black, // Fondo negro
+            title: Text(
+              'Creando...',
+              style: TextStyle(color: Colors.white), // Letras blancas
+            ),
+            content: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(
+                  Colors.white), // Color del indicador de progreso blanco
+            ),
+          );
+        },
+      );
 
-    // Filtrar solo los ejercicios dentro de _ejercicios
-    List<Map<String, dynamic>> ejercicios = _ejercicios.where((item) => item.containsKey('exercise')).toList();
+      // Variables para almacenar la suma de los enfoques de los músculos
+      Map<String, int> muscleFocusSum = {};
 
-    // Calcular la suma de los enfoques de los músculos para cada ejercicio
-    for (var ejercicio in ejercicios) {
-      Map<String, dynamic> exercise = ejercicio['exercise'];
-      Map<String, int> focusLevels = exercise['focusLevels'];
-      focusLevels.forEach((muscle, focus) {
-        muscleFocusSum.update(muscle, (value) => value + focus, ifAbsent: () => focus);
-      });
-    }
+      // Filtrar solo los ejercicios dentro de _ejercicios
+      List<Map<String, dynamic>> ejercicios =
+          _ejercicios.where((item) => item.containsKey('exercise')).toList();
 
-    // Ordenar los músculos por su enfoque sumado en orden descendente
-    List<MapEntry<String, int>> sortedMuscleFocusSum = muscleFocusSum.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
+      // Calcular la suma de los enfoques de los músculos para cada ejercicio
+      for (var ejercicio in ejercicios) {
+        Map<String, dynamic> exercise = ejercicio['exercise'];
+        Map<String, int> focusLevels = exercise['focusLevels'];
+        focusLevels.forEach((muscle, focus) {
+          muscleFocusSum.update(muscle, (value) => value + focus,
+              ifAbsent: () => focus);
+        });
+      }
 
-    // Establecer el enfoque primario y secundario
-    String primaryFocus = sortedMuscleFocusSum.isNotEmpty ? sortedMuscleFocusSum[0].key : '';
-    String secondaryFocus = sortedMuscleFocusSum.length > 1 ? sortedMuscleFocusSum[1].key : '';
-    String thirdFocus = sortedMuscleFocusSum.length > 1 ? sortedMuscleFocusSum[2].key : '';
+      // Ordenar los músculos por su enfoque sumado en orden descendente
+      List<MapEntry<String, int>> sortedMuscleFocusSum = muscleFocusSum.entries
+          .toList()
+        ..sort((a, b) => b.value.compareTo(a.value));
 
-     Map<String, int> _focusLevels = {primaryFocus: 3, secondaryFocus: 2, thirdFocus: 1};
+      // Establecer el enfoque primario y secundario
+      String primaryFocus =
+          sortedMuscleFocusSum.isNotEmpty ? sortedMuscleFocusSum[0].key : '';
+      String secondaryFocus =
+          sortedMuscleFocusSum.length > 1 ? sortedMuscleFocusSum[1].key : '';
+      String thirdFocus =
+          sortedMuscleFocusSum.length > 1 ? sortedMuscleFocusSum[2].key : '';
 
-    
-    // Determinar el tipo de serie 
+      Map<String, int> _focusLevels = {
+        primaryFocus: 3,
+        secondaryFocus: 2,
+        thirdFocus: 1
+      };
+
+      // Determinar el tipo de serie
       String tipoSerie = '';
       int cantidadEjercicios = ejercicios.length;
       if (cantidadEjercicios == 1) {
@@ -605,35 +786,87 @@ void _crearSerie() {
         tipoSerie = 'Superserie';
       }
 
+      Globales globales = Provider.of<Globales>(context, listen: false);
 
-     Globales globales = Provider.of<Globales>(context, listen: false);
+      // Crear el objeto WorkoutSeries
+      WorkoutSeries serie = WorkoutSeries(
+          name: _nombreController.text,
+          nick: globales.nick,
+          isPublic: _esPublica,
+          primaryFocus: primaryFocus,
+          secondaryFocus: secondaryFocus,
+          description: _descripcionController.text,
+          type: tipoSerie,
+          sets: _sets,
+          restBetweenSets: _descansoEntreSets,
+          exercises: _ejercicios,
+          focusLevels: _focusLevels);
 
-    // Crear el objeto WorkoutSeries
-    WorkoutSeries serie = WorkoutSeries(
-      name: _nombreController.text,
-      nick: globales.nick, 
-      isPublic: _esPublica,
-      primaryFocus: primaryFocus,
-      secondaryFocus: secondaryFocus,
-      description: _descripcionController.text,
-      type: tipoSerie,
-      sets: _sets,
-      restBetweenSets: _descansoEntreSets,
-      exercises: _ejercicios,
-      focusLevels: _focusLevels
-    );
+      // Imprimir el objeto WorkoutSeries (solo para depuración)
+      print(serie.primaryFocus);
+      print(serie.secondaryFocus);
 
-    // Imprimir el objeto WorkoutSeries (solo para depuración)
-    print(serie.primaryFocus);
-    print(serie.secondaryFocus);
+      SerieService.agregarSerie(context, serie);
+      // Agregar un retraso de 2 segundos para simular la creación de la serie
+      Future.delayed(Duration(seconds: 2), () {
+        // Cerrar el AlertDialog de creación
+        Navigator.of(context).pop();
 
-    SerieService.agregarSerie(context, serie);
+        // Navegar a la página anterior
+        Navigator.pop(context);
+
+// Mostrar otro AlertDialog después de crear la serie
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              backgroundColor: Colors.black, // Fondo negro
+              title: Text(
+                'Serie creada',
+                style: TextStyle(color: Colors.white), // Letras blancas
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'La serie ha sido almacenada en la sección "Series", y puede encontrarla en "Creado por mí".',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          // Crear otra serie
+                        },
+                        child: Text('Crear otra serie',
+                            style: TextStyle(
+                                color: Colors.black)), // Letras blancas
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          // Crear rutina
+                        },
+                        child: Text('Crear rutina',
+                            style: TextStyle(
+                                color: Colors.black)), // Letras blancas
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      });
+    }
   }
-}
-
 
   void _editarAtributos(Map<String, dynamic> item) {
     showModalBottomSheet(
+      backgroundColor: const Color.fromARGB(255, 18, 18, 18),
       context: context,
       isScrollControlled: true,
       builder: (context) {
@@ -656,21 +889,25 @@ void _crearSerie() {
                 children: [
                   const Text(
                     'Editar Ejercicio',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
                   const SizedBox(height: 20),
                   Text(
                     'Nombre: ${nombreEjercicio}',
-                    style: const TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 16, color: Colors.white),
                   ),
                   const SizedBox(height: 10),
                   const Text(
                     'Repeticiones:',
-                    style: const TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 16, color: Colors.white),
                   ),
                   TextFormField(
                     initialValue: repeticiones.toString(),
                     keyboardType: TextInputType.number,
+                    style: const TextStyle(color: Colors.white),
                     onChanged: (value) {
                       print("Nuevo valor de repeticiones: $value");
                       setState(() {
@@ -683,17 +920,18 @@ void _crearSerie() {
                   const SizedBox(height: 10),
                   const Text(
                     'Equipamiento:',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 16, color: Colors.white),
                   ),
                   DropdownButtonFormField<String>(
                     decoration: InputDecoration(
                       labelStyle: const TextStyle(color: Colors.white),
-                      fillColor: const Color.fromARGB(255, 18, 18, 18),
+                      //fillColor: const Color.fromARGB(255, 18, 18, 18),
                       border: OutlineInputBorder(
                         borderSide: const BorderSide(color: Colors.white),
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
+                    hint: Text('Seleccionar el Equipamiento'),
                     value: equipamiento,
                     onChanged: (String? value) {
                       print("Nuevo valor de equipo: $value");
@@ -739,16 +977,22 @@ void _crearSerie() {
                 children: [
                   const Text(
                     'Editar Descanso',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
                   const SizedBox(height: 20),
                   const Text(
                     'Duración (segundos):',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 16, color: Colors.white),
                   ),
                   TextFormField(
                     initialValue: segundos.toString(),
                     keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                        labelStyle: TextStyle(color: Colors.white)),
+                    style: const TextStyle(color: Colors.white),
                     onChanged: (value) {
                       setState(() {
                         print("Nuevo valor de descanso: $value");
@@ -779,16 +1023,27 @@ void _crearSerie() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        //backgroundColor: const Color.fromARGB(255, 18, 18, 18),
-        title: const Text('Eliminar'),
-        content:
-            const Text('¿Estás seguro de que quieres eliminar este ejercicio?'),
+        backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+        title: const Text(
+          'Eliminar',
+          style: TextStyle(
+              color: Colors.white), // Cambia el color del texto a blanco
+        ),
+        content: const Text(
+          '¿Estás seguro de que quieres eliminar este ejercicio?',
+          style: TextStyle(
+              color: Colors.white), // Cambia el color del texto a blanco
+        ),
         actions: <Widget>[
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text('Cancelar'),
+            child: const Text(
+              'Cancelar',
+              style: TextStyle(
+                  color: Colors.white), // Cambia el color del texto a blanco
+            ),
           ),
           ElevatedButton(
             onPressed: () {
@@ -796,7 +1051,11 @@ void _crearSerie() {
               setState(() {});
               Navigator.of(context).pop();
             },
-            child: const Text('Eliminar'),
+            child: const Text(
+              'Eliminar',
+              style: TextStyle(
+                  color: Colors.black), // Cambia el color del texto a blanco
+            ),
           ),
         ],
       ),

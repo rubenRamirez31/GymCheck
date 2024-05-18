@@ -1,26 +1,34 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/reminder_model.dart';
+import 'package:gym_check/src/models/workout_model.dart';
 import 'package:gym_check/src/screens/calendar/widgets/date_time_selector.dart';
+import 'package:gym_check/src/screens/crear/home_create_page.dart';
+import 'package:gym_check/src/screens/crear/rutinas/all_workout_page.dart';
+import 'package:gym_check/src/screens/crear/rutinas/view_workout_page.dart';
+import 'package:gym_check/src/screens/principal.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/reminder_scheduler.dart';
 import 'package:gym_check/src/services/reminder_service.dart';
+import 'package:gym_check/src/services/workout_service.dart';
 import 'package:intl/intl.dart';
-
-// Lista de rutinas estáticas
-final List<Map<String, String>> staticRoutines = [
-  {'name': 'Rutina 1', 'primaryFocus': 'Focus 1', 'secondaryFocus': 'Focus 2'},
-  {'name': 'Rutina 2', 'primaryFocus': 'Focus 3', 'secondaryFocus': 'Focus 4'},
-  {'name': 'Rutina 3', 'primaryFocus': 'Focus 5', 'secondaryFocus': 'Focus 6'},
-  {'name': 'Rutina 4', 'primaryFocus': 'Focus 7', 'secondaryFocus': 'Focus 8'},
-  {'name': 'Rutina 5', 'primaryFocus': 'Focus 9', 'secondaryFocus': 'Focus 10'},
-];
 
 class AddReminderPage extends StatefulWidget {
   final DateTime? selectedDate;
   final String tipo;
+  final String? rutinaId;
+  final String? idRecordar;
+  final String? recordatorioId;
 
-  const AddReminderPage({Key? key, this.selectedDate, required this.tipo})
+  const AddReminderPage(
+      {Key? key,
+      this.selectedDate,
+      required this.tipo,
+      this.rutinaId,
+      this.idRecordar,
+      this.recordatorioId})
       : super(key: key);
 
   @override
@@ -28,8 +36,8 @@ class AddReminderPage extends StatefulWidget {
 }
 
 class _AddReminderPageState extends State<AddReminderPage> {
-  Map<String, String> _selectedRoutine =
-      staticRoutines[0]; // Rutina seleccionada en el menú desplegable
+  
+  List<Map<String, dynamic>> _rutina = [];
 
   String _title = "";
   String _description = "";
@@ -48,10 +56,24 @@ class _AddReminderPageState extends State<AddReminderPage> {
 
   int dropdownValue = 10;
 
+  Map<String, dynamic>? _reminderData;
+
   @override
   void initState() {
     super.initState();
     _currentDate = widget.selectedDate ?? DateTime.now();
+    if (widget.recordatorioId != null) {
+      _loadReminderData();
+    }
+  }
+
+  Future<void> _loadReminderData() async {
+    final reminderData = await ReminderService.getReminderById(
+        context, widget.recordatorioId ?? "");
+    setState(() {
+      _reminderData = reminderData['reminder'];
+      //_isLoading = false;
+    });
   }
 
   String _getDayOfWeek(DateTime date) {
@@ -102,27 +124,11 @@ class _AddReminderPageState extends State<AddReminderPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (widget.tipo == "Rutina") ...[
-                DropdownButton<Map<String, String>>(
-                  value: _selectedRoutine,
-                  onChanged: (Map<String, String>? newValue) {
-                    setState(() {
-                      _selectedRoutine = newValue!;
-                    });
-                  },
-                  items: staticRoutines.map((Map<String, String> value) {
-                    return DropdownMenuItem<Map<String, String>>(
-                      value: value,
-                      child: Text(value['name']!),
-                    );
-                  }).toList(),
-                ),
-                SizedBox(height: 20.0),
-              ],
               if (widget.selectedDate != null) ...[
                 Text("$tipo para el día $dayOfWeek $formattedDate"),
               ],
               SizedBox(height: 20.0),
+
               TextField(
                 onChanged: (value) {
                   setState(() {
@@ -182,26 +188,121 @@ class _AddReminderPageState extends State<AddReminderPage> {
                   ),
                 ],
               ),
-              DropdownButton<Color>(
-                value: _selectedColor,
-                onChanged: (Color? newValue) {
-                  if (newValue != null) {
-                    setState(() {
-                      _selectedColor = newValue;
-                    });
-                  }
-                },
-                items: _colors.map<DropdownMenuItem<Color>>((Color color) {
-                  return DropdownMenuItem<Color>(
-                    value: color,
-                    child: Container(
-                      width: 30,
-                      height: 30,
-                      color: color,
-                    ),
-                  );
-                }).toList(),
-              ),
+              if (widget.tipo == "Rutina") ...[
+                _rutina.isNotEmpty
+                    ? Container(
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 18, 18, 18),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.white, width: 0.5),
+                        ),
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            maxHeight: 100, // Altura máxima de 300 píxeles
+                          ),
+                          child: ReorderableListView(
+                            padding: EdgeInsets.zero,
+                            physics: const BouncingScrollPhysics(),
+                            children: _rutina
+                                .where((item) => item.containsKey('rutina'))
+                                .map((item) {
+                              String idRutina = item['rutina']['id'];
+                              String nombre = item['rutina']['nombre'];
+                              return GestureDetector(
+                                onTap: () {
+                                  showModalBottomSheet(
+                                    backgroundColor:
+                                        const Color.fromARGB(255, 18, 18, 18),
+                                    scrollControlDisabledMaxHeightRatio: 0.9,
+                                    enableDrag: false,
+                                    showDragHandle: true,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(15),
+                                      ),
+                                    ),
+                                    context: context,
+                                    isScrollControlled: true,
+                                    builder: (context) {
+                                      return FractionallySizedBox(
+                                        heightFactor: 0.96,
+                                        child: ViewWorkoutPage(
+                                          id: idRutina,
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                key: ValueKey(idRutina),
+                                child: Container(
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 5),
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        const Color.fromARGB(255, 83, 83, 83),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Nombre: $nombre',
+                                        style: const TextStyle(
+                                            fontSize: 16, color: Colors.white),
+                                      ),
+                                      IconButton(
+                                        onPressed: () {
+                                          _eliminar(item);
+                                        },
+                                        icon: const Icon(Icons.delete),
+                                        color: Colors.white,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                            onReorder: (oldIndex, newIndex) {
+                              setState(() {
+                                if (newIndex > oldIndex) {
+                                  newIndex -= 1;
+                                }
+                                final item = _rutina.removeAt(oldIndex);
+                                _rutina.insert(newIndex, item);
+                              });
+                            },
+                          ),
+                        ),
+                      )
+                    : GestureDetector(
+                        onTap: () {
+                          _mostrarSeleccionarRutina();
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(5),
+                          height: 100,
+                          decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 18, 18, 18),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.white, width: 0.5),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              'Agregar una rutina',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+              ],
+
               SizedBox(height: 20.0),
 
               Text("Seleciona cuantos dias"),
@@ -274,7 +375,89 @@ class _AddReminderPageState extends State<AddReminderPage> {
     );
   }
 
+  Future<void> _loadRutinaSelect() async {
+    print(widget.rutinaId);
+    try {
+      if (widget.rutinaId != null) {
+        final serie =
+            await RutinaService.obtenerRutinaPorId(context, widget.rutinaId!);
+        setState(() {
+          if (serie != null) {
+            _agregarSerie(serie);
+            print(serie);
+          }
+          //_exercise = exercise;
+        });
+      }
+    } catch (error) {
+      print('Error loading exercise: $error');
+    }
+  }
+
+  void _mostrarSeleccionarRutina() async {
+    final rutina = await showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+      enableDrag: false,
+      showDragHandle: true,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(15),
+        ),
+      ),
+      builder: (context) {
+        // Aquí puedes implementar la lógica para mostrar una lista de series disponibles
+        return const FractionallySizedBox(
+          heightFactor: 0.96,
+          child: AllWorkoutPage(
+            agregar: true,
+          ),
+        );
+      },
+    );
+
+    if (rutina != null) {
+      _agregarSerie(rutina);
+    }
+  }
+
+  void _agregarSerie(Workout rutina) {
+    _rutina.add({
+      'rutina': {'id': rutina.id, 'nombre': rutina.name}
+    });
+    setState(() {});
+  }
+
+  void _eliminar(Map<String, dynamic> item) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Eliminar'),
+        content:
+            const Text('¿Estás seguro de que quieres eliminar este elemento?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _rutina.remove(item);
+              setState(() {});
+              Navigator.of(context).pop();
+            },
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _addReminder() async {
+   
     // Obtener la fecha actual o la fecha seleccionada
     DateTime currentDate = widget.selectedDate ?? DateTime.now();
     DateTime nextSelectedDay = currentDate;
@@ -349,31 +532,30 @@ class _AddReminderPageState extends State<AddReminderPage> {
     }
 
     if (widget.tipo == "Rutina") {
-      //tambien hay que guardar el id de la rutina
-
-      String selectedRoutineName = _selectedRoutine['name']!;
-      String primaryFocus = _selectedRoutine['primaryFocus']!;
-      String secondaryFocus = _selectedRoutine['secondaryFocus']!;
+      final rutina = await RutinaService.obtenerRutinaPorId(
+          context, _rutina.first['rutina']['id']);
 
       Reminder reminder = Reminder(
           //day: _getDayOfWeek(_currentDate),
           modelo: "Prime",
+          workoutID: _rutina.first['rutina']['id'],
           idRecordar: generateRandomNumber(),
           terminado: false,
           tipo: widget.tipo,
           title: _title,
           description: _description,
           color: _selectedColor,
-          routineName: selectedRoutineName,
-          primaryFocus: primaryFocus,
-          secondaryFocus: secondaryFocus,
+          routineName: rutina?.name,
+          primaryFocus: rutina?.primaryFocus,
+          secondaryFocus: rutina?.secondaryFocus,
           startTime: combinedStartTime, // Usar la fecha y hora combinadas
           endTime: combinedEndTime, // Usar la fecha y hora combinadas
           repeatDays: _selectedRepeatDays);
       print(si);
       final response =
           await ReminderService.createReminder(context, reminder.toJson());
-          ReminderScheduler.scheduleReminders(context, reminder, dropdownValue);
+      // ignore: use_build_context_synchronously
+      ReminderScheduler.scheduleReminders(context, reminder, dropdownValue);
 
       if (response.containsKey('message')) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -388,13 +570,15 @@ class _AddReminderPageState extends State<AddReminderPage> {
         Reminder clonedReminder = reminder.clone();
         clonedReminder.modelo = 'clon';
 
-        // Llamar a la función para programar los recordatorios
-       // 
+        Navigator.push(
+          context,
+          MaterialPageRoute<void>(
+            builder: (BuildContext context) => const PrincipalPage(
+              initialPageIndex: 2,
+            ),
+          ),
+        );
       }
-
-      // Mostrar menú para seleccionar rutina
-      // Aquí debería implementarse la lógica para seleccionar una rutina
-      // Luego crear el Reminder con los datos de la rutina seleccionada
     } else if (widget.tipo == "Comida") {
       // Mostrar menú para seleccionar comida
       // Aquí debería implementarse la lógica para seleccionar una comida
@@ -428,6 +612,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
       }
     }
   }
+  
 
   int generateRandomNumber() {
     Random random = Random();

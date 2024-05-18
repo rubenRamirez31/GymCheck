@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/excercise_model.dart';
 import 'package:gym_check/src/screens/crear/series/create_serie_page.dart';
+import 'package:gym_check/src/screens/crear/widgets/create_widgets.dart';
 import 'package:gym_check/src/services/excercise_service.dart';
 
 class ViewExercisePage extends StatefulWidget {
@@ -16,11 +17,13 @@ class ViewExercisePage extends StatefulWidget {
 
 class _ViewExercisePageState extends State<ViewExercisePage> {
   Exercise? _exercise;
+  bool _isFavorite = false;
 
   @override
   void initState() {
     super.initState();
     _loadExercise();
+    _loadFavoriteStatus();
   }
 
   Future<void> _loadExercise() async {
@@ -33,6 +36,36 @@ class _ViewExercisePageState extends State<ViewExercisePage> {
     } catch (error) {
       print('Error loading exercise: $error');
       // Manejo de error si es necesario
+    }
+  }
+
+  Future<void> _loadFavoriteStatus() async {
+    try {
+      final bool isFavorite =
+          await ExerciseService.esFavorito(context, widget.id);
+      setState(() {
+        _isFavorite = isFavorite;
+      });
+    } catch (error) {
+      print('Error al cargar estado de favorito: $error');
+    }
+  }
+
+  Future<void> _toggleFavoriteStatus() async {
+    setState(() {
+      _isFavorite = !_isFavorite;
+    });
+    try {
+      if (_isFavorite) {
+        await ExerciseService.agregarAFavoritos(context, _exercise!);
+      } else {
+        await ExerciseService.quitarDeFavoritos(context, widget.id);
+      }
+    } catch (error) {
+      print('Error al agregar/eliminar ejercicio de favoritos: $error');
+      setState(() {
+        _isFavorite = !_isFavorite;
+      });
     }
   }
 
@@ -53,36 +86,36 @@ class _ViewExercisePageState extends State<ViewExercisePage> {
                           width: 10,
                           height: 10,
                         ),
-                        _buildLabelDetailsRowOnly(
-                          _exercise!.name,
+                        CreateWidgets.buildLabelDetailsRowOnly(
+                          _exercise!.name, MainAxisAlignment.center
                         ),
                         const SizedBox(
                           width: 10,
                           height: 10,
                         ),
-                        _buildLabelDetailsRow(
+                        CreateWidgets.buildLabelDetailsRow(
                             "Enfoque principal:", _exercise!.primaryFocus),
                         const SizedBox(
                           width: 10,
                           height: 10,
                         ),
-                        _buildLabelDetailsRow(
+                       CreateWidgets.buildLabelDetailsRow(
                             "Enfoque secundario:", _exercise!.secondaryFocus),
                         const SizedBox(
                           width: 10,
                           height: 10,
                         ),
-                        _buildLabelDetailsRowOnly("Descripción:"),
+                        CreateWidgets.buildLabelDetailsRowOnly("Descripción:", MainAxisAlignment.center),
                         const SizedBox(
                           width: 10,
                           height: 10,
                         ),
-                        _buildLabelGeneral(_exercise!.description, 14),
+                        CreateWidgets.buildLabelGeneral(_exercise!.description, 14),
                         const SizedBox(
                           width: 10,
                           height: 10,
                         ),
-                        _buildLabelGeneralList(_exercise!.equipment, 14),
+                        CreateWidgets.buildLabelGeneralList(_exercise!.equipment, 14),
                         const SizedBox(
                           height: 10,
                         ),
@@ -103,7 +136,7 @@ class _ViewExercisePageState extends State<ViewExercisePage> {
                     right: 20,
                     child: FloatingActionButton(
                       backgroundColor: const Color(0xff0C1C2E),
-                      tooltip: "hola",
+                      tooltip: 'Agregar a rutina',
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -123,14 +156,15 @@ class _ViewExercisePageState extends State<ViewExercisePage> {
                   Positioned(
                     top: 20,
                     right: 20,
+                    
                     child: FloatingActionButton(
+                       tooltip: 'Agregar a favoritos',
                       backgroundColor: const Color(0xff0C1C2E),
-                      onPressed: () {
-                        // Lógica para agregar a favoritos
-                        print('Agregar a favoritos');
-                      },
+                      onPressed: _toggleFavoriteStatus,
                       child: Icon(
-                        Icons.favorite_border,
+                        _isFavorite
+                            ? Icons.favorite
+                            : Icons.favorite_border,
                         color: Colors.white,
                       ),
                     ),
@@ -185,113 +219,6 @@ class _ViewExercisePageState extends State<ViewExercisePage> {
           : const Center(
               child: Text('Imagen no encontrada'),
             ),
-    );
-  }
-
-  Widget _buildLabelDetailsRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 0),
-      child: Container(
-        padding: const EdgeInsets.all(10.0),
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 18, 18, 18),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              '$label',
-              style: const TextStyle(fontSize: 14, color: Colors.white),
-            ),
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLabelDetailsRowOnly(String label) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 0),
-      child: Container(
-        padding: const EdgeInsets.all(10.0),
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 18, 18, 18),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '$label',
-              style: const TextStyle(fontSize: 16, color: Colors.white),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLabelGeneral(String label, double fontSize) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 0),
-      child: Container(
-        padding: const EdgeInsets.all(10.0),
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 18, 18, 18),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Text(
-                label,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: fontSize, color: Colors.white),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLabelGeneralList(List<String> equipment, double fontSize) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 0),
-      child: Container(
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 18, 18, 18),
-          borderRadius: BorderRadius.circular(10), // Bordes redondeados
-        ),
-        child: ExpansionTile(
-          backgroundColor: Colors
-              .transparent, // Fondo transparente para evitar duplicar el color del contenedor
-          title: Text(
-            '¿Con qué equipo se puede realizar?',
-            style: const TextStyle(fontSize: 16, color: Colors.white),
-          ),
-          children: [
-            for (var item in equipment)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
-                child: Text(
-                  item,
-                  style: TextStyle(fontSize: fontSize, color: Colors.white),
-                ),
-              ),
-          ],
-        ),
-      ),
     );
   }
 }

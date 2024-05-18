@@ -1,15 +1,24 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/workout_model.dart';
 import 'package:gym_check/src/models/workout_series_model.dart';
+import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/screens/crear/rutinas/create_workout_page.dart';
+import 'package:gym_check/src/screens/crear/series/view_serie_page.dart';
+import 'package:gym_check/src/screens/crear/widgets/create_widgets.dart';
 import 'package:gym_check/src/services/serie_service.dart';
 import 'package:gym_check/src/services/workout_service.dart';
+import 'package:provider/provider.dart';
 
 class ViewWorkoutPage extends StatefulWidget {
   final String id;
   //final bool buttons; // Whether to show action buttons
 
-  const ViewWorkoutPage({Key? key, required this.id,}) : super(key: key);
+  const ViewWorkoutPage({
+    Key? key,
+    required this.id,
+  }) : super(key: key);
 
   @override
   _ViewWorkoutPageState createState() => _ViewWorkoutPageState();
@@ -26,7 +35,8 @@ class _ViewWorkoutPageState extends State<ViewWorkoutPage> {
 
   Future<void> _loadWorkoutSeries() async {
     try {
-      final workoutSeries = await RutinaService.obtenerRutinaPorId(context, widget.id);
+      final workoutSeries =
+          await RutinaService.obtenerRutinaPorId(context, widget.id);
       setState(() {
         _workout = workoutSeries;
       });
@@ -38,6 +48,8 @@ class _ViewWorkoutPageState extends State<ViewWorkoutPage> {
 
   @override
   Widget build(BuildContext context) {
+    Globales globales = Provider.of<Globales>(context, listen: false);
+  
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 50, 50, 50),
       body: _workout != null
@@ -49,77 +61,144 @@ class _ViewWorkoutPageState extends State<ViewWorkoutPage> {
                     child: Column(
                       children: [
                         _buildImage(),
-                        const SizedBox(
-                          width: 10,
-                          height: 10,
+                        //const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Rutina creada por',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                // Acción del botón
+                              },
+                              child:  Text(
+                               globales.nick,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        _buildLabelDetailsRowOnly(
+                        const SizedBox(height: 10),
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 30, 30, 30),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                RawMaterialButton(
+                                  onPressed: () {
+                                    // Lógica para agregar a favoritos
+                                    print('Agregar a favoritos');
+                                  },
+                                  fillColor: Colors.grey[200],
+                                  shape: const CircleBorder(),
+                                  child: const Icon(Icons.favorite_border,
+                                      color: Colors.black),
+                                ),
+                                if (_workout?.nick == globales.nick)
+                                  RawMaterialButton(
+                                    onPressed: () {
+                                      // Lógica para editar
+                                      print('Editar');
+                                    },
+                                    fillColor: Colors.grey[200],
+                                    shape: const CircleBorder(),
+                                    child: const Icon(Icons.edit,
+                                        color: Colors.black),
+                                  ),
+                                if (_workout?.isPublic == true)
+                                  RawMaterialButton(
+                                    onPressed: () {
+                                      // Lógica para editar
+                                      print('Editar');
+                                    },
+                                    fillColor: Colors.grey[200],
+                                    shape: const CircleBorder(),
+                                    child: const Icon(Icons.share,
+                                        color: Colors.black),
+                                  ),
+                                RawMaterialButton(
+                                  onPressed: () {
+                                    // Lógica para editar
+                                    print('Editar');
+                                  },
+                                  fillColor: Colors.grey[200],
+                                  shape: const CircleBorder(),
+                                  child: const Icon(Icons.timer_outlined,
+                                      color: Colors.black),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        CreateWidgets.buildLabelDetailsRowOnly(
                           _workout!.name,
+                          MainAxisAlignment.center,
                         ),
                         const SizedBox(
                           width: 10,
                           height: 10,
                         ),
-                        _buildLabelDetailsRow(
-                          "Primary Focus:", _workout!.primaryFocus),
+                        CreateWidgets.buildLabelDetailsRowOnly(
+                            "Grupos musculares que trabaja:",
+                            MainAxisAlignment.center),
                         const SizedBox(
                           width: 10,
                           height: 10,
                         ),
-                        _buildLabelDetailsRow(
-                          "Secondary Focus:", _workout!.secondaryFocus),
-                        const SizedBox(
-                          width: 10,
-                          height: 10,
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              CreateWidgets.buildLabelDetailsRowOnly(
+                                  _workout!.primaryFocus,
+                                  MainAxisAlignment.start,
+                                  ajustar: MainAxisSize.min),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              CreateWidgets.buildLabelDetailsRowOnly(
+                                  _workout!.secondaryFocus,
+                                  MainAxisAlignment.start,
+                                  ajustar: MainAxisSize.min),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              CreateWidgets.buildLabelDetailsRowOnly(
+                                  _workout!.thirdFocus, MainAxisAlignment.start,
+                                  ajustar: MainAxisSize.min),
+                            ],
+                          ),
                         ),
-                        _buildLabelDetailsRow(
-                          "Third Focus:", _workout!.thirdFocus),
-                        const SizedBox(
-                          width: 10,
-                          height: 10,
-                        ),
+                        const SizedBox(height: 10),
+                        CreateWidgets.buildLabelDetailsRowOnly(
+                            "Contenido de la rutina:",
+                            MainAxisAlignment.center),
+                        const SizedBox(height: 10),
                         _buildSeriesList(),
+                        const SizedBox(height: 10),
+                        CreateWidgets.buildLabelDetailsRow(
+                            "Descansos series sets(segundos):",
+                            _workout!.restBetweenSets.toString()),
                       ],
                     ),
                   ),
                 ),
-             
-                  Positioned(
-                    top: 80,
-                    right: 20,
-                    child: FloatingActionButton(
-                      backgroundColor: const Color(0xff0C1C2E),
-                      tooltip: "Add to routine",
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CrearWorkoutPage(serieID: widget.id),
-                          ),
-                        );
-                      },
-                      child: Icon(
-                        Icons.playlist_add,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-              
-                  Positioned(
-                    top: 20,
-                    right: 20,
-                    child: FloatingActionButton(
-                      backgroundColor: const Color(0xff0C1C2E),
-                      onPressed: () {
-                        // Logic for adding to favorites
-                        print('Add to favorites');
-                      },
-                      child: Icon(
-                        Icons.favorite_border,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
               ],
             )
           : const Center(
@@ -139,67 +218,54 @@ class _ViewWorkoutPageState extends State<ViewWorkoutPage> {
     );
   }
 
-  Widget _buildLabelDetailsRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 0),
-      child: Container(
-        padding: const EdgeInsets.all(10.0),
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 18, 18, 18),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              '$label',
-              style: const TextStyle(fontSize: 14, color: Colors.white),
-            ),
-            Expanded(
-              child: Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLabelDetailsRowOnly(String label) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 0),
-      child: Container(
-        padding: const EdgeInsets.all(10.0),
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 18, 18, 18),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '$label',
-              style: const TextStyle(fontSize: 16, color: Colors.white),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildSeriesList() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: _workout!.series.map((serie) {
         return GestureDetector(
-          onTap: () {
-            print("Serie ID: ${serie['serie']['id']}");
+          onTap: () async {
+            final serieId = serie['serie']['id'];
+            final serieExist =
+                await SerieService.obtenerSeriePorId(context, serieId);
+
+            if (serieExist != null) {
+              showModalBottomSheet(
+                backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+                scrollControlDisabledMaxHeightRatio: 0.9,
+                enableDrag: false,
+                showDragHandle: true,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(15),
+                  ),
+                ),
+                context: context,
+                isScrollControlled: true,
+                builder: (context) {
+                  return FractionallySizedBox(
+                    heightFactor: 0.96,
+                    child: ViewWorkoutSeriesPage(id: serieId, buttons: true),
+                  );
+                },
+              );
+            } else {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('¡Serie no disponible!'),
+                  content: const Text(
+                      'Esta serie ya no está disponible. Esto suele suceder cuando el propietario de la serie la ha eliminado.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Cerrar'),
+                    ),
+                  ],
+                ),
+              );
+            }
           },
           child: Container(
             margin: const EdgeInsets.symmetric(vertical: 8),
@@ -212,10 +278,10 @@ class _ViewWorkoutPageState extends State<ViewWorkoutPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  serie['serie']['nombre'],
+                  serie['serie']['nombre'] ?? 'Serie no disponible',
                   style: const TextStyle(fontSize: 16),
                 ),
-                Icon(
+                const Icon(
                   Icons.remove_red_eye,
                   color: Colors.grey,
                 ),
