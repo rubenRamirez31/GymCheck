@@ -28,7 +28,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
   int currentPageIndex = 0;
   List<String> options = [
     'Fisico',
-    'Nutricional',
+    //'Nutricional',
     //'Emocional',
   ]; // Lista de opciones
 
@@ -77,6 +77,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.flag),
+             color: Colors.white,
             onPressed: () {
               showModalBottomSheet(
                 backgroundColor: const Color.fromARGB(255, 18, 18, 18),
@@ -97,18 +98,8 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
               );
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.health_and_safety),
-            onPressed: () {
-              // Acción para el botón de Salud
-              // ReminderScheduler.scheduleReminders(context);
-              print('Botón de Salud presionado debug para recordatorios');
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white),
-            onPressed: () {},
-          ),
+         
+         
           IconButton(
             icon: const Icon(
               Icons.info,
@@ -130,7 +121,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Container(
-                    padding:  const EdgeInsets.symmetric(horizontal:50),
+                    //padding:  const EdgeInsets.symmetric(horizontal:50),
                     child: Row(
                       //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       // crossAxisAlignment: CrossAxisAlignment.center,

@@ -71,7 +71,7 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
             ),
             const SizedBox(height: 20),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 30),
+             // padding: EdgeInsets.symmetric(horizontal: 30),
               color: const Color.fromARGB(255, 18, 18, 18),
               width: MediaQuery.of(context).size.width,
               child: SingleChildScrollView(

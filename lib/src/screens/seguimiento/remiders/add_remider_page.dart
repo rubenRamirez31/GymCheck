@@ -36,7 +36,6 @@ class AddReminderPage extends StatefulWidget {
 }
 
 class _AddReminderPageState extends State<AddReminderPage> {
-  
   List<Map<String, dynamic>> _rutina = [];
 
   String _title = "";
@@ -457,7 +456,48 @@ class _AddReminderPageState extends State<AddReminderPage> {
   }
 
   Future<void> _addReminder() async {
-   
+    if (_title.isEmpty || _startTime == null || _endTime == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Por favor complete todos los campos')),
+      );
+      return;
+    }
+
+    if (_selectedColor == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Seleccione un color')),
+      );
+      return;
+    }
+
+    if (_startTime!.isAfter(_endTime!)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(
+                'La hora de finalización debe ser después de la hora de inicio')),
+      );
+      return;
+    }
+
+    // Mostrar AlertDialog mientras se crea la rutina
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return const AlertDialog(
+          backgroundColor: Colors.black, // Fondo negro
+          title: Text(
+            'Creando...',
+            style: TextStyle(color: Colors.white), // Letras blancas
+          ),
+          content: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(
+                Colors.white), // Color del indicador de progreso blanco
+          ),
+        );
+      },
+    );
+
     // Obtener la fecha actual o la fecha seleccionada
     DateTime currentDate = widget.selectedDate ?? DateTime.now();
     DateTime nextSelectedDay = currentDate;
@@ -505,33 +545,15 @@ class _AddReminderPageState extends State<AddReminderPage> {
       _endTime!.minute,
     );
 
-    print(si);
     Reminder reminder;
 
-    if (_title.isEmpty || _startTime == null || _endTime == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Por favor complete todos los campos')),
-      );
-      return;
-    }
-
-    if (_selectedColor == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Seleccione un color')),
-      );
-      return;
-    }
-
-    if (_startTime!.isAfter(_endTime!)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(
-                'La hora de finalización debe ser después de la hora de inicio')),
-      );
-      return;
-    }
-
     if (widget.tipo == "Rutina") {
+      if (_rutina.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Por favor selecciona una rutina')),
+        );
+        return;
+      }
       final rutina = await RutinaService.obtenerRutinaPorId(
           context, _rutina.first['rutina']['id']);
 
@@ -569,20 +591,8 @@ class _AddReminderPageState extends State<AddReminderPage> {
         // Si se creó el recordatorio "Prime" correctamente, programar la replicación
         Reminder clonedReminder = reminder.clone();
         clonedReminder.modelo = 'clon';
-
-        Navigator.push(
-          context,
-          MaterialPageRoute<void>(
-            builder: (BuildContext context) => const PrincipalPage(
-              initialPageIndex: 2,
-            ),
-          ),
-        );
       }
     } else if (widget.tipo == "Comida") {
-      // Mostrar menú para seleccionar comida
-      // Aquí debería implementarse la lógica para seleccionar una comida
-      // Luego crear el Reminder con los datos de la comida seleccionada
     } else if (widget.tipo == "Recordatorio") {
       // Crear un recordatorio simple
       reminder = Reminder(
@@ -611,8 +621,45 @@ class _AddReminderPageState extends State<AddReminderPage> {
         );
       }
     }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.black, // Fondo negro
+          title: const Text(
+            'Rutina creada',
+            style: TextStyle(color: Colors.white), // Letras blancas
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'El recordatorio ha sido almacenado correctamente, y puede encontrarlos en tu calendario.',
+                style: TextStyle(color: Colors.white),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  // Reinicia la página
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) => const PrincipalPage(
+                        initialPageIndex: 2,
+                      ),
+                    ),
+                  );
+                },
+                child: const Text('Aceptar',
+                    style: TextStyle(color: Colors.black)),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
-  
 
   int generateRandomNumber() {
     Random random = Random();

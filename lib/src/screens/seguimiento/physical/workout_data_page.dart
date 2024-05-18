@@ -121,6 +121,7 @@ Future<void> _loadSelectedMenuOption() async {
             Container(
               color: const Color.fromARGB(255, 18, 18, 18),
               width: MediaQuery.of(context).size.width - 20,
+              padding: EdgeInsets.symmetric(horizontal: 20),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
