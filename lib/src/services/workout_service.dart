@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gym_check/src/models/workout_model.dart';
+import 'package:gym_check/src/providers/globales.dart';
+import 'package:provider/provider.dart';
 
 
 class RutinaService {
@@ -24,18 +26,34 @@ class RutinaService {
     }
   }
 
- static Stream<List<Workout>> obtenerRutinasFiltradasStream(BuildContext context, String query) {
+ static Stream<List<Workout>> obtenerRutinasFiltradasStream(BuildContext context, String query, bool cradospormi, bool todo,
+      {String? enfoque}) {
     final StreamController<List<Workout>> controller = StreamController<List<Workout>>();
 
     // Accede a la colección "Rutinas" en Firestore
     final CollectionReference rutinasCollectionRef = FirebaseFirestore.instance.collection('Rutinas');
 
     // Crea una consulta que filtre las rutinas por el término de búsqueda
-    final Query filteredQuery = rutinasCollectionRef.where(
+     Query filteredQuery = rutinasCollectionRef.where(
       'name',
       isGreaterThanOrEqualTo: query,
       isLessThanOrEqualTo: query + '\uf8ff', // \uf8ff es el último código Unicode
     );
+
+    // Si se proporciona el parámetro "enfoque", filtra por ese enfoque
+    if (enfoque != null) {
+      filteredQuery = filteredQuery.where('primaryFocus', isEqualTo: enfoque);
+    }
+    // Si se proporciona el parámetro "enfoque", filtra por ese enfoque
+    if (cradospormi == true) {
+       Globales globales = Provider.of<Globales>(context, listen: false);
+      filteredQuery = filteredQuery.where('nick', isEqualTo: globales.nick);
+    }
+    // Si se proporciona el parámetro "enfoque", filtra por ese enfoque
+    if (todo == true) {
+      
+      filteredQuery = filteredQuery.where('isPublic', isEqualTo: true);
+    }
 
     // Escucha los cambios en la consulta filtrada
     final StreamSubscription<QuerySnapshot> subscription = filteredQuery.snapshots().listen((QuerySnapshot snapshot) {

@@ -19,12 +19,13 @@ class _AllSeriePageState extends State<AllSeriePage> {
   late Stream<List<WorkoutSeries>> _serieStream;
   TextEditingController _searchController = TextEditingController();
   int _selectedMenuOption = 0;
+  String? _selectedEnfoque;
 
   List<String> options = [
-    'Todo',
     'Creados por mi',
+    'Todo',
     'Favoritos',
-  ]; // Lista de opciones
+  ];
   List<Color> highlightColors = [
     const Color.fromARGB(255, 94, 24, 246),
     const Color.fromARGB(255, 94, 24, 246),
@@ -35,16 +36,21 @@ class _AllSeriePageState extends State<AllSeriePage> {
   void initState() {
     super.initState();
     _serieStream = obtenerTodasSeriesStream();
-    _loadSelectedMenuOption();
   }
 
-  Future<void> _loadSelectedMenuOption() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (mounted) {
-      setState(() {
-        //_selectedMenuOption = prefs.getInt('diaSeleccionado') ?? 0;
-      });
-      //_loadRoutines();
+  Stream<List<WorkoutSeries>> _getSeriesStreamForOption(int option) {
+    switch (option) {
+      case 0:
+        return obtenerSeriesFiltradasStream(_searchController.text,
+            cradospormi: true, todo: false);
+      case 1:
+        return obtenerSeriesFiltradasStream(_searchController.text,
+            cradospormi: false, todo: true);
+      case 2:
+        return obtenerSeriesFiltradasStream(_searchController.text,
+            cradospormi: false, todo: false);
+      default:
+        return obtenerTodasSeriesStream();
     }
   }
 
@@ -55,6 +61,33 @@ class _AllSeriePageState extends State<AllSeriePage> {
         padding: const EdgeInsets.all(8),
         child: Column(
           children: [
+            Container(
+              color: const Color.fromARGB(255, 18, 18, 18),
+              width: MediaQuery.of(context).size.width - 20,
+              //padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: <Widget>[
+                    MenuButtonOption(
+                      options: options,
+                      highlightColors: highlightColors,
+                      onItemSelected: (index) async {
+                        setState(() {
+                          _selectedMenuOption = index;
+                          _serieStream =
+                              _getSeriesStreamForOption(_selectedMenuOption);
+                        });
+                      },
+                      selectedMenuOptionGlobal: _selectedMenuOption,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             TextField(
               controller: _searchController,
               style: const TextStyle(color: Colors.white),
@@ -67,44 +100,78 @@ class _AllSeriePageState extends State<AllSeriePage> {
               ),
               onChanged: (query) {
                 setState(() {
-                  _serieStream = obtenerSeriesFiltradasStream(query);
+                  _serieStream = obtenerSeriesFiltradasStream(query,
+                      cradospormi: false, todo: false);
                 });
               },
             ),
-            SizedBox(
-              height: 10,
+            const SizedBox(
+              height: 20,
             ),
-            Container(
-              color: const Color.fromARGB(255, 18, 18, 18),
-              width: MediaQuery.of(context).size.width - 20,
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: <Widget>[
-                    MenuButtonOption(
-                        options: options,
-                        highlightColors: highlightColors,
-                        //highlightColor: Colors.green,
-                        onItemSelected: (index) async {
-                          // SharedPreferences prefs =await SharedPreferences.getInstance();
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 300, // Ancho deseado
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          decoration: InputDecoration(
+                            labelStyle: const TextStyle(color: Colors.white),
+                            border: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          value: _selectedEnfoque,
+                          hint: const Text(
+                            'Seleccionar enfoque',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          dropdownColor: const Color.fromARGB(255, 55, 55, 55),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              _selectedEnfoque = newValue;
+                              _serieStream = _getSeriesStreamForOption(
+                                  _selectedMenuOption);
+                            });
+                          },
+                          items: <String>[
+                            'Pecho',
+                            'Espalda',
+                            'Bicep',
+                            'Cuadricep',
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(
+                                value,
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
                           setState(() {
-                            _selectedMenuOption = index;
-                            // globalVariable.selectedMenuOptionDias =
-                            _selectedMenuOption;
+                            _selectedEnfoque = null;
+                            _serieStream =
+                                _getSeriesStreamForOption(_selectedMenuOption);
                           });
-                          // await prefs.setInt('diaSeleccionado', index);
-                          // print(index);
-                          // _loadRoutines();
                         },
-                        //selectedMenuOptionGlobal:globalVariable.selectedMenuOptionDias),
-                        selectedMenuOptionGlobal: _selectedMenuOption),
-                    // Aquí puedes agregar más elementos MenuButtonOption según sea necesario
-                  ],
+                        icon: Icon(
+                          Icons.clear,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+              ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 10),
             StreamBuilder<List<WorkoutSeries>>(
               stream: _serieStream,
               builder: (context, snapshot) {
@@ -141,10 +208,12 @@ class _AllSeriePageState extends State<AllSeriePage> {
     }
   }
 
-  Stream<List<WorkoutSeries>> obtenerSeriesFiltradasStream(String query) {
+  Stream<List<WorkoutSeries>> obtenerSeriesFiltradasStream(String query,
+      {required bool cradospormi, required bool todo}) {
     try {
-      final seriesStream =
-          SerieService.obtenerSeriesFiltradasStream(context, query);
+      final seriesStream = SerieService.obtenerSeriesFiltradasStream(
+          context, query, cradospormi, todo,
+          enfoque: _selectedEnfoque);
       return seriesStream;
     } catch (error) {
       print('Error al obtener las series filtradas: $error');
@@ -153,7 +222,7 @@ class _AllSeriePageState extends State<AllSeriePage> {
   }
 }
 
-class SerieContainer extends StatelessWidget {
+class SerieContainer extends StatefulWidget {
   final WorkoutSeries serie;
   final bool agregar;
 
@@ -161,16 +230,24 @@ class SerieContainer extends StatelessWidget {
       : super(key: key);
 
   @override
+  _SerieContainerState createState() => _SerieContainerState();
+}
+
+class _SerieContainerState extends State<SerieContainer> {
+  bool _isFavorite =
+      false; // Estado para controlar si la serie está marcada como favorita
+
+  @override
   Widget build(BuildContext context) {
-    String primary = serie.primaryFocus;
-    String secondary = serie.secondaryFocus;
+    String primary = widget.serie.primaryFocus;
+    String secondary = widget.serie.secondaryFocus;
 
     return GestureDetector(
       onTap: () {
-        if (agregar == true) {
-          Navigator.of(context).pop(serie);
+        if (widget.agregar == true) {
+          Navigator.of(context).pop(widget.serie);
         } else {
-          //agregar algop aqui
+          //agregar algo aquí
         }
       },
       child: Container(
@@ -201,12 +278,12 @@ class SerieContainer extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (agregar == true)
+                  if (widget.agregar == true)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          serie.name,
+                          widget.serie.name,
                           style: const TextStyle(
                             color: Colors.black,
                             fontSize: 18,
@@ -215,25 +292,41 @@ class SerieContainer extends StatelessWidget {
                         ),
                         IconButton(
                           onPressed: () {
-                            // Lógica para agregar a favoritos
+                            setState(() {
+                              // Cambiar el estado de favorito al contrario
+                              _isFavorite = !_isFavorite;
+                              if (_isFavorite) {
+                                // Lógica para agregar a favoritos
+                              } else {
+                                // Lógica para quitar de favoritos
+                              }
+                            });
                           },
-                          icon: const Icon(Icons.favorite_border,
-                              color: Colors.red),
+                          icon: Icon(
+                            _isFavorite
+                                ? Icons.favorite
+                                : Icons
+                                    .favorite_border, // Cambiar el ícono según el estado de favorito
+                            color: _isFavorite
+                                ? Colors.red
+                                : Colors
+                                    .grey, // Cambiar el color del ícono según el estado de favorito
+                          ),
                         ),
                       ],
                     ),
-                  if (agregar == true)
+                  if (widget.agregar == true)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "$primary y $secondary",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
+                          widget.serie.primaryFocus,
+                          style: const TextStyle(
+                           
                           ),
                         ),
-                        IconButton(
+
+                         IconButton(
                           onPressed: () {
                             showModalBottomSheet(
                               backgroundColor:
@@ -252,26 +345,30 @@ class SerieContainer extends StatelessWidget {
                                 return FractionallySizedBox(
                                   heightFactor: 0.96,
                                   child: ViewWorkoutSeriesPage(
-                                      id: serie.id ?? "", buttons: false),
+                                      id: widget.serie.id ?? "",
+                                      buttons: false),
                                 );
                               },
                             );
                           },
-                          icon: const Icon(Icons.info, color: Colors.grey),
+                          icon: const Icon(
+                            Icons.info,
+                          ),
                         ),
                       ],
                     ),
-                  if (agregar == false)
+                  if (widget.agregar == false)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          serie.name,
+                          widget.serie.name,
                           style: const TextStyle(
                             color: Colors.black,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
+                          
                         ),
                         IconButton(
                           onPressed: () {
@@ -292,7 +389,8 @@ class SerieContainer extends StatelessWidget {
                                 return FractionallySizedBox(
                                   heightFactor: 0.96,
                                   child: ViewWorkoutSeriesPage(
-                                      id: serie.id ?? "", buttons: true),
+                                      id: widget.serie.id ?? "",
+                                      buttons: false),
                                 );
                               },
                             );
@@ -303,23 +401,38 @@ class SerieContainer extends StatelessWidget {
                         ),
                       ],
                     ),
-                  if (agregar == false)
+                  if (widget.agregar == false)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "$primary y $secondary",
-                          style: TextStyle(
+                          widget.serie.primaryFocus,
+                          style: const TextStyle(
                             color: Colors.black,
-                            fontSize: 14,
                           ),
                         ),
                         IconButton(
                           onPressed: () {
-                            // Lógica para agregar a favoritos
+                            setState(() {
+                              // Cambiar el estado de favorito al contrario
+                              _isFavorite = !_isFavorite;
+                              if (_isFavorite) {
+                                // Lógica para agregar a favoritos
+                              } else {
+                                // Lógica para quitar de favoritos
+                              }
+                            });
                           },
-                          icon: const Icon(Icons.favorite_border,
-                              color: Colors.red),
+                          icon: Icon(
+                            _isFavorite
+                                ? Icons.favorite
+                                : Icons
+                                    .favorite_border, // Cambiar el ícono según el estado de favorito
+                            color: _isFavorite
+                                ? Colors.red
+                                : Colors
+                                    .grey, // Cambiar el color del ícono según el estado de favorito
+                          ),
                         ),
                       ],
                     ),

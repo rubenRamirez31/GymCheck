@@ -18,31 +18,40 @@ class _AllExercisePageState extends State<AllExercisePage> {
   late Stream<List<Exercise>> _exerciseStream;
   TextEditingController _searchController = TextEditingController();
   int _selectedMenuOption = 0;
+  String? _selectedEnfoque;
 
-  List<String> options = [
-    'Todo',
-    'Por enfoque',
-    'Favoritos',
-  ]; // Lista de opciones
-  List<Color> highlightColors = [
-    Colors.green,
-    Colors.green,
-    Colors.green,
-  ];
+  List<String> options = ['Todo', 'Por enfoque', 'Favoritos'];
+  List<Color> highlightColors = [Colors.green, Colors.green, Colors.green];
+
   @override
   void initState() {
     super.initState();
-    _exerciseStream = obtenerTodosEjerciciosStream();
-    _loadSelectedMenuOption();
+    _exerciseStream = _getExerciseStreamForOption(_selectedMenuOption);
+    // _loadSelectedMenuOption();
   }
 
   Future<void> _loadSelectedMenuOption() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (mounted) {
       setState(() {
-        //_selectedMenuOption = prefs.getInt('diaSeleccionado') ?? 0;
+        _selectedMenuOption = prefs.getInt('selectedMenuOption') ?? 0;
       });
-      //_loadRoutines();
+    }
+  }
+
+  Stream<List<Exercise>> _getExerciseStreamForOption(int option) {
+    switch (option) {
+      case 0:
+        return obtenerEjerciciosFiltradosStream(_searchController.text,
+            enfoque: _selectedEnfoque);
+      case 1:
+        return obtenerEjerciciosFiltradosStream(_searchController.text,
+            enfoque: _selectedEnfoque);
+      case 2:
+        return obtenerEjerciciosFavoritosStream(_searchController.text,
+            enfoque: _selectedEnfoque);
+      default:
+        return obtenerTodosEjerciciosStream();
     }
   }
 
@@ -53,6 +62,37 @@ class _AllExercisePageState extends State<AllExercisePage> {
         padding: const EdgeInsets.all(8),
         child: Column(
           children: [
+            Container(
+              color: const Color.fromARGB(255, 18, 18, 18),
+              width: MediaQuery.of(context).size.width - 20,
+              // padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: <Widget>[
+                    MenuButtonOption(
+                      options: options,
+                      highlightColors: highlightColors,
+                      onItemSelected: (index) async {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        setState(() {
+                          _selectedMenuOption = index;
+                          _exerciseStream =
+                              _getExerciseStreamForOption(_selectedMenuOption);
+                        });
+                        // await prefs.setInt('selectedMenuOption', index);
+                        print(_selectedMenuOption);
+                      },
+                      selectedMenuOptionGlobal: _selectedMenuOption,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             TextField(
               controller: _searchController,
               style: const TextStyle(color: Colors.white),
@@ -65,44 +105,83 @@ class _AllExercisePageState extends State<AllExercisePage> {
               ),
               onChanged: (query) {
                 setState(() {
-                  _exerciseStream = obtenerEjerciciosFiltradosStream(query);
+                  _exerciseStream =
+                      _getExerciseStreamForOption(_selectedMenuOption);
                 });
               },
             ),
-            SizedBox(
-              height: 10,
+            const SizedBox(
+              height: 20,
             ),
-            Container(
-              color: const Color.fromARGB(255, 18, 18, 18),
-              width: MediaQuery.of(context).size.width - 20,
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: <Widget>[
-                    MenuButtonOption(
-                        options: options,
-                        highlightColors: highlightColors,
-                        //highlightColor: Colors.green,
-                        onItemSelected: (index) async {
-                          // SharedPreferences prefs =await SharedPreferences.getInstance();
-                          setState(() {
-                            _selectedMenuOption = index;
-                            // globalVariable.selectedMenuOptionDias =
-                            _selectedMenuOption;
-                          });
-                          // await prefs.setInt('diaSeleccionado', index);
-                          // print(index);
-                          // _loadRoutines();
-                        },
-                        //selectedMenuOptionGlobal:globalVariable.selectedMenuOptionDias),
-                        selectedMenuOptionGlobal: _selectedMenuOption),
-                    // Aquí puedes agregar más elementos MenuButtonOption según sea necesario
-                  ],
-                ),
+            if (_selectedMenuOption == 1 ||
+                _selectedMenuOption ==
+                    2) // Mostrar el menú desplegable solo si "Por enfoque" está seleccionado
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: 300, // Ancho deseado
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                              labelStyle: const TextStyle(color: Colors.white),
+                              border: OutlineInputBorder(
+                                borderSide:
+                                    const BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            value: _selectedEnfoque,
+                            hint: const Text(
+                              'Seleccionar enfoque',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            dropdownColor:
+                                const Color.fromARGB(255, 55, 55, 55),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                _selectedEnfoque = newValue;
+                                _exerciseStream = _getExerciseStreamForOption(
+                                    _selectedMenuOption);
+                              });
+                            },
+                            items: <String>[
+                              'Pecho',
+                              'Espalda',
+                              'Bicep',
+                              'Cuadricep',
+                            ].map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(
+                                  value,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _selectedEnfoque = null;
+                              _exerciseStream = _getExerciseStreamForOption(
+                                  _selectedMenuOption);
+                            });
+                          },
+                          icon: Icon(
+                            Icons.clear,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 10),
             StreamBuilder<List<Exercise>>(
               stream: _exerciseStream,
               builder: (context, snapshot) {
@@ -140,19 +219,35 @@ class _AllExercisePageState extends State<AllExercisePage> {
     }
   }
 
-  Stream<List<Exercise>> obtenerEjerciciosFiltradosStream(String query) {
+  Stream<List<Exercise>> obtenerEjerciciosFiltradosStream(String query,
+      {String? enfoque}) {
     try {
-      final exercisesStream =
-          ExerciseService.obtenerEjerciciosFiltradosStream(context, query);
+      final exercisesStream = ExerciseService.obtenerEjerciciosFiltradosStream(
+          context, query,
+          enfoque: enfoque);
       return exercisesStream;
     } catch (error) {
       print('Error al obtener los ejercicios filtrados: $error');
       throw error;
     }
   }
+
+  Stream<List<Exercise>> obtenerEjerciciosFavoritosStream(String query,
+      {String? enfoque}) {
+    try {
+      final exercisesStream =
+          ExerciseService.obtenerEjerciciosFiltradosFavoritosStream(
+              context, query,
+              enfoque: enfoque);
+      return exercisesStream;
+    } catch (error) {
+      print('Error al obtener los ejercicios favoritos: $error');
+      throw error;
+    }
+  }
 }
 
-class ExerciseContainer extends StatelessWidget {
+class ExerciseContainer extends StatefulWidget {
   final Exercise exercise;
   final bool agregar;
 
@@ -161,16 +256,60 @@ class ExerciseContainer extends StatelessWidget {
       : super(key: key);
 
   @override
+  _ExerciseContainerState createState() => _ExerciseContainerState();
+}
+
+class _ExerciseContainerState extends State<ExerciseContainer> {
+  bool _isFavorite = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFavoriteStatus();
+  }
+
+  Future<void> _loadFavoriteStatus() async {
+    try {
+      final bool isFavorite =
+          await ExerciseService.esFavorito(context, widget.exercise.id ?? "");
+      setState(() {
+        _isFavorite = isFavorite;
+      });
+    } catch (error) {
+      print('Error al cargar estado de favorito: $error');
+    }
+  }
+
+  Future<void> _toggleFavoriteStatus() async {
+    setState(() {
+      _isFavorite = !_isFavorite;
+    });
+    try {
+      if (_isFavorite) {
+        await ExerciseService.agregarAFavoritos(context, widget.exercise);
+      } else {
+        await ExerciseService.quitarDeFavoritos(
+            context, widget.exercise.id ?? "");
+      }
+    } catch (error) {
+      print('Error al agregar/eliminar ejercicio de favoritos: $error');
+      setState(() {
+        _isFavorite = !_isFavorite;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    String primary = exercise.primaryFocus;
-    String secondary = exercise.secondaryFocus;
+    String primary = widget.exercise.primaryFocus;
+    String secondary = widget.exercise.secondaryFocus;
 
     return GestureDetector(
       onTap: () {
-        if (agregar == true) {
-          Navigator.of(context).pop(exercise);
+        if (widget.agregar == true) {
+          Navigator.of(context).pop(widget.exercise);
         } else {
-          ///accion
+          /// acción
         }
       },
       child: Container(
@@ -185,11 +324,8 @@ class ExerciseContainer extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Column(
-              // crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(
-                  width: 10,
-                ),
+                const SizedBox(width: 10),
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
@@ -197,9 +333,9 @@ class ExerciseContainer extends StatelessWidget {
                   ),
                   width: 100,
                   height: 100,
-                  child: exercise.representativeImageLink.isNotEmpty
+                  child: widget.exercise.representativeImageLink.isNotEmpty
                       ? Image.network(
-                          exercise.representativeImageLink,
+                          widget.exercise.representativeImageLink,
                           loadingBuilder: (BuildContext context, Widget child,
                               ImageChunkEvent? loadingProgress) {
                             if (loadingProgress == null) {
@@ -239,12 +375,12 @@ class ExerciseContainer extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (agregar == true)
+                  if (widget.agregar == true)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          exercise.name,
+                          widget.exercise.name,
                           style: const TextStyle(
                             color: Colors.black,
                             fontSize: 18,
@@ -252,21 +388,23 @@ class ExerciseContainer extends StatelessWidget {
                           ),
                         ),
                         IconButton(
-                          onPressed: () {
-                            // Lógica para agregar a favoritos
-                          },
-                          icon: const Icon(Icons.favorite_border,
-                              color: Colors.red),
+                          onPressed: _toggleFavoriteStatus,
+                          icon: Icon(
+                            _isFavorite
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: _isFavorite ? Colors.red : Colors.grey,
+                          ),
                         ),
                       ],
                     ),
-                  if (agregar == true)
+                  if (widget.agregar == true)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           "$primary y $secondary",
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.black,
                             fontSize: 14,
                           ),
@@ -290,7 +428,8 @@ class ExerciseContainer extends StatelessWidget {
                                 return FractionallySizedBox(
                                   heightFactor: 0.96,
                                   child: ViewExercisePage(
-                                      id: exercise.id ?? "", buttons: false),
+                                      id: widget.exercise.id ?? "",
+                                      buttons: false),
                                 );
                               },
                             );
@@ -299,12 +438,12 @@ class ExerciseContainer extends StatelessWidget {
                         ),
                       ],
                     ),
-                  if (agregar == false)
+                  if (widget.agregar == false)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          exercise.name,
+                          widget.exercise.name,
                           style: const TextStyle(
                             color: Colors.black,
                             fontSize: 18,
@@ -330,7 +469,8 @@ class ExerciseContainer extends StatelessWidget {
                                 return FractionallySizedBox(
                                   heightFactor: 0.96,
                                   child: ViewExercisePage(
-                                      id: exercise.id ?? "", buttons: true),
+                                      id: widget.exercise.id ?? "",
+                                      buttons: true),
                                 );
                               },
                             );
@@ -339,23 +479,25 @@ class ExerciseContainer extends StatelessWidget {
                         ),
                       ],
                     ),
-                  if (agregar == false)
+                  if (widget.agregar == false)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           "$primary y $secondary",
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.black,
                             fontSize: 14,
                           ),
                         ),
                         IconButton(
-                          onPressed: () {
-                            // Lógica para agregar a favoritos
-                          },
-                          icon: const Icon(Icons.favorite_border,
-                              color: Colors.red),
+                          onPressed: _toggleFavoriteStatus,
+                          icon: Icon(
+                            _isFavorite
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: _isFavorite ? Colors.red : Colors.grey,
+                          ),
                         ),
                       ],
                     ),

@@ -28,8 +28,8 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
   int currentPageIndex = 0;
   List<String> options = [
     'Fisico',
-    'Nutricional',
-    'Emocional',
+    //'Nutricional',
+    //'Emocional',
   ]; // Lista de opciones
 
   List<Color> highlightColors = [
@@ -52,164 +52,150 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
         context); // Obtiene la instancia de GlobalVariable
     final globales = context.watch<Globales>();
 
-    return LiquidPullToRefresh(
-      key: _refreshIndicatorKey,
-      onRefresh: _handleRefresh,
-      color: Colors.indigo,
-      child: Scaffold(
-        appBar: AppBar(
-          leading: GestureDetector(
-            onTap: () {
-              widget.openDrawer!();
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: CircleAvatar(
-                radius: 20,
-                backgroundImage: NetworkImage(globales.fotoPerfil),
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        leading: GestureDetector(
+          onTap: () {
+            widget.openDrawer!();
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: CircleAvatar(
+              radius: 20,
+              backgroundImage: NetworkImage(globales.fotoPerfil),
             ),
           ),
-          backgroundColor: const Color(0xff0C1C2E),
-          title: const Text(
-            'Seguimiento',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 25,
-            ),
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.flag),
-              onPressed: () {
-                showModalBottomSheet(
-                  backgroundColor: const Color.fromARGB(255, 18, 18, 18),
-                  showDragHandle: true,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(15),
-                    ),
-                  ),
-                  context: context,
-                  isScrollControlled: true,
-                  builder: (context) {
-                    return FractionallySizedBox(
-                      heightFactor: 0.96,
-                      child: GoalsPage(),
-                    );
-                  },
-                );
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.health_and_safety),
-              onPressed: () {
-                // Acción para el botón de Salud
-                // ReminderScheduler.scheduleReminders(context);
-                print('Botón de Salud presionado debug para recordatorios');
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.notifications, color: Colors.white),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: const Icon(
-                Icons.info,
-                color: Colors.white,
-              ),
-              onPressed: () {},
-            ),
-          ],
         ),
-        body: SingleChildScrollView(
-          child: Container(
-            color: const Color.fromARGB(255, 18, 18, 18),
-            child: Column(
-              children: [
-                const SizedBox(height: 20, width: 10),
-                Container(
-                  color: const Color.fromARGB(255, 18, 18, 18),
-                  width: MediaQuery.of(context).size.width,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Container(
-                      padding:  const EdgeInsets.symmetric(horizontal:50),
-                      child: Row(
-                        //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        // crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          MenuButtonOption(
-                            options: options,
-                            highlightColors: highlightColors,
-                            //highlightColor: Colors.green,
-                            onItemSelected: (index) async {
-                              SharedPreferences prefs =
-                                  await SharedPreferences.getInstance();
-                              setState(() {
-                                _selectedMenuOption = index;
-                                globalVariable.selectedSubPageTracking =
-                                    _selectedMenuOption;
-                              });
-                              await prefs.setInt('selectedSubPageTracking', index);
-                            },
-                            selectedMenuOptionGlobal:
-                                globalVariable.selectedSubPageTracking,
-                          ),
-                          // Aquí puedes agregar más elementos MenuButtonOption según sea necesario
-                        ],
-                      ),
+        backgroundColor: const Color(0xff0C1C2E),
+        title: const Text(
+          'Seguimiento',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 25,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.flag),
+             color: Colors.white,
+            onPressed: () {
+              showModalBottomSheet(
+                backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+                showDragHandle: true,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(15),
+                  ),
+                ),
+                context: context,
+                isScrollControlled: true,
+                builder: (context) {
+                  return FractionallySizedBox(
+                    heightFactor: 0.96,
+                    child: GoalsPage(),
+                  );
+                },
+              );
+            },
+          ),
+         
+         
+          IconButton(
+            icon: const Icon(
+              Icons.info,
+              color: Colors.white,
+            ),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          color: const Color.fromARGB(255, 18, 18, 18),
+          child: Column(
+            children: [
+              const SizedBox(height: 20, width: 10),
+              Container(
+                color: const Color.fromARGB(255, 18, 18, 18),
+                width: MediaQuery.of(context).size.width,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Container(
+                    //padding:  const EdgeInsets.symmetric(horizontal:50),
+                    child: Row(
+                      //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      // crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        MenuButtonOption(
+                          options: options,
+                          highlightColors: highlightColors,
+                          //highlightColor: Colors.green,
+                          onItemSelected: (index) async {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            setState(() {
+                              _selectedMenuOption = index;
+                              globalVariable.selectedSubPageTracking =
+                                  _selectedMenuOption;
+                            });
+                            await prefs.setInt('selectedSubPageTracking', index);
+                          },
+                          selectedMenuOptionGlobal:
+                              globalVariable.selectedSubPageTracking,
+                        ),
+                        // Aquí puedes agregar más elementos MenuButtonOption según sea necesario
+                      ],
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
-                _selectedMenuOption == 0
-                    ? const PhysicalTrackingPage()
-                    : const SizedBox(),
-                _selectedMenuOption == 1
-                    ? const NutritionalTrackingPage()
-                    : const SizedBox(),
-                _selectedMenuOption == 2 ? const SizedBox() : const SizedBox(),
-              ],
-            ),
+              ),
+              const SizedBox(height: 20),
+              _selectedMenuOption == 0
+                  ? const PhysicalTrackingPage()
+                  : const SizedBox(),
+              _selectedMenuOption == 1
+                  ? const NutritionalTrackingPage()
+                  : const SizedBox(),
+              _selectedMenuOption == 2 ? const SizedBox() : const SizedBox(),
+            ],
           ),
         ),
-        floatingActionButton: CircularMenu(
-          alignment: Alignment.bottomRight,
-          toggleButtonColor: Colors.green, // Color del botón
-          toggleButtonBoxShadow: [BoxShadow()],
-          //toggleButtonAnimatedIconData: AnimatedIcons.menu_arrow,
-          //toggleButtonMargin: 5.0, // Margen del botón
-          //toggleButtonSize: 40.0, // Tamaño del botón
-
-          items: [
-            CircularMenuItem(
-              icon: Icons.add, // Icono para agregar rutina
-              color: Colors.blue, // Color del ícono
-              boxShadow: [BoxShadow()],
-              onTap: () {
-                // Acción cuando se toca el ícono de agregar rutina
-              },
-            ),
-            CircularMenuItem(
-              icon: Icons.person, // Icono para registro corporal
-              color: Colors.green, // Color del ícono
-              boxShadow: [BoxShadow()],
-              onTap: () {
-                // Acción cuando se toca el ícono de registro corporal
-              },
-            ),
-            CircularMenuItem(
-              icon: Icons.fitness_center, // Icono para fuerza
-              color: Colors.orange, // Color del ícono
-              boxShadow: [BoxShadow()],
-              onTap: () {
-                // Acción cuando se toca el ícono de fuerza
-              },
-            ),
-          ],
-        ),
       ),
+      // floatingActionButton: CircularMenu(
+      //   alignment: Alignment.bottomRight,
+      //   toggleButtonColor: Colors.green, // Color del botón
+      //   toggleButtonBoxShadow: [BoxShadow()],
+      //   //toggleButtonAnimatedIconData: AnimatedIcons.menu_arrow,
+      //   //toggleButtonMargin: 5.0, // Margen del botón
+      //   //toggleButtonSize: 40.0, // Tamaño del botón
+    
+      //   items: [
+      //     CircularMenuItem(
+      //       icon: Icons.add, // Icono para agregar rutina
+      //       color: Colors.blue, // Color del ícono
+      //       boxShadow: [BoxShadow()],
+      //       onTap: () {
+      //         // Acción cuando se toca el ícono de agregar rutina
+      //       },
+      //     ),
+      //     CircularMenuItem(
+      //       icon: Icons.person, // Icono para registro corporal
+      //       color: Colors.green, // Color del ícono
+      //       boxShadow: [BoxShadow()],
+      //       onTap: () {
+      //         // Acción cuando se toca el ícono de registro corporal
+      //       },
+      //     ),
+      //     CircularMenuItem(
+      //       icon: Icons.fitness_center, // Icono para fuerza
+      //       color: Colors.orange, // Color del ícono
+      //       boxShadow: [BoxShadow()],
+      //       onTap: () {
+      //         // Acción cuando se toca el ícono de fuerza
+      //       },
+      //     ),
+      //   ],
+      // ),
     );
   }
 

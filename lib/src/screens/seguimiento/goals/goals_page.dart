@@ -12,6 +12,7 @@ class _GoalsPageState extends State<GoalsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: const Color.fromARGB(255, 18, 18, 18),
       body: ViewMainGoalWidget()
     );
   }

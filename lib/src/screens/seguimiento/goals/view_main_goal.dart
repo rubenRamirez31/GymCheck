@@ -93,15 +93,28 @@ class _ViewMainGoalWidgetState extends State<ViewMainGoalWidget> {
                 else if (_meta.isNotEmpty)
                   _buildMetas()
                 else
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SelectGoalPage()),
-                      );
-                    },
-                    child: const Text('Crear'),
+                  SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Text("Aun no haz creado tus metas", style: TextStyle(fontSize: 18, color: Colors.white),),
+                        SizedBox(height: 10,),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const SelectGoalPage()),
+                            );
+                          },
+                          child: const Text('Crear'),
+                        ),
+                        Container(
+                          height: 5000,
+                          color: Color.fromARGB(255, 18, 18, 18),
+                        )
+                    
+                      ],
+                    ),
                   ),
               ],
             ),

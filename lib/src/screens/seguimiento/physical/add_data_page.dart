@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/registro_fisico_model.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
+import 'package:gym_check/src/screens/principal.dart';
 import 'package:gym_check/src/services/user_service.dart';
 import 'package:gym_check/src/services/physical_data_service.dart';
 import 'package:numberpicker/numberpicker.dart'; // Importa NumberPicker
@@ -118,6 +119,27 @@ class _AddDataPageState extends State<AddDataPage> {
 
   void _guardarDatos(BuildContext context) async {
     try {
+
+      // Mostrar AlertDialog mientras se crea la rutina
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return const AlertDialog(
+          backgroundColor: Colors.black, // Fondo negro
+          title: Text(
+            'Subiendo...',
+            style: TextStyle(color: Colors.white), // Letras blancas
+          ),
+          content: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(
+                Colors.white), // Color del indicador de progreso blanco
+          ),
+        );
+      },
+    );
+
+      
      
       _selectedValue = double.parse("$_selectedEntero.$_selectedDecimal");
 
@@ -131,21 +153,43 @@ class _AddDataPageState extends State<AddDataPage> {
       final response = await PhysicalDataService.addData(
           context, coleccion, bodyData.toJson());
 
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Mensaje'),
-          content: Text(response['message'] ?? 'Datos guardados correctamente'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.black, // Fondo negro
+          title: const Text(
+            'Rutina creada',
+            style: TextStyle(color: Colors.white), // Letras blancas
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Tu nuevo registro ha sido creado exitosamente',
+                style: TextStyle(color: Colors.white),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  // Reinicia la página
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) => const PrincipalPage(
+                        initialPageIndex: 2,
+                      ),
+                    ),
+                  );
+                },
+                child: const Text('Aceptar',
+                    style: TextStyle(color: Colors.black)),
+              ),
+            ],
+          ),
+        );
+      },
+    );
     } catch (error) {
       print('Error al guardar datos: $error');
     }

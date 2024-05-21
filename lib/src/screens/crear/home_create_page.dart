@@ -78,176 +78,176 @@ class _HomeCreatePageState extends State<HomeCreatePage>
         context); // Obtiene la instancia de GlobalVariable
     final globales = context.watch<Globales>();
 
-    return LiquidPullToRefresh(
-      key: _refreshIndicatorKey,
-      onRefresh: _handleRefresh,
-      color: Colors.indigo,
-      child: Scaffold(
-          appBar: AppBar(
-            leading: GestureDetector(
-              onTap: () {
-                widget.openDrawer!();
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(globales.fotoPerfil),
-                ),
+    return Scaffold(
+        appBar: AppBar(
+          leading: GestureDetector(
+            onTap: () {
+              widget.openDrawer!();
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: CircleAvatar(
+                radius: 20,
+                backgroundImage: NetworkImage(globales.fotoPerfil),
               ),
             ),
-            backgroundColor: const Color(0xff0C1C2E),
-            title: const Text(
-              'Creación',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 25,
-              ),
-            ),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.add),
-                onPressed: () {
-                  agregarEjercicio();
-                },
-              ),
-            ],
           ),
-          backgroundColor: const Color.fromARGB(255, 18, 18, 18),
-          body: SingleChildScrollView(
-            child: Container(
-              color: const Color.fromARGB(255, 18, 18, 18),
-              child: Column(
-                children: [
-                  const SizedBox(height: 20, width: 10),
-                  Container(
-                    color: const Color.fromARGB(255, 18, 18, 18),
-                    width: MediaQuery.of(context).size.width,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: <Widget>[
-                          MenuButtonOption(
-                            options: options,
-                            highlightColors: highlightColors,
-                            onItemSelected: (index) async {
-                              SharedPreferences prefs =
-                                  await SharedPreferences.getInstance();
-                              setState(() {
-                                _selectedMenuOption = index;
-                                globalVariable.selectedSubPageCreate =
-                                    _selectedMenuOption;
-                              });
-                              await prefs.setInt(
-                                  'selectedSubPageCreate', index);
-                            },
-                            selectedMenuOptionGlobal:
-                                globalVariable.selectedSubPageCreate,
-                          ),
-                          // Puedes agregar más elementos MenuButtonOption según sea necesario
-                        ],
-                      ),
+          backgroundColor: const Color(0xff0C1C2E),
+          title: const Text(
+            'Creación',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 25,
+            ),
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.info),
+              onPressed: () {
+                agregarEjercicio();
+              },
+              color: Colors.white,
+            ),
+          ],
+        ),
+        backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+        body: SingleChildScrollView(
+          child: Container(
+            color: const Color.fromARGB(255, 18, 18, 18),
+            child: Column(
+              children: [
+                const SizedBox(height: 20, width: 10),
+                Container(
+                  color: const Color.fromARGB(255, 18, 18, 18),
+                  width: MediaQuery.of(context).size.width,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: <Widget>[
+                        MenuButtonOption(
+                          options: options,
+                          highlightColors: highlightColors,
+                          onItemSelected: (index) async {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            setState(() {
+                              _selectedMenuOption = index;
+                              globalVariable.selectedSubPageCreate =
+                                  _selectedMenuOption;
+                            });
+                            await prefs.setInt(
+                                'selectedSubPageCreate', index);
+                          },
+                          selectedMenuOptionGlobal:
+                              globalVariable.selectedSubPageCreate,
+                        ),
+                        // Puedes agregar más elementos MenuButtonOption según sea necesario
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  _selectedMenuOption == 0
-                      ? const AllExercisePage(agregar: false)
-                      : const SizedBox(),
-                  _selectedMenuOption == 1
-                      ? const AllSeriePage(agregar: false)
-                      : const SizedBox(),
-                  _selectedMenuOption == 2
-                      ? AllWorkoutPage()
-                      : const SizedBox(),
-                ],
-              ),
+                ),
+                const SizedBox(height: 20),
+                _selectedMenuOption == 0
+                    ? const AllExercisePage(agregar: false)
+                    : const SizedBox(),
+                _selectedMenuOption == 1
+                    ? const AllSeriePage(agregar: false)
+                    : const SizedBox(),
+                _selectedMenuOption == 2
+                    ? const AllWorkoutPage(agregar: false,)
+                    : const SizedBox(),
+              ],
             ),
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+    
+        //Init Floating Action Bubble
+        floatingActionButton: FloatingActionBubble(
+          // Menu items
+          items: <Bubble>[
 
-          //Init Floating Action Bubble
-          floatingActionButton: FloatingActionBubble(
-            // Menu items
-            items: <Bubble>[
-              // Floating action menu item
-              Bubble(
-                title: "Alimento",
-                iconColor: Colors.white,
-                bubbleColor: Colors.blue,
-                icon: Icons.restaurant_menu,
-                titleStyle: TextStyle(fontSize: 16, color: Colors.white),
-                onPress: () {
+             Bubble(
+              title: "Serie",
+              iconColor: Colors.white,
+              bubbleColor: Colors.blue,
+              icon: Icons.playlist_add,
+              titleStyle: TextStyle(fontSize: 16, color: Colors.white),
+              onPress: () {
+                 Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CrearSeriePage(
+                                  
+                                )),
+                      );
+                _animationController.reverse();
+              },
+            ),
+           
+            Bubble(
+              title: "Rutina",
+              iconColor: Colors.white,
+              bubbleColor: Colors.blue,
+              icon: Icons.sports_gymnastics,
+              titleStyle: TextStyle(fontSize: 16, color: Colors.white),
+              onPress: () {
+                 Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CrearWorkoutPage(
+                                  
+                                )),
+                      );
+                _animationController.reverse();
+              },
+            ),
+            //Floating action menu item
 
-                    Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CreateFoodPage(
-                                    
-                                  )),
-                        );
-                  _animationController.reverse();
-                },
-              ),
-              // Floating action menu item
-              Bubble(
-                title: "Rutina",
-                iconColor: Colors.white,
-                bubbleColor: Colors.blue,
-                icon: Icons.people,
-                titleStyle: TextStyle(fontSize: 16, color: Colors.white),
-                onPress: () {
-                   Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CrearWorkoutPage(
-                                    
-                                  )),
-                        );
-                  _animationController.reverse();
-                },
-              ),
-              //Floating action menu item
-              Bubble(
-                title: "Serie",
-                iconColor: Colors.white,
-                bubbleColor: Colors.blue,
-                icon: Icons.home,
-                titleStyle: TextStyle(fontSize: 16, color: Colors.white),
-                onPress: () {
-                   Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CrearSeriePage(
-                                    
-                                  )),
-                        );
-                  _animationController.reverse();
-                },
-              ),
-            ],
-
-            // animation controller
-            animation: _animation,
-
-            // On pressed change animation state
-            onPress: () => _animationController.isCompleted
-                ? _animationController.reverse()
-                : _animationController.forward(),
-
-            // Floating Action button Icon color
-            iconColor: Colors.white,
-
-            // Flaoting Action button Icon
-            iconData: Icons.add,
-            backGroundColor: Colors.indigo,
-          )),
-    );
+             // Floating action menu item
+            Bubble(
+              title: "Alimento",
+              iconColor: Colors.white,
+              bubbleColor: Colors.blue,
+              icon: Icons.restaurant_menu,
+              titleStyle: TextStyle(fontSize: 16, color: Colors.white),
+              onPress: () {
+    
+                  Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CreateFoodPage(
+                                  
+                                )),
+                      );
+                _animationController.reverse();
+              },
+            ),
+            // Floating action menu item
+           
+          ],
+    
+          // animation controller
+          animation: _animation,
+    
+          // On pressed change animation state
+          onPress: () => _animationController.isCompleted
+              ? _animationController.reverse()
+              : _animationController.forward(),
+    
+          // Floating Action button Icon color
+          iconColor: Colors.white,
+    
+          // Flaoting Action button Icon
+          iconData: Icons.add,
+          backGroundColor: Colors.indigo,
+        ));
   }
 
   Future<void> _loadSelectedMenuOption() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      // _selectedMenuOption = prefs.getInt('selectedSubPageCreate') ?? 0;
+     _selectedMenuOption = prefs.getInt('selectedSubPageCreate') ?? 0;
     });
   }
 
