@@ -10,6 +10,7 @@ import 'package:gym_check/src/values/app_colors.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:tflite_v2/tflite_v2.dart';
 
 class CreatePostPage extends StatefulWidget {
   const CreatePostPage({super.key});
@@ -27,6 +28,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   File? imagen;
   String link = "";
   String url = "";
+  String resultados = "";
 
   @override
   Widget build(BuildContext context) {
@@ -298,7 +300,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
 //subir imagen desde la camara
   Future<void> _getImageCamera() async {
-    final picture = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final picture = await ImagePicker().pickImage(source: ImageSource.camera);
     if (picture == null) {
       return;
     }
@@ -342,5 +344,28 @@ class _CreatePostPageState extends State<CreatePostPage> {
         );
       },
     );
+  }
+
+  loadModel() async {
+    await Tflite.loadModel(
+        model: "assets/tf/model_unquant.tflite",
+        labels: "assets/tf/labels.txt");
+  }
+
+  Future prediction(File imagen) async {
+    try {
+      var reconocimiento = await Tflite.runModelOnImage(path: imagen.path);
+
+      for (var elemento in reconocimiento!) {
+        var label = elemento['label'];
+        var confianza = elemento['confidence'];
+        resultados = 'Label: $label, Confianza: $confianza';
+      }
+
+      resultados.toString;
+      setState(() {});
+    } catch (e) {
+      resultados = "Ha ocurrido un error";
+    }
   }
 }
