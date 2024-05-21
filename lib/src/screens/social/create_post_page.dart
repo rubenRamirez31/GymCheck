@@ -31,6 +31,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
   String resultados = "";
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadModel().then((value) {
+      setState(() {});
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final globales = context.watch<Globales>();
     return PopScope(
@@ -210,6 +219,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             },
                           ),
                         ),
+                        Text(
+                          resultados,
+                          style: const TextStyle(fontSize: 25),
+                        ),
                         const SizedBox(
                           height: 20,
                         ),
@@ -296,6 +309,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       url = picture.name;
       updateButtonState();
     });
+    prediction(imagen!);
   }
 
 //subir imagen desde la camara
@@ -309,6 +323,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       url = picture.name;
       updateButtonState();
     });
+    prediction(imagen!);
   }
 
 //funcion para el estado del boton
