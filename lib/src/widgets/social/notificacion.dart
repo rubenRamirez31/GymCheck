@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:gym_check/src/models/social/notificaciones.dart';
+import 'package:gym_check/src/screens/social/post_page.dart';
 
 class NotificationCard extends StatefulWidget {
   final Notificacion notificacion;
@@ -27,7 +28,27 @@ class _NotificationCardState extends State<NotificationCard> {
         : const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
     return InkWell(
       onTap: () {
-        // Acción al hacer clic en la tarjeta
+        // Navegar a la página de destino con la animación de deslizamiento desde la izquierda
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                PublicacionPage(postid: widget.notificacion.referencia),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              var begin = const Offset(-1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween =
+                  Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              var offsetAnimation = animation.drive(tween);
+              return SlideTransition(
+                position: offsetAnimation,
+                child: child,
+              );
+            },
+          ),
+        );
       },
       child: Padding(
         padding: const EdgeInsets.all(10),
@@ -38,12 +59,22 @@ class _NotificationCardState extends State<NotificationCard> {
               children: [
                 Stack(
                   children: [
-                    const CircleAvatar(
+                    CircleAvatar(
                       radius: 30,
-                      child: Icon(
-                        Icons.person,
-                        size: 30,
-                      ),
+                      backgroundColor: Colors.grey, // Color de fondo del avatar
+                      child: userProfileImageUrl != null &&
+                              userProfileImageUrl!.isNotEmpty
+                          ? ClipOval(
+                              child: Image.network(
+                                userProfileImageUrl!,
+                                fit: BoxFit
+                                    .cover, // Ajuste de la imagen para cubrir completamente el círculo
+                              ),
+                            )
+                          : const Icon(
+                              Icons.person,
+                              size: 30,
+                            ),
                     ),
                     Positioned(
                       top: 38,

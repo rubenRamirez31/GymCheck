@@ -47,15 +47,11 @@ class Post {
 
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
-      id: json['id'],
       userId: json['userIdAuth'],
       lugar: json['lugar'],
       texto: json['texto'],
       nick: json['nick'],
-      fechaCreacion: json['fechaCreacion'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(
-              json['fechaCreacion']['seconds'] * 1000)
-          : null,
+      fechaCreacion: (json['fechaCreacion'] as Timestamp).toDate(),
       urlImagen: json['URLimagen'],
       editad: json['editado'],
     );
