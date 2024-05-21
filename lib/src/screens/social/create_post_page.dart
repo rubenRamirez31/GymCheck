@@ -29,6 +29,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
   String link = "";
   String url = "";
   String resultados = "";
+  String label = "";
+  double confianza = 0;
 
   @override
   void initState() {
@@ -105,48 +107,54 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             }
                             //Agregar publicacion con imagen
                           } else {
-                            final file = File(imagen!.path);
+                            if (label == "1 nonude" && confianza == 1) {
+                              final file = File(imagen!.path);
 
-                            final metadata =
-                                SettableMetadata(contentType: "image/jpeg");
+                              final metadata =
+                                  SettableMetadata(contentType: "image/jpeg");
 
-                            final storageRef =
-                                FirebaseStorage.instance.ref("/post");
+                              final storageRef =
+                                  FirebaseStorage.instance.ref("/post");
 
-                            SmartDialog.showLoading(msg: "Publicando");
+                              SmartDialog.showLoading(msg: "Publicando");
 
-                            try {
-                              final uploadTask =
-                                  storageRef.child(url).putFile(file, metadata);
-                              await uploadTask.whenComplete(() => null);
+                              try {
+                                final uploadTask = storageRef
+                                    .child(url)
+                                    .putFile(file, metadata);
+                                await uploadTask.whenComplete(() => null);
 
-                              // Obtener la URL de descarga después de que la carga sea exitosa
-                              link =
-                                  await storageRef.child(url).getDownloadURL();
+                                // Obtener la URL de descarga después de que la carga sea exitosa
+                                link = await storageRef
+                                    .child(url)
+                                    .getDownloadURL();
 
-                              Post newPost = Post(
-                                userId: globales.idAuth,
-                                texto: _textoController.text,
-                                nick: globales.nick,
-                                lugar: "",
-                                fechaCreacion: DateTime.now(),
-                                urlImagen: link,
-                                editad: false,
-                              );
+                                Post newPost = Post(
+                                  userId: globales.idAuth,
+                                  texto: _textoController.text,
+                                  nick: globales.nick,
+                                  lugar: "",
+                                  fechaCreacion: DateTime.now(),
+                                  urlImagen: link,
+                                  editad: false,
+                                );
 
-                              int resultado = await crearPost(newPost);
-                              if (!mounted) return;
-                              if (resultado == 200) {
+                                int resultado = await crearPost(newPost);
+                                if (!mounted) return;
+                                if (resultado == 200) {
+                                  SmartDialog.dismiss();
+                                  Navigator.of(context).pushNamedAndRemoveUntil(
+                                      "/principal", (route) => false);
+                                  SmartDialog.showToast("Publicación Creada");
+                                } else {
+                                  SmartDialog.showToast("Ocurrio un error");
+                                }
+                              } catch (e) {
                                 SmartDialog.dismiss();
-                                Navigator.of(context).pushNamedAndRemoveUntil(
-                                    "/principal", (route) => false);
-                                SmartDialog.showToast("Publicación Creada");
-                              } else {
                                 SmartDialog.showToast("Ocurrio un error");
                               }
-                            } catch (e) {
-                              SmartDialog.dismiss();
-                              SmartDialog.showToast("Ocurrio un error");
+                            } else {
+                              SmartDialog.showToast("Eliga otra imagen");
                             }
                           }
                         }
@@ -218,10 +226,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               updateButtonState();
                             },
                           ),
-                        ),
-                        Text(
-                          resultados,
-                          style: const TextStyle(fontSize: 25),
                         ),
                         const SizedBox(
                           height: 20,
@@ -372,13 +376,24 @@ class _CreatePostPageState extends State<CreatePostPage> {
       var reconocimiento = await Tflite.runModelOnImage(path: imagen.path);
 
       for (var elemento in reconocimiento!) {
-        var label = elemento['label'];
-        var confianza = elemento['confidence'];
-        resultados = 'Label: $label, Confianza: $confianza';
-      }
+        setState(() {});
 
-      resultados.toString;
-      setState(() {});
+        label = elemento['label'];
+        confianza = elemento['confidence'];
+        resultados = 'Label: $label, Confianza: $confianza';
+
+        if (label == '0 nude' && confianza > .9) {
+          // Aquí puedes poner el código para mostrar la advertencia
+
+          SmartDialog.showToast(
+              'Advertencia: No se pueden subir ese tipo de imágenes');
+        }
+
+        if (label == "1 nonude" && confianza < 1) {
+          SmartDialog.showToast(
+              'Advertencia: No se pueden subir ese tipo de imágenes');
+        }
+      }
     } catch (e) {
       resultados = "Ha ocurrido un error";
     }
