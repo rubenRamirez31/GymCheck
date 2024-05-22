@@ -11,14 +11,15 @@ import 'package:gym_check/src/screens/calendar/widgets/responsive_widget.dart';
 class SelectDayViewPage extends StatefulWidget {
   final DateTime selectedDate;
 
-  const SelectDayViewPage({Key? key, required this.selectedDate})
-      : super(key: key);
+  const SelectDayViewPage({Key? key, required this.selectedDate}) : super(key: key);
 
   @override
   _SelectDayViewPageState createState() => _SelectDayViewPageState();
 }
 
 class _SelectDayViewPageState extends State<SelectDayViewPage> {
+
+
   @override
   Widget build(BuildContext context) {
     return ResponsiveWidget(
@@ -27,20 +28,46 @@ class _SelectDayViewPageState extends State<SelectDayViewPage> {
       ),
       mobileWidget: Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color(0xff0C1C2E),
-          title: const Text(
-            'Vista diaria',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 26,
-            ),
+        backgroundColor: const Color(0xff0C1C2E),
+        title: const Text(
+          'Vista Semanal',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 26,
           ),
-          iconTheme: const IconThemeData(color: Colors.white),
         ),
-
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(Icons.notifications, color: Colors.white),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(
+              Icons.info,
+              color: Colors.white,
+            ),
+            onPressed: () {},
+          ),
+        ],
+      ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          elevation: 8,
+          onPressed: () => context.pushRoute(CreateEventPage()),
+        ),
         body: SelectDayViewWidget(selectedDate: widget.selectedDate),
-        //body: DayViewWidget(),
+         //body: DayViewWidget(),
       ),
     );
   }
+
+
+  
 }

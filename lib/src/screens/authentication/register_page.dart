@@ -83,7 +83,6 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 18, 18, 18),
       body: ListView(
         children: [
           const GradientBackground(
@@ -101,8 +100,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   AppTextFormField(
-                    textStyle: const TextStyle(color: Colors.white),
-                    fillColor: const Color.fromARGB(255, 18, 18, 18),
+                    textStyle: TextStyle(color: Colors.white), // Texto blanco
+                    fillColor:
+                        Colors.grey[800], // Color claro para el campo de texto
                     labelText: AppStrings.email,
                     controller: emailController,
                     textInputAction: TextInputAction.next,
@@ -117,8 +117,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                   ),
                   AppTextFormField(
-                    textStyle: const TextStyle(color: Colors.white),
-                    fillColor: const Color.fromARGB(255, 18, 18, 18),
+                    textStyle: TextStyle(color: Colors.white), // Texto blanco
+                    fillColor:
+                        Colors.grey[800], // Color claro para el campo de texto
                     textInputAction: TextInputAction.next,
                     labelText: 'Usuario',
                     keyboardType: TextInputType.text,
@@ -137,8 +138,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     valueListenable: passwordNotifier,
                     builder: (_, passwordObscure, __) {
                       return AppTextFormField(
-                        textStyle: const TextStyle(color: Colors.white),
-                        fillColor: const Color.fromARGB(255, 18, 18, 18),
+                        textStyle:
+                            TextStyle(color: Colors.white), // Texto blanco
+                        fillColor: Colors
+                            .grey[800], // Color claro para el campo de texto
                         obscureText: passwordObscure,
                         controller: passwordController,
                         labelText: AppStrings.password,
@@ -172,7 +175,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               passwordObscure
                                   ? Icons.visibility_off_outlined
                                   : Icons.visibility_outlined,
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
                         ),
@@ -183,8 +186,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     valueListenable: confirmPasswordNotifier,
                     builder: (_, confirmPasswordObscure, __) {
                       return AppTextFormField(
-                        textStyle: const TextStyle(color: Colors.white),
-                        fillColor: const Color.fromARGB(255, 18, 18, 18),
+                        textStyle:
+                            TextStyle(color: Colors.white), // Texto blanco
+                        fillColor: Colors
+                            .grey[800], // Color claro para el campo de texto
                         labelText: AppStrings.confirmPassword,
                         controller: confirmPasswordController,
                         obscureText: confirmPasswordObscure,
@@ -216,13 +221,12 @@ class _RegisterPageState extends State<RegisterPage> {
                                 !confirmPasswordObscure,
                             style: IconButton.styleFrom(
                               minimumSize: const Size.square(48),
-                              
                             ),
                             icon: Icon(
                               confirmPasswordObscure
                                   ? Icons.visibility_off_outlined
                                   : Icons.visibility_outlined,
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
                         ),
@@ -307,14 +311,14 @@ class _RegisterPageState extends State<RegisterPage> {
             children: [
               Text(
                 AppStrings.iHaveAnAccount,
-                style: AppTheme.bodySmall.copyWith(color: Colors.white),
+                style: AppTheme.bodySmall.copyWith(color: Colors.black),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.of(context)
                       .pushNamedAndRemoveUntil("/", (route) => false);
                 },
-                child: const Text(AppStrings.login, style: TextStyle(color: Colors.white),),
+                child: const Text(AppStrings.login),
               ),
             ],
           ),

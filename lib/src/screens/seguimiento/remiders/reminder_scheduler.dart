@@ -10,9 +10,9 @@ class ReminderScheduler {
       DateTime endTime = primeReminder.endTime;
       List<int>? repeatDays = primeReminder.repeatDays;
 
-//if (repeatDays != null && repeatDays.isNotEmpty) {
+      if (repeatDays != null && repeatDays.isNotEmpty) {
         await _createClonedReminders(context, primeReminder, dias);
-   //   }
+      }
     } catch (error) {
       print('Error al programar recordatorios: $error');
     }

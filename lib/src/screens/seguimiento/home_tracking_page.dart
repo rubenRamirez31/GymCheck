@@ -33,9 +33,9 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
   ]; // Lista de opciones
 
   List<Color> highlightColors = [
-    Colors.white, // Color de resaltado para 'Fisico'
-    Colors.white, // Color de resaltado para 'Emocional'
-    Colors.white, // Color de resaltado para 'Nutricional'
+    Colors.green, // Color de resaltado para 'Fisico'
+    Colors.yellow, // Color de resaltado para 'Emocional'
+    Colors.blue, // Color de resaltado para 'Nutricional'
   ];
 
   int _selectedMenuOption = 0;
@@ -44,7 +44,6 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
   void initState() {
     super.initState();
     _loadSelectedMenuOption();
-    currentPageIndex = 0;
   }
 
   @override
@@ -78,7 +77,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.flag),
-            color: Colors.white,
+             color: Colors.white,
             onPressed: () {
               showModalBottomSheet(
                 backgroundColor: const Color.fromARGB(255, 18, 18, 18),
@@ -99,6 +98,8 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
               );
             },
           ),
+         
+         
           IconButton(
             icon: const Icon(
               Icons.info,
@@ -121,35 +122,34 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
                   scrollDirection: Axis.horizontal,
                   child: Container(
                     //padding:  const EdgeInsets.symmetric(horizontal:50),
-                    // child: Row(
-                    //   //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //   // crossAxisAlignment: CrossAxisAlignment.center,
-                    //   children: <Widget>[
-                    //     MenuButtonOption(
-                    //       options: options,
-                    //       highlightColors: highlightColors,
-                    //       //highlightColor: Colors.green,
-                    //       onItemSelected: (index) async {
-                    //         SharedPreferences prefs =
-                    //             await SharedPreferences.getInstance();
-                    //         setState(() {
-                    //           _selectedMenuOption = index;
-                    //           globalVariable.selectedSubPageTracking =
-                    //               _selectedMenuOption;
-                    //         });
-                    //         await prefs.setInt(
-                    //             'selectedSubPageTracking', index);
-                    //       },
-                    //       selectedMenuOptionGlobal:
-                    //           globalVariable.selectedSubPageTracking,
-                    //     ),
-                    //     // Aquí puedes agregar más elementos MenuButtonOption según sea necesario
-                    //   ],
-                    // ),
+                    child: Row(
+                      //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      // crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        MenuButtonOption(
+                          options: options,
+                          highlightColors: highlightColors,
+                          //highlightColor: Colors.green,
+                          onItemSelected: (index) async {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            setState(() {
+                              _selectedMenuOption = index;
+                              globalVariable.selectedSubPageTracking =
+                                  _selectedMenuOption;
+                            });
+                            await prefs.setInt('selectedSubPageTracking', index);
+                          },
+                          selectedMenuOptionGlobal:
+                              globalVariable.selectedSubPageTracking,
+                        ),
+                        // Aquí puedes agregar más elementos MenuButtonOption según sea necesario
+                      ],
+                    ),
                   ),
                 ),
               ),
-             // const SizedBox(height: 20),
+              const SizedBox(height: 20),
               _selectedMenuOption == 0
                   ? const PhysicalTrackingPage()
                   : const SizedBox(),
@@ -168,7 +168,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
       //   //toggleButtonAnimatedIconData: AnimatedIcons.menu_arrow,
       //   //toggleButtonMargin: 5.0, // Margen del botón
       //   //toggleButtonSize: 40.0, // Tamaño del botón
-
+    
       //   items: [
       //     CircularMenuItem(
       //       icon: Icons.add, // Icono para agregar rutina

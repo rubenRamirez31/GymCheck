@@ -21,7 +21,7 @@ class DataTracking extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey),
         borderRadius: BorderRadius.circular(8),
@@ -35,34 +35,34 @@ class DataTracking extends StatelessWidget {
               Row(
                 children: [
                   Icon(icon),
-                  const SizedBox(width: 10),
+                  SizedBox(width: 10),
                   Text(
                     name,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
-              const SizedBox(height: 5),
+              SizedBox(height: 5),
               Row(
                 children: [
-                  const Icon(Icons.info),
-                  const SizedBox(width: 5),
+                  Icon(Icons.info),
+                  SizedBox(width: 5),
                   Text(
                     dataType,
-                    style: const TextStyle(fontStyle: FontStyle.italic),
+                    style: TextStyle(fontStyle: FontStyle.italic),
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: 10),
                   Text(data.toString()),
                 ],
               ),
-              const SizedBox(height: 5),
+              SizedBox(height: 5),
               Row(
                 children: [
-                  const Icon(Icons.calendar_month), // Nuevo icono para la fecha
-                  const SizedBox(width: 5),
+                  Icon(Icons.calendar_month), // Nuevo icono para la fecha
+                  SizedBox(width: 5),
                   Text(
                     'Fecha: $lastRecordDate',
-                    style: const TextStyle(fontStyle: FontStyle.italic),
+                    style: TextStyle(fontStyle: FontStyle.italic),
                   ),
                 ],
               ),
@@ -78,7 +78,7 @@ class DataTracking extends StatelessWidget {
                   // dependiendo del dataType
                   print('Se presionó el botón de Ver más para $name');
                 },
-                child: const Text('Ver más'),
+                child: Text('Ver más'),
               ),
             ),
           ),
@@ -89,7 +89,6 @@ class DataTracking extends StatelessWidget {
 
     void _showViweData(BuildContext context, String data) {
     showModalBottomSheet(
-       backgroundColor: const Color.fromARGB(255, 18, 18, 18),
       showDragHandle: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(

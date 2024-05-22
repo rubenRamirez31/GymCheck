@@ -3,7 +3,6 @@ import 'package:gym_check/src/providers/global_variables_provider.dart';
 
 import 'package:gym_check/src/screens/seguimiento/remiders/add_remider_page.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/view_remider_page.dart';
-import 'package:gym_check/src/screens/seguimiento/widgets/tracking_widgets.dart';
 import 'package:gym_check/src/services/reminder_service.dart';
 import 'package:gym_check/src/widgets/create_button_widget.dart';
 import 'package:gym_check/src/widgets/menu_button_option_widget.dart';
@@ -31,37 +30,37 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
     'D',
   ]; // Lista de opciones
   List<Color> highlightColors = [
-    Colors.white,
-    Colors.white,
-    Colors.white,
-    Colors.white,
-    Colors.white,
-    Colors.white,
-    Colors.white,
+    const Color.fromARGB(255, 94, 24, 246), // Color de resaltado para 'Fisico'
+    const Color.fromARGB(255, 94, 24, 246), // Color de resaltado para 'Fisico'
+    const Color.fromARGB(255, 94, 24, 246), // Color de resaltado para 'Fisico'
+    const Color.fromARGB(255, 94, 24, 246), // Color de resaltado para 'Fisico'
+    const Color.fromARGB(255, 94, 24, 246), // Color de resaltado para 'Fisico'
+    const Color.fromARGB(255, 94, 24, 246), // Color de resaltado para 'Fisico'
+    const Color.fromARGB(255, 94, 24, 246), // Color de resaltado para 'Fisico'
   ];
-  bool _isLoading =
-      false; // Variable para indicar si se están cargando las rutinas
+   bool _isLoading = false; // Variable para indicar si se están cargando las rutinas
   @override
   void initState() {
     super.initState();
-    _loadSelectedMenuOption(); // Cargar el estado guardado de _selectedMenuOption
+   _loadSelectedMenuOption(); // Cargar el estado guardado de _selectedMenuOption
+    _loadRoutines();
+     
+  }
+
+Future<void> _loadSelectedMenuOption() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  if (mounted) {
+    setState(() {
+      _selectedMenuOption = prefs.getInt('diaSeleccionado') ?? 0;
+    });
     _loadRoutines();
   }
+}
 
-  Future<void> _loadSelectedMenuOption() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (mounted) {
-      setState(() {
-        _selectedMenuOption = prefs.getInt('diaSeleccionado') ?? 0;
-      });
-      _loadRoutines();
-    }
-  }
 
-  Future<void> _loadRoutines() async {
+ Future<void> _loadRoutines() async {
     setState(() {
-      _isLoading =
-          true; // Se inicia la carga, por lo que el indicador de carga será visible
+      _isLoading = true; // Se inicia la carga, por lo que el indicador de carga será visible
     });
 
     try {
@@ -69,11 +68,11 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
           context, "Rutina", _selectedMenuOption + 1);
       setState(() {
         _routines = routines;
-        _isLoading =
-            false; // Se ha completado la carga, por lo que se desactiva el indicador de carga
+        _isLoading = false; // Se ha completado la carga, por lo que se desactiva el indicador de carga
       });
     } catch (error) {
       print('Error al cargar las rutinas: $error');
+    
     }
   }
 
@@ -132,6 +131,7 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
                         highlightColors: highlightColors,
                         //highlightColor: Colors.green,
                         onItemSelected: (index) async {
+                           
                           SharedPreferences prefs =
                               await SharedPreferences.getInstance();
                           setState(() {
@@ -140,8 +140,9 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
                                 _selectedMenuOption;
                           });
                           await prefs.setInt('diaSeleccionado', index);
-                          // print(index);
-                          _loadRoutines();
+                         // print(index);
+                         _loadRoutines();
+                         
                         },
                         selectedMenuOptionGlobal:
                             globalVariable.selectedMenuOptionDias),
@@ -152,9 +153,6 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
             ),
           ],
         ),
-        SizedBox(
-          height: 10,
-        ),
         _selectedMenuOption == 0 ? _view() : const SizedBox(),
         _selectedMenuOption == 1 ? _view() : const SizedBox(),
         _selectedMenuOption == 2 ? _view() : const SizedBox(),
@@ -162,91 +160,87 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
         _selectedMenuOption == 4 ? _view() : const SizedBox(),
         _selectedMenuOption == 5 ? _view() : const SizedBox(),
         _selectedMenuOption == 6 ? _view() : const SizedBox(),
-        CreateButton(
-          text: 'Agregar',
-          textColor: Colors.white,
-          buttonColor: Colors.green,
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => AddReminderPage(
-                        tipo: "Rutina",
-                      )),
-            );
-            // showModalBottomSheet(
-            //   showDragHandle: true,
-            //   shape: const RoundedRectangleBorder(
-            //     borderRadius: BorderRadius.vertical(
-            //       top: Radius.circular(15),
-            //     ),
-            //   ),
-            //   context: context,
-            //   isScrollControlled: true,
-            //   builder: (context) {
-            //     return const FractionallySizedBox(
-            //       heightFactor: 0.90,
-            //       child: AddReminderPage(
-            //         tipo: "Rutina",
-            //       ),
-            //     );
-            //   },
-            // );
-          },
-          iconData: Icons.add,
-          iconColor: Colors.white,
-        ),
+
+         CreateButton(
+            text: 'Agregar',
+            textColor: Colors.white,
+            buttonColor: Colors.green,
+            onPressed: () {
+                            showModalBottomSheet(
+                showDragHandle: true,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(15),
+                  ),
+                ),
+                context: context,
+                isScrollControlled: true,
+                builder: (context) {
+                  return const FractionallySizedBox(
+                    heightFactor: 0.90,
+                    child: AddReminderPage(
+                      tipo: "Rutina",
+                    ),
+                  );
+                },
+              );
+            },
+            iconData: Icons.add,
+            iconColor: Colors.white,
+          ),
+       
       ],
     );
   }
 
-  Widget _view() {
-    print("hola $_selectedMenuOption");
-    return SingleChildScrollView(
-      child: _routines.isEmpty
-          ? _isLoading
-              ? Center(
-                  child: CircularProgressIndicator(), // Indicador de carga
-                )
-              : Container(
-                  margin: const EdgeInsets.symmetric(vertical: 8),
-                  width: MediaQuery.of(context).size.width - 30,
-                  decoration: BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TrackingWidgets.buildLabelDetailsRowOnly(
-                          "No hay rutinas", MainAxisAlignment.center),
-                      SizedBox(height: 10, width: 10),
-                      // _buildRoutineDetailsRow("Agrega rutinas:", "primaryFocus"),
-                      // _buildRoutineDetailsRow("Enfoque Secundario:", "secondaryFocus"),
-                    ],
-                  ),
-                )
-          : Container(
-              // width: screenSize.width,
-              child: Column(
-                children: _routines.map((routine) {
-                  return _buildRoutineContainer(
-                    routine!['routineName'],
-                    routine['primaryFocus'],
-                    routine['secondaryFocus'],
-                    routine['startTime'],
-                    routine['endTime'],
-                    routine['title'],
-                    routine['description'],
-                    routine['color'],
-                    routine['id'],
-                  );
-                }).toList(),
-              ),
+Widget _view() {
+  print("hola $_selectedMenuOption");
+  return SingleChildScrollView(
+    child: _routines.isEmpty
+        ? _isLoading
+            ? Center(
+                child: CircularProgressIndicator(), // Indicador de carga
+              )
+            : Container(
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        width: MediaQuery.of(context).size.width - 30,
+        decoration: BoxDecoration(
+          color: Colors.grey,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildRoutineDetailsRowOnly("routineName"),
+            SizedBox(height: 10, width: 10),
+            _buildRoutineDetailsRow("Enfoque Principal:", "primaryFocus"),
+            _buildRoutineDetailsRow("Enfoque Secundario:", "secondaryFocus"),
+            
+          ],
+        ),)
+        : Container(
+            // width: screenSize.width,
+            child: Column(
+              children: _routines.map((routine) {
+                return _buildRoutineContainer(
+                  routine!['routineName'],
+                  routine['primaryFocus'],
+                  routine['secondaryFocus'],
+                  routine['startTime'],
+                  routine['endTime'],
+                  routine['title'],
+                  routine['description'],
+                  routine['color'],
+                  routine['id'],
+                );
+              }).toList(),
             ),
-    );
-  }
+          ),
+  );
+}
+
+
 
   Widget _buildRoutineContainer(
     String routineName,
@@ -291,17 +285,134 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TrackingWidgets.buildLabelDetailsRowOnly(
-                title, MainAxisAlignment.center),
+            _buildRoutineDetailsRowOnly(title),
             SizedBox(height: 10, width: 10),
-            TrackingWidgets.buildLabelDetailsRow(
-                "Enfoque Principal:", primaryFocus),
-            TrackingWidgets.buildLabelDetailsRow(
-                "Enfoque Secundario:", secondaryFocus),
-            TrackingWidgets.buildLabelDetailsRow(
+            _buildRoutineDetailsRow("Enfoque Principal:", primaryFocus),
+            _buildRoutineDetailsRow("Enfoque Secundario:", secondaryFocus),
+            _buildRoutineDetailsRow(
                 "Hora de inicio:", formatDateTime(startTime.toIso8601String())),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildRoutineDetailsRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 0),
+      child: Container(
+        padding: const EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 18, 18, 18),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '$label',
+              style: const TextStyle(fontSize: 14, color: Colors.white),
+            ),
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRoutineDetailsRowOnly(String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 0),
+      child: Container(
+        padding: const EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 18, 18, 18),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '$label',
+              style: const TextStyle(fontSize: 16, color: Colors.white),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRoutineButtonWithIcon(
+      String text, IconData icon, Function() onPressed) {
+    return ElevatedButton.icon(
+      onPressed: onPressed,
+      icon: Icon(icon),
+      label: Text(text),
+    );
+  }
+
+  Widget _buildDataRow(String Nombre, String cantidad) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Container(
+        padding: const EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 18, 18, 18),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '$Nombre:',
+              style: const TextStyle(fontSize: 12, color: Colors.white),
+            ),
+            Text(
+              cantidad,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoContainer(String title, String value) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: const Color.fromARGB(255, 59, 59, 59),
+        borderRadius: BorderRadius.circular(5), // Bordes redondeados
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            value,
+            style: const TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
     );
   }

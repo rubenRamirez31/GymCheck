@@ -11,11 +11,6 @@ import 'package:gym_check/src/screens/crear/rutinas/all_workout_page.dart';
 import 'package:gym_check/src/screens/crear/rutinas/view_workout_page.dart';
 import 'package:gym_check/src/screens/principal.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/reminder_scheduler.dart';
-import 'package:gym_check/src/screens/seguimiento/widgets/color_menu_widget.dart';
-import 'package:gym_check/src/screens/seguimiento/widgets/custom_button.dart';
-import 'package:gym_check/src/screens/seguimiento/widgets/days_menu_widget.dart';
-import 'package:gym_check/src/screens/seguimiento/widgets/tracking_widgets.dart';
-
 import 'package:gym_check/src/services/reminder_service.dart';
 import 'package:gym_check/src/services/workout_service.dart';
 import 'package:intl/intl.dart';
@@ -41,8 +36,6 @@ class AddReminderPage extends StatefulWidget {
 }
 
 class _AddReminderPageState extends State<AddReminderPage> {
-  TextEditingController _nombreController = TextEditingController();
-  TextEditingController _descripcionController = TextEditingController();
   List<Map<String, dynamic>> _rutina = [];
 
   String _title = "";
@@ -60,7 +53,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
     Colors.purple,
   ];
 
-  int dropdownValue = 0;
+  int dropdownValue = 10;
 
   Map<String, dynamic>? _reminderData;
 
@@ -69,10 +62,8 @@ class _AddReminderPageState extends State<AddReminderPage> {
     super.initState();
     _currentDate = widget.selectedDate ?? DateTime.now();
     if (widget.recordatorioId != null) {
-      // _loadReminderData();
+      _loadReminderData();
     }
-
-    _loadRutinaSelect();
   }
 
   Future<void> _loadReminderData() async {
@@ -106,20 +97,17 @@ class _AddReminderPageState extends State<AddReminderPage> {
     }
   }
 
-  //int dropdownValue = 10; // Valor inicial del dropdown
-  bool repeatReminder = false; // Estado inicial del checkbox
-  List<Map<int, String>> _daysOptions = [
-    {1: 'Lun'},
-    {2: 'Mar'},
-    {3: 'Mié'},
-    {4: 'Jue'},
-    {5: 'Vie'},
-    {6: 'Sáb'},
-    {7: 'Dom'},
-  ]; //
-
   List<int> _selectedRepeatDays =
       []; // Lista de días seleccionados para repetir el recordatorio (1 para Lunes, 2 para Martes, etc.)
+  final List<Map<int, String>> _daysOptions = [
+    {1: 'L'},
+    {2: 'M'},
+    {3: 'M'},
+    {4: 'J'},
+    {5: 'V'},
+    {6: 'S'},
+    {7: 'D'},
+  ];
 
   Widget build(BuildContext context) {
     String dayOfWeek = _getDayOfWeek(widget.selectedDate ?? DateTime.now());
@@ -129,139 +117,76 @@ class _AddReminderPageState extends State<AddReminderPage> {
     String tipo = widget.tipo;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xff0C1C2E),
-        title: const Text(
-          'Crear Recordatorio',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 25,
-          ),
-        ),
-        iconTheme: const IconThemeData(
-          color:
-              Colors.white, // Cambia el color del icono de retroceso a blanco
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.info),
-            onPressed: () {
-              // CreateWidgets.showInfo(context, "Crear rutina",
-              //     "Una rutina lleva series y una serie lleva ejercicios");
-            },
-          ),
-        ],
-      ),
-      backgroundColor: const Color.fromARGB(255, 18, 18, 18),
       body: SingleChildScrollView(
         child: Container(
-          padding: const EdgeInsets.all(20.0),
+          padding: EdgeInsets.all(20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               if (widget.selectedDate != null) ...[
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  "$tipo para el día $dayOfWeek $formattedDate",
-                  style: TextStyle(color: Colors.white),
-                ),
+                Text("$tipo para el día $dayOfWeek $formattedDate"),
               ],
-              const SizedBox(height: 20.0),
-              TextFormField(
-                maxLength: 25,
-                controller: _nombreController,
-                decoration: const InputDecoration(
-                  labelText: 'Nombre del recordatorio (max. 25 caracteres)',
-                  counterStyle: TextStyle(color: Colors.white),
-                ),
-                style: const TextStyle(color: Colors.white),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingresa un nombre para el recordatorio';
-                  }
-                  return null;
+              SizedBox(height: 20.0),
+
+              TextField(
+                onChanged: (value) {
+                  setState(() {
+                    _title = value;
+                  });
                 },
-              ),
-              const SizedBox(height: 15.0),
-              TextFormField(
-                maxLength: 120,
-                controller: _descripcionController,
-                maxLines: null,
-                decoration: const InputDecoration(
-                  labelText:
-                      'Descripción del recordatorio (max. 120 caracteres)',
-                  counterStyle: TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  labelText: "Título",
+                  hintText: "Ingrese un título",
                 ),
-                style: const TextStyle(color: Colors.white),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingresa una descripción para el recordatorio';
-                  }
-                  return null;
-                },
               ),
-              const SizedBox(height: 15.0),
+              SizedBox(height: 20.0),
+              TextField(
+                onChanged: (value) {
+                  setState(() {
+                    _description = value;
+                  });
+                },
+                decoration: InputDecoration(
+                  labelText: "Descripción",
+                  hintText: "Ingrese una descripción",
+                ),
+              ),
+              SizedBox(height: 20.0),
               Row(
                 children: [
                   Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white),
-                        borderRadius: BorderRadius.circular(10.0),
+                    child: DateTimeSelectorFormField(
+                      decoration: InputDecoration(
+                        labelText: "Hora de Inicio",
                       ),
-                      child: DateTimeSelectorFormField(
-                        decoration: const InputDecoration(
-                          labelText: "Hora de Inicio",
-                          labelStyle: TextStyle(color: Colors.white),
-                          counterStyle: TextStyle(color: Colors.white),
-                          border: InputBorder
-                              .none, // Remueve el borde predeterminado
-                        ),
-                        textStyle: TextStyle(color: Colors.white),
-                        initialDateTime: _startTime,
-                        minimumDateTime: DateTime(2000),
-                        onSelect: (date) {
-                          setState(() {
-                            _startTime = date;
-                          });
-                        },
-                        type: DateTimeSelectionType.time,
-                      ),
+                      initialDateTime: _startTime,
+                      minimumDateTime: DateTime(2000),
+                      onSelect: (date) {
+                        setState(() {
+                          _startTime = date;
+                        });
+                      },
+                      type: DateTimeSelectionType.time,
                     ),
                   ),
-                  const SizedBox(width: 20.0),
+                  SizedBox(width: 20.0),
                   Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white),
-                        borderRadius: BorderRadius.circular(10.0),
+                    child: DateTimeSelectorFormField(
+                      decoration: InputDecoration(
+                        labelText: "Hora de Finalización",
                       ),
-                      child: DateTimeSelectorFormField(
-                        decoration: const InputDecoration(
-                          labelText: "Hora de Finalización",
-
-                          labelStyle: TextStyle(color: Colors.white),
-                          counterStyle: TextStyle(color: Colors.white),
-                          border: InputBorder
-                              .none, // Remueve el borde predeterminado
-                        ),
-                        textStyle: TextStyle(color: Colors.white),
-                        initialDateTime: _endTime,
-                        minimumDateTime: DateTime(2000),
-                        onSelect: (date) {
-                          setState(() {
-                            _endTime = date;
-                          });
-                        },
-                        type: DateTimeSelectionType.time,
-                      ),
+                      initialDateTime: _endTime,
+                      minimumDateTime: DateTime(2000),
+                      onSelect: (date) {
+                        setState(() {
+                          _endTime = date;
+                        });
+                      },
+                      type: DateTimeSelectionType.time,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 15.0),
               if (widget.tipo == "Rutina") ...[
                 _rutina.isNotEmpty
                     ? Container(
@@ -273,7 +198,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
                         ),
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(
-                            maxHeight: 75, // Altura máxima de 300 píxeles
+                            maxHeight: 100, // Altura máxima de 300 píxeles
                           ),
                           child: ReorderableListView(
                             padding: EdgeInsets.zero,
@@ -303,7 +228,6 @@ class _AddReminderPageState extends State<AddReminderPage> {
                                         heightFactor: 0.96,
                                         child: ViewWorkoutPage(
                                           id: idRutina,
-                                          buttons: false,
                                         ),
                                       );
                                     },
@@ -324,7 +248,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        'Rutina: $nombre',
+                                        'Nombre: $nombre',
                                         style: const TextStyle(
                                             fontSize: 16, color: Colors.white),
                                       ),
@@ -358,7 +282,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
                         },
                         child: Container(
                           padding: const EdgeInsets.all(5),
-                          height: 75,
+                          height: 100,
                           decoration: BoxDecoration(
                             color: const Color.fromARGB(255, 18, 18, 18),
                             borderRadius: BorderRadius.circular(10),
@@ -377,63 +301,71 @@ class _AddReminderPageState extends State<AddReminderPage> {
                         ),
                       ),
               ],
-              const SizedBox(height: 15.0),
-              ColorDropdown(
-                onColorSelected: (color) {
-                  _selectedColor = color!;
-                },
-              ),
-              const SizedBox(height: 20.0),
-              Row(
-                children: [
-                  Checkbox(
-                    value: repeatReminder,
-                    onChanged: (value) {
-                      setState(() {
-                        repeatReminder = value!;
-                      });
-                    },
-                  ),
-                  const Text("Repetir recordatorio",
-                      style: TextStyle(color: Colors.white)),
-                ],
-              ),
-              if (repeatReminder) ...[
-                SizedBox(height: 15),
-                DaysDropdown(
-                  onDaysNumberSelected: (daysNumber) {
-                    setState(() {
-                      dropdownValue = daysNumber!;
-                    });
-                  },
-                  onDaysSelected: (days) {
-                    setState(() {
-                      _selectedRepeatDays = days!;
-                    });
-                  },
-                ),
-              ],
-              const SizedBox(height: 20.0),
-              CustomButton(
-                onPressed: () {
-                  if(widget.tipo == "Rutina"){
-                    if(_rutina.isEmpty){
-                       TrackingWidgets.showInfo(
-                            context,
-                            'Error al crear recordatorio',
-                            'Debes de agregar una rutina antes de crear el recordatorio ;).',
-                          );
-                    }else{
-                       _addReminder();
-                    }
-                  }else{
-                     _addReminder();
 
-                  }
-                 
+              SizedBox(height: 20.0),
+
+              Text("Seleciona cuantos dias"),
+
+              DropdownButton<int>(
+                value: dropdownValue,
+                onChanged: (value) {
+                  setState(() {
+                    dropdownValue = value!;
+                  });
                 },
-                text: 'Agregar',
-                icon: Icons.add_alarm,
+                items: <int>[10, 15, 30, 60].map((int value) {
+                  return DropdownMenuItem<int>(
+                    value: value,
+                    child: Text(value.toString()),
+                  );
+                }).toList(),
+              ),
+
+              // if (widget.selectedDate == null) ...[
+              SingleChildScrollView(
+                scrollDirection:
+                    Axis.horizontal, // Set scroll direction to horizontal
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  // Use Row for horizontal layout
+                  children: _daysOptions.map((day) {
+                    int dayIndex = day.keys.first;
+                    String dayName = day.values.first;
+
+                    return Row(
+                      // Wrap each checkbox and text in a Row for horizontal alignment
+                      children: [
+                        Column(
+                          children: [
+                            Checkbox(
+                              value: _selectedRepeatDays.contains(dayIndex),
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  if (value != null && value) {
+                                    _selectedRepeatDays.add(dayIndex);
+                                  } else {
+                                    _selectedRepeatDays.remove(dayIndex);
+                                  }
+                                });
+                              },
+                            ),
+                            //const SizedBox(width: 2.0), // Add spacing between checkbox and text
+                            Text(dayName),
+                          ],
+                        ),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              ),
+              // ],
+
+              SizedBox(height: 20.0),
+              ElevatedButton(
+                onPressed: () {
+                  _addReminder();
+                },
+                child: Text('Agregar'),
               ),
             ],
           ),
@@ -524,23 +456,23 @@ class _AddReminderPageState extends State<AddReminderPage> {
   }
 
   Future<void> _addReminder() async {
-    if (_nombreController == null || _startTime == null || _endTime == null) {
+    if (_title.isEmpty || _startTime == null || _endTime == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor complete todos los campos')),
+        SnackBar(content: Text('Por favor complete todos los campos')),
       );
       return;
     }
 
     if (_selectedColor == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Seleccione un color')),
+        SnackBar(content: Text('Seleccione un color')),
       );
       return;
     }
 
     if (_startTime!.isAfter(_endTime!)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
             content: Text(
                 'La hora de finalización debe ser después de la hora de inicio')),
       );
@@ -566,17 +498,10 @@ class _AddReminderPageState extends State<AddReminderPage> {
       },
     );
 
-    String tipoModelo = "";
-    if (repeatReminder == true) {
-      tipoModelo = "Prime";
-    } else {
-      tipoModelo = "clon";
-    }
-
     // Obtener la fecha actual o la fecha seleccionada
     DateTime currentDate = widget.selectedDate ?? DateTime.now();
     DateTime nextSelectedDay = currentDate;
-    //List<int> si = _selectedRepeatDays;
+    List<int> si = _selectedRepeatDays;
 
     // Si _selectedRepeatDays está vacío y widget.selectedDate es nulo, se asigna la fecha actual
     if (_selectedRepeatDays.isEmpty && widget.selectedDate == null) {
@@ -625,7 +550,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
     if (widget.tipo == "Rutina") {
       if (_rutina.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Por favor selecciona una rutina')),
+          SnackBar(content: Text('Por favor selecciona una rutina')),
         );
         return;
       }
@@ -634,13 +559,13 @@ class _AddReminderPageState extends State<AddReminderPage> {
 
       Reminder reminder = Reminder(
           //day: _getDayOfWeek(_currentDate),
-          modelo: tipoModelo,
+          modelo: "Prime",
           workoutID: _rutina.first['rutina']['id'],
           idRecordar: generateRandomNumber(),
           terminado: false,
           tipo: widget.tipo,
-          title: _nombreController.text,
-          description: _descripcionController.text,
+          title: _title,
+          description: _description,
           color: _selectedColor,
           routineName: rutina?.name,
           primaryFocus: rutina?.primaryFocus,
@@ -648,13 +573,11 @@ class _AddReminderPageState extends State<AddReminderPage> {
           startTime: combinedStartTime, // Usar la fecha y hora combinadas
           endTime: combinedEndTime, // Usar la fecha y hora combinadas
           repeatDays: _selectedRepeatDays);
-      // print(si);
+      print(si);
       final response =
           await ReminderService.createReminder(context, reminder.toJson());
       // ignore: use_build_context_synchronously
-      //if (repeatReminder == true) {
       ReminderScheduler.scheduleReminders(context, reminder, dropdownValue);
-      //}
 
       if (response.containsKey('message')) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -674,13 +597,12 @@ class _AddReminderPageState extends State<AddReminderPage> {
       // Crear un recordatorio simple
       reminder = Reminder(
           //day: DateFormat('EEEE').format(widget.selectedDate),
-          modelo: tipoModelo,
+          modelo: "Prime",
           tipo: widget.tipo,
           terminado: false,
-          //title: _title,
+          title: _title,
           idRecordar: generateRandomNumber(),
-          title: _nombreController.text,
-          description: _descripcionController.text,
+          description: _description,
           startTime: combinedStartTime,
           endTime: combinedEndTime,
           color: _selectedColor,
@@ -688,10 +610,6 @@ class _AddReminderPageState extends State<AddReminderPage> {
 
       final response =
           await ReminderService.createReminder(context, reminder.toJson());
-
-      // if (repeatReminder == true) {
-      ReminderScheduler.scheduleReminders(context, reminder, dropdownValue);
-      // }
 
       if (response.containsKey('message')) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -701,10 +619,6 @@ class _AddReminderPageState extends State<AddReminderPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(response['error']!)),
         );
-      } else {
-        // Si se creó el recordatorio "Prime" correctamente, programar la replicación
-        Reminder clonedReminder = reminder.clone();
-        clonedReminder.modelo = 'clon';
       }
     }
 

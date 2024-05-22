@@ -46,11 +46,11 @@ class _HomeCreatePageState extends State<HomeCreatePage>
   late Animation<double> _animation;
   late AnimationController _animationController;
   List<Color> highlightColors = [
-    Colors.white,
-    Colors.white,
-    Colors.white,
-    Colors.white,
-   
+    Colors.green, // Color de resaltado para 'Fisico'
+    Colors.yellow, // Color de resaltado para 'Emocional'
+    Colors.blue, // Color de resaltado para 'Nutricional'
+    Colors.blue, // Color de resaltado para 'Nutricional'
+    Colors.blue, // Color de resaltado para 'Nutricional'
   ];
 
   int _selectedMenuOption = 0;

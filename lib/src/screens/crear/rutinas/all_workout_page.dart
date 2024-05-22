@@ -7,9 +7,10 @@ import 'package:gym_check/src/widgets/menu_button_option_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AllWorkoutPage extends StatefulWidget {
-  final bool agregar;
 
-  const AllWorkoutPage({Key? key, required this.agregar}) : super(key: key);
+   final bool agregar;
+
+   const AllWorkoutPage({Key? key, required this.agregar}) : super(key: key);
 
   @override
   _AllWorkoutPageState createState() => _AllWorkoutPageState();
@@ -22,13 +23,17 @@ class _AllWorkoutPageState extends State<AllWorkoutPage> {
   String? _selectedEnfoque;
 
   List<String> options = ['Creados por mí', 'Todo', 'Favoritos'];
-  List<Color> highlightColors = [Colors.white, Colors.white, Colors.white];
+  List<Color> highlightColors = [
+    const Color.fromARGB(255, 94, 24, 246),
+    const Color.fromARGB(255, 94, 24, 246),
+    const Color.fromARGB(255, 94, 24, 246),
+  ];
 
   @override
   void initState() {
     super.initState();
-    _workoutStream = _getWorkoutStreamForOption(_selectedMenuOption);
-   // _loadSelectedMenuOption();
+    _workoutStream = obtenerTodasRutinasStream();
+    _loadSelectedMenuOption();
   }
 
   Future<void> _loadSelectedMenuOption() async {
@@ -171,10 +176,7 @@ class _AllWorkoutPageState extends State<AllWorkoutPage> {
                   final workouts = snapshot.data!;
                   return Column(
                     children: workouts.map((workout) {
-                      return WorkoutContainer(
-                        workout: workout,
-                        agregar: widget.agregar,
-                      );
+                      return WorkoutContainer(workout: workout, agregar: widget.agregar,);
                     }).toList(),
                   );
                 }
@@ -228,11 +230,9 @@ class _AllWorkoutPageState extends State<AllWorkoutPage> {
 
 class WorkoutContainer extends StatefulWidget {
   final Workout workout;
-  final bool agregar;
+   final bool agregar;
 
-  const WorkoutContainer(
-      {Key? key, required this.workout, required this.agregar})
-      : super(key: key);
+  const WorkoutContainer({Key? key, required this.workout, required this.agregar}) : super(key: key);
 
   @override
   _WorkoutContainerState createState() => _WorkoutContainerState();
@@ -246,7 +246,7 @@ class _WorkoutContainerState extends State<WorkoutContainer> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (widget.agregar == true) {
+       if (widget.agregar == true) {
           Navigator.of(context).pop(widget.workout);
         } else {
           /// acción
@@ -265,59 +265,14 @@ class _WorkoutContainerState extends State<WorkoutContainer> {
           children: [
             Column(
               children: [
-               widget.workout.urlImagen.isNotEmpty
-  ? Container(
-      height: 100,
-      width: 100,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: Image.network(
-          widget.workout.urlImagen,
-          loadingBuilder: (BuildContext context, Widget child,
-              ImageChunkEvent? loadingProgress) {
-            if (loadingProgress == null) {
-              return child;
-            } else {
-              return const CircularProgressIndicator();
-            }
-          },
-          errorBuilder: (context, error, stackTrace) {
-            return const Text('No hay imagen');
-          },
-          frameBuilder: (BuildContext context, Widget child,
-              int? frame, bool wasSynchronouslyLoaded) {
-            if (wasSynchronouslyLoaded) {
-              return child;
-            }
-            return AnimatedOpacity(
-              child: child,
-              opacity: frame == null ? 0 : 1,
-              duration: const Duration(seconds: 1),
-              curve: Curves.easeOut,
-            );
-          },
-          headers: {
-            'Accept': '*/*',
-            'User-Agent': 'your_user_agent',
-          },
-          fit: BoxFit.cover, // Ajusta la imagen al tamaño del contenedor
-        ),
-      ),
-    )
-  : Container(
-      height: 100,
-      width: 100,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: const Center(
-        child: Text('Imagen no encontrada'),
-      ),
-    ),
-
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.grey,
+                  ),
+                  width: 100,
+                  height: 100,
+                ),
               ],
             ),
             const SizedBox(width: 16),
@@ -325,198 +280,82 @@ class _WorkoutContainerState extends State<WorkoutContainer> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (widget.agregar == true)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Flexible(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start, // Align texts left
-                              children: [
-                                Text(
-                                  widget.workout.name,
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  overflow: TextOverflow
-                                      .ellipsis, // Truncate long text with ellipsis
-                                ),
-                                Text(
-                                  "${widget.workout.primaryFocus}, ${widget.workout.secondaryFocus}, ${widget.workout.thirdFocus}",
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14.0,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                Text(
-                                  "Creada por:${widget.workout.nick}",
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14.0,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        widget.workout.name,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  // Cambiar el estado de favorito al contrario
-                                  _isFavorite = !_isFavorite;
-                                  if (_isFavorite) {
-                                    // Lógica para agregar a favoritos
-                                  } else {
-                                    // Lógica para quitar de favoritos
-                                  }
-                                });
-                              },
-                              icon: Icon(
-                                _isFavorite
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: _isFavorite ? Colors.red : Colors.grey,
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          showModalBottomSheet(
+                            backgroundColor:
+                                const Color.fromARGB(255, 18, 18, 18),
+                            scrollControlDisabledMaxHeightRatio: 0.9,
+                            enableDrag: false,
+                            showDragHandle: true,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(15),
                               ),
                             ),
-                            IconButton(
-                              onPressed: () {
-                                showModalBottomSheet(
-                                  backgroundColor:
-                                      const Color.fromARGB(255, 18, 18, 18),
-                                  scrollControlDisabledMaxHeightRatio: 0.9,
-                                  enableDrag: false,
-                                  showDragHandle: true,
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(15.0),
-                                    ),
-                                  ),
-                                  context: context,
-                                  isScrollControlled: true,
-                                  builder: (context) => FractionallySizedBox(
-                                    heightFactor: 0.96,
-                                    child: ViewWorkoutPage(
-                                      id: widget.workout.id ?? "",
-                                      buttons: false,
-                                    ),
-                                  ),
-                                );
-                              },
-                              icon: const Icon(Icons.info, color: Colors.grey),
-                            ),
-                          ],
+                            context: context,
+                            isScrollControlled: true,
+                            builder: (context) {
+                              return FractionallySizedBox(
+                                heightFactor: 0.96,
+                                child: ViewWorkoutPage(
+                                    id: widget.workout.id ?? ""),
+                              );
+                            },
+                          );
+                        },
+                        icon: const Icon(
+                          Icons.more_horiz,
                         ),
-                      ],
-                    ),
-                  if (widget.agregar == false)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Flexible(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start, // Align texts left
-                              children: [
-                                Text(
-                                  widget.workout.name,
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  overflow: TextOverflow
-                                      .ellipsis, // Truncate long text with ellipsis
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  "${widget.workout.primaryFocus}, ${widget.workout.secondaryFocus}, ${widget.workout.thirdFocus}",
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14.0,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  "Creado por :${widget.workout.nick}",
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14.0,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "${widget.workout.primaryFocus}, ${widget.workout.secondaryFocus}, ${widget.workout.thirdFocus}",
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
                         ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                showModalBottomSheet(
-                                  backgroundColor:
-                                      const Color.fromARGB(255, 18, 18, 18),
-                                  scrollControlDisabledMaxHeightRatio: 0.9,
-                                  enableDrag: false,
-                                  showDragHandle: true,
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(15),
-                                    ),
-                                  ),
-                                  context: context,
-                                  isScrollControlled: true,
-                                  builder: (context) {
-                                    return FractionallySizedBox(
-                                      heightFactor: 0.96,
-                                      child: ViewWorkoutPage(
-                                        id: widget.workout.id ?? "",
-                                        buttons: true
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              icon: const Icon(Icons.more_horiz),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  // Cambiar el estado de favorito al contrario
-                                  _isFavorite = !_isFavorite;
-                                  if (_isFavorite) {
-                                    // Lógica para agregar a favoritos
-                                  } else {
-                                    // Lógica para quitar de favoritos
-                                  }
-                                });
-                              },
-                              icon: Icon(
-                                _isFavorite
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: _isFavorite ? Colors.red : Colors.grey,
-                              ),
-                            ),
-                          ],
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            // Cambiar el estado de favorito al contrario
+                            _isFavorite = !_isFavorite;
+                            if (_isFavorite) {
+                              // Lógica para agregar a favoritos
+                            } else {
+                              // Lógica para quitar de favoritos
+                            }
+                          });
+                        },
+                        icon: Icon(
+                          _isFavorite
+                              ? Icons.favorite
+                              : Icons
+                                  .favorite_border, // Cambiar el ícono según el estado de favorito
+                          color: _isFavorite
+                              ? Colors.red
+                              : Colors
+                                  .grey, // Cambiar el color del ícono según el estado de favorito
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),

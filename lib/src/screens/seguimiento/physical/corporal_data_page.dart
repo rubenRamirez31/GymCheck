@@ -16,6 +16,7 @@ class CorporalDataPage extends StatefulWidget {
 }
 
 class _CorporalDataPageState extends State<CorporalDataPage> {
+  String _nick = '';
   double _peso = 0;
   double _altura = 0;
   double _grasa = 0;
@@ -37,6 +38,12 @@ class _CorporalDataPageState extends State<CorporalDataPage> {
 
   Future<void> _loadUserDataLastDataPhysical() async {
     try {
+     final globales = Provider.of<Globales>(context, listen: false);
+      //Map<String, dynamic> userData = await UserService.getUserData(globales.idAuth);
+      setState(() {
+        //_nick = userData['nick'];
+      });
+
       for (String dato in _datos.keys) {
         Map<String, dynamic> data =
             await PhysicalDataService.getLatestPhysicalData(
@@ -211,7 +218,6 @@ class _CorporalDataPageState extends State<CorporalDataPage> {
   void _showAddData(BuildContext context) {
     showModalBottomSheet(
       showDragHandle: true,
-      backgroundColor: const Color.fromARGB(255, 18, 18, 18),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(15),

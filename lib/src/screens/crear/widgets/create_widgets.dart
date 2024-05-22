@@ -3,47 +3,34 @@ import 'package:flutter/material.dart';
 class CreateWidgets {
  
   static Widget buildLabelDetailsRow(String label, String value) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 0),
-    child: Container(
-      padding: const EdgeInsets.all(10.0),
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 18, 18, 18),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-       crossAxisAlignment: CrossAxisAlignment.start, // Align vertically to top
-        children: [
-          Flexible(
-            flex: 1, // Allocate equal space for label
-            child: Text(
-              label,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 0),
+      child: Container(
+        padding: const EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 18, 18, 18),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '$label',
+              style: const TextStyle(fontSize: 14, color: Colors.white),
+            ),
+            Text(
+              value,
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
             ),
-          ),
-         // const SizedBox(width: 10.0), // Spacer
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14.0,
-              ),
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.right, // Align value to right
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   static Widget buildLabelDetailsRowOnly(String label, MainAxisAlignment alineacion, {MainAxisSize ajustar = MainAxisSize.max} ) {
     return Padding(
@@ -83,7 +70,7 @@ class CreateWidgets {
             Expanded(
               child: Text(
                 label,
-                textAlign: TextAlign.justify,
+                textAlign: TextAlign.center,
                 style: TextStyle(fontSize: fontSize, color: Colors.white),
               ),
             ),
@@ -120,33 +107,6 @@ class CreateWidgets {
           ],
         ),
       ),
-    );
-  }
-
-    static void showInfo(BuildContext context, String title, String content) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.black,
-          title: Text(
-            title,
-            style: TextStyle(color: Colors.white),
-          ),
-          content: Text(
-            content,
-            style: TextStyle(color: Colors.white),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Cerrar', style: TextStyle(color: Colors.white)),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }

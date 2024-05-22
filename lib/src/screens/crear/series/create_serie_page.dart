@@ -1,17 +1,11 @@
-import 'dart:io';
-
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/excercise_model.dart';
 import 'package:gym_check/src/models/workout_series_model.dart';
 import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/screens/crear/ejercicios/all_excercise_page.dart';
-import 'package:gym_check/src/screens/crear/widgets/create_widgets.dart';
-import 'package:gym_check/src/screens/crear/widgets/custom_button.dart';
 import 'package:gym_check/src/services/excercise_service.dart';
 import 'package:gym_check/src/services/serie_service.dart';
-import 'package:image_picker/image_picker.dart';
-
+import 'package:numberpicker/numberpicker.dart';
 import 'package:provider/provider.dart';
 
 class CrearSeriePage extends StatefulWidget {
@@ -23,15 +17,11 @@ class CrearSeriePage extends StatefulWidget {
   _CrearSeriePageState createState() => _CrearSeriePageState();
 }
 
-File? _image;
-String? url;
-
 class _CrearSeriePageState extends State<CrearSeriePage> {
   @override
   void initState() {
     super.initState();
     _loadExerciseSelect();
-    _image == null;
   }
 
   @override
@@ -54,8 +44,7 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
           IconButton(
             icon: const Icon(Icons.info),
             onPressed: () {
-              CreateWidgets.showInfo(context, "Crear serie",
-                  "Una serie lleva ejercicios y una rutina lleva series");
+              //agregarEjercicio();
             },
           ),
         ],
@@ -69,50 +58,6 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                GestureDetector(
-                  onTap: _seleccionarFoto,
-                  child: Stack(
-                    children: [
-                      Container(
-                        height: 200,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: _image != null
-                            ? ClipRRect(
-                                // ClipRRect para redondear las esquinas de la imagen
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.file(
-                                  _image!,
-                                  fit: BoxFit.cover,
-                                ),
-                              )
-                            : Icon(
-                                Icons.add_photo_alternate,
-                                size: 50,
-                              ),
-                      ),
-                      if (_image != null) // Botón de quitar imagen
-                        Positioned(
-                          top: 8,
-                          right: 8,
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.clear,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _image = null;
-                              });
-                            },
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
                 const SizedBox(
                   height: 15,
                 ),
@@ -152,8 +97,70 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
                     return null;
                   },
                 ),
-                _buildSelectorSets(),
-                _buildSelectorDescanso(),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          // Lógica para mostrar información sobre sets
+                        },
+                        icon: const Icon(Icons.info, color: Colors.white),
+                      ),
+                      const SizedBox(width: 5),
+                      const Text(
+                        'Sets: ',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      SizedBox(
+                        width: 20, // Ancho deseado del NumberPicker
+                        child: NumberPicker(
+                          value: _sets,
+                          minValue: 1,
+                          maxValue: 10,
+                          onChanged: (value) {
+                            setState(() {
+                              _sets = value;
+                            });
+                          },
+                          textStyle: const TextStyle(color: Colors.white),
+                          selectedTextStyle:
+                              const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 50,
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          // Lógica para mostrar información sobre el descanso entre sets
+                        },
+                        icon: const Icon(Icons.info, color: Colors.white),
+                      ),
+                      const SizedBox(width: 5),
+                      const Text(
+                        'Descanso: ',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      SizedBox(
+                        width: 20, // Ancho deseado del NumberPicker
+                        child: NumberPicker(
+                          value: _descansoEntreSets,
+                          minValue: 0,
+                          maxValue: 120,
+                          onChanged: (value) {
+                            setState(() {
+                              _descansoEntreSets = value;
+                            });
+                          },
+                          textStyle: const TextStyle(color: Colors.white),
+                          selectedTextStyle:
+                              const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 const SizedBox(
                   height: 15,
                 ),
@@ -299,49 +306,24 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
                           ),
                         ),
                       )
-                    : GestureDetector(
-                        onTap: () {
-                          _mostrarSeleccionarEjercicio();
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(5),
-                          height: 300,
-                          decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 18, 18, 18),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Colors.white, width: 0.5),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              'Agrega una ejercicio',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                    : const SizedBox(),
                 const SizedBox(
                   height: 15,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CustomButton(
+                    ElevatedButton(
                       onPressed: () {
                         _mostrarSeleccionarEjercicio();
                       },
-                      text: 'Ejercicio',
-                      icon: Icons.sports_gymnastics,
+                      child: const Text('Agregar ejercicio'),
                     ),
-                    CustomButton(
+                    ElevatedButton(
                       onPressed: () {
                         _agregarDescanso();
                       },
-                      text: 'Descanso',
-                      icon: Icons.hotel,
+                      child: const Text('Agregar descanso'),
                     ),
                   ],
                 ),
@@ -360,29 +342,11 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CustomButton(
+                    ElevatedButton(
                       onPressed: () {
-                        if (_ejercicios.isEmpty ||
-                            !_ejercicios.any(
-                                (element) => element.containsKey('exercise'))) {
-                          CreateWidgets.showInfo(
-                            context,
-                            'Error al crear serie',
-                            'Debe agregar al menos un ejercicio antes de crear la serie.',
-                          );
-                        }
-                        if(_image == null){
-                           CreateWidgets.showInfo(
-                            context,
-                            'Error al crear serie',
-                            'Debes de agregar una imagen representativa',
-                          );
-
-                        } else {
-                          _crearSerie();
-                        }
+                        _crearSerie();
                       },
-                      text: 'Crear serie',
+                      child: const Text('Crear serie'),
                     ),
                   ],
                 ),
@@ -392,151 +356,6 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
         ),
       ),
     );
-  }
-
-  Widget _buildSelectorSets() {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const Text(
-              "Numero de sets:",
-              style: TextStyle(color: Colors.white),
-              textAlign: TextAlign.left,
-            ),
-            IconButton(
-              icon: const Icon(
-                Icons.info,
-                color: Colors.white,
-              ),
-              tooltip: 'Más informacion',
-              onPressed: () {
-                CreateWidgets.showInfo(context, "Numero de sets",
-                    "Es el numero de veces que se va a repetir esta serie");
-              },
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            Expanded(
-              flex: 3,
-              child: Slider(
-                activeColor: const Color.fromARGB(255, 25, 57, 94),
-                value: _sets.toDouble(),
-                min: 0,
-                max: 10,
-                divisions: 10,
-                label: _sets.toString(),
-                onChanged: (value) {
-                  setState(() {
-                    _sets = value.toInt();
-                    //_updateSelectedValue();
-                  });
-                },
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Row(
-                children: [
-                  Text(
-                    _sets.toString(),
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  Text(
-                    " sets",
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSelectorDescanso() {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const Text(
-              "Descanso entre sets:",
-              style: TextStyle(color: Colors.white),
-              textAlign: TextAlign.left,
-            ),
-            IconButton(
-              icon: const Icon(
-                Icons.info,
-                color: Colors.white,
-              ),
-              tooltip: 'Más informacion',
-              onPressed: () {
-                CreateWidgets.showInfo(context, "Descanso entre sets",
-                    "Tiempo en segundos que vas a descansar entre un set de ejercicios");
-              },
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            Expanded(
-              flex: 3,
-              child: Slider(
-                activeColor: const Color.fromARGB(255, 25, 57, 94),
-                value: _descansoEntreSets.toDouble(),
-                min: 0,
-                max: 120,
-                divisions: 120,
-                label: _descansoEntreSets.toString(),
-                onChanged: (value) {
-                  setState(() {
-                    _descansoEntreSets = value.toInt();
-                    //_updateSelectedValue();
-                  });
-                },
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Row(
-                children: [
-                  Text(
-                    _descansoEntreSets.toString(),
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  const Text(
-                    " segundos",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Future<void> _seleccionarFoto() async {
-    try {
-      final picker = ImagePicker();
-      final pickedImage = await picker.pickImage(source: ImageSource.gallery);
-
-      if (pickedImage != null) {
-        setState(() {
-          _image = File(pickedImage.path);
-          url = pickedImage.name;
-        });
-      }
-    } catch (error) {
-      print('Error al seleccionar la foto de perfil: $error');
-      // Manejar el error si es necesario
-    }
   }
 
   Future<void> _loadExerciseSelect() async {
@@ -619,7 +438,7 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
                   ),
                   const SizedBox(height: 20),
                   Text(exercise.name,
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: Colors
                               .white)), // Establece el color del texto en blanco
                   const SizedBox(height: 15),
@@ -650,7 +469,7 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
                         color: Colors
                             .white), // Establece el color del texto en blanco
                   ),
-                  const SizedBox(height: 15),
+                    const SizedBox(height: 15),
                   DropdownButtonFormField<String>(
                     decoration: InputDecoration(
                       labelText: 'Selecciona un equipamiento',
@@ -856,7 +675,7 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
           ),
           content: TextFormField(
             keyboardType: TextInputType.number,
-            style: const TextStyle(color: Colors.white),
+            style: TextStyle(color: Colors.white),
             decoration: const InputDecoration(
               labelText: 'Segundos',
               labelStyle: TextStyle(
@@ -896,7 +715,7 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
     );
   }
 
-  Future<void> _crearSerie() async {
+  void _crearSerie() {
     if (_formKey.currentState!.validate()) {
       // Mostrar AlertDialog con fondo negro y letras blancas mientras se crea la serie
       showDialog(
@@ -904,7 +723,7 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
         barrierDismissible:
             false, // Impide que el usuario cierre el AlertDialog tocando fuera de él
         builder: (context) {
-          return const AlertDialog(
+          return AlertDialog(
             backgroundColor: Colors.black, // Fondo negro
             title: Text(
               'Creando...',
@@ -967,19 +786,11 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
         tipoSerie = 'Superserie';
       }
 
-      // Subir la imagen al almacenamiento en la nube
-      final storageRef = FirebaseStorage.instance.ref("/Series").child(url!);
-      await storageRef.putFile(_image!);
-
-      // Obtener el enlace de descarga de la imagen subida
-      final imageUrl = await storageRef.getDownloadURL();
-
       Globales globales = Provider.of<Globales>(context, listen: false);
 
       // Crear el objeto WorkoutSeries
       WorkoutSeries serie = WorkoutSeries(
           name: _nombreController.text,
-          urlImagen: imageUrl,
           nick: globales.nick,
           isPublic: _esPublica,
           primaryFocus: primaryFocus,
@@ -997,7 +808,7 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
 
       SerieService.agregarSerie(context, serie);
       // Agregar un retraso de 2 segundos para simular la creación de la serie
-      Future.delayed(const Duration(seconds: 2), () {
+      Future.delayed(Duration(seconds: 2), () {
         // Cerrar el AlertDialog de creación
         Navigator.of(context).pop();
 
@@ -1010,7 +821,7 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
           builder: (context) {
             return AlertDialog(
               backgroundColor: Colors.black, // Fondo negro
-              title: const Text(
+              title: Text(
                 'Serie creada',
                 style: TextStyle(color: Colors.white), // Letras blancas
               ),
@@ -1018,7 +829,7 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'La serie ha sido almacenada en la sección "Series", y puede encontrarla en "Creado por mí".',
                     style: TextStyle(color: Colors.white),
                   ),
@@ -1030,7 +841,7 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
                         onPressed: () {
                           // Crear otra serie
                         },
-                        child: const Text('Crear otra serie',
+                        child: Text('Crear otra serie',
                             style: TextStyle(
                                 color: Colors.black)), // Letras blancas
                       ),
@@ -1038,7 +849,7 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
                         onPressed: () {
                           // Crear rutina
                         },
-                        child: const Text('Crear rutina',
+                        child: Text('Crear rutina',
                             style: TextStyle(
                                 color: Colors.black)), // Letras blancas
                       ),
@@ -1120,7 +931,7 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    hint: const Text('Seleccionar el Equipamiento'),
+                    hint: Text('Seleccionar el Equipamiento'),
                     value: equipamiento,
                     onChanged: (String? value) {
                       print("Nuevo valor de equipo: $value");

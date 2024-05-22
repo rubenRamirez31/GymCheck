@@ -88,7 +88,6 @@ class _ViewCorporalDataPageState extends State<ViewCorporalDataPage> {
       graphData.add(entry[_typeData]);
     });
     return Scaffold(
-       backgroundColor: const Color.fromARGB(255, 18, 18, 18),
       // backgroundColor: Colors.black12,
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -100,9 +99,8 @@ class _ViewCorporalDataPageState extends State<ViewCorporalDataPage> {
                 IconButton(
                   icon: const Icon(Icons.sort),
                   onPressed: () => showSortMenu(context),
-                  color: Colors.white,
                 ),
-                Text(_orderByMensaje, style: const TextStyle(color: Colors.white),),
+                Text(_orderByMensaje),
               ],
             ),
             const SizedBox(height: 5),
@@ -114,7 +112,7 @@ class _ViewCorporalDataPageState extends State<ViewCorporalDataPage> {
               height: 500,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.white),
+                border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(8),
                 color: Colors.black,
               ),
@@ -123,7 +121,7 @@ class _ViewCorporalDataPageState extends State<ViewCorporalDataPage> {
                 scrollDirection: Axis.horizontal,
                 child: LineGraph(
                   features: features,
-                  size: const Size(320, 400),
+                  size: Size(320, 400),
                   labelX: [
                     '1',
                     '2',
@@ -138,14 +136,14 @@ class _ViewCorporalDataPageState extends State<ViewCorporalDataPage> {
                   ],
                   labelY: ['20%', '40%', '60%', '80%', '100%'],
                   showDescription: true,
-                  graphColor: Colors.white,
+                  graphColor: Colors.white30,
                   graphOpacity: 0.2,
                   verticalFeatureDirection: true,
                   descriptionHeight: 130,
                 ),
               ),
             ),
-            const SizedBox(
+            SizedBox(
               height: 50,
             )
           ],
@@ -160,22 +158,22 @@ class _ViewCorporalDataPageState extends State<ViewCorporalDataPage> {
       height: 350,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.white),
+        border: Border.all(color: Colors.grey),
         borderRadius: BorderRadius.circular(8),
       ),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: DataTable(
           columns: const [
-            DataColumn(label: Text('Nombre', style:  TextStyle(color: Colors.white),)),
-            DataColumn(label: Text('Fecha de registro', style:  TextStyle(color: Colors.white))),
-            DataColumn(label: Text('Valor',  style:  TextStyle(color: Colors.white))),
+            DataColumn(label: Text('Nombre')),
+            DataColumn(label: Text('Fecha de registro')),
+            DataColumn(label: Text('Valor')),
           ],
           rows: weightRecords.map((entry) {
             return DataRow(cells: [
-              DataCell(Text(widget.data,  style:  const TextStyle(color: Colors.white))),
-              DataCell(Text(entry['fecha'] ?? '',  style:  const TextStyle(color: Colors.white))),
-              DataCell(Text(entry[_typeData].toString(),  style:  const TextStyle(color: Colors.white))),
+              DataCell(Text(widget.data)),
+              DataCell(Text(entry['fecha'] ?? '')),
+              DataCell(Text(entry[_typeData].toString())),
             ]);
           }).toList(),
         ),
@@ -205,7 +203,6 @@ class _ViewCorporalDataPageState extends State<ViewCorporalDataPage> {
   void showSortMenu(BuildContext context) {
     showModalBottomSheet(
       context: context,
-       backgroundColor: const Color.fromARGB(255, 18, 18, 18),
       builder: (context) => SizedBox(
         height: 275,
         child: Column(
@@ -213,7 +210,7 @@ class _ViewCorporalDataPageState extends State<ViewCorporalDataPage> {
           children: [
             const Text(
               'Ordenar Por',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             buildSortListTile('Fecha más reciente', 'fecha', 'desc'),
             buildSortListTile('Fecha más antigua', 'fecha', 'asc'),
@@ -229,7 +226,7 @@ class _ViewCorporalDataPageState extends State<ViewCorporalDataPage> {
 
   ListTile buildSortListTile(String title, String orderBy, String direction) {
     return ListTile(
-      title: Text(title, style: const TextStyle(color: Colors.white),),
+      title: Text(title),
       onTap: () {
         setState(() {
           _orderByMensaje = title;

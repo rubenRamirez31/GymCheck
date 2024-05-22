@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class WorkoutSeries {
   String? id; // ID del documento (se generará automáticamente)
-  String urlImagen;
   String name; // Nombre de la serie
   String nick; // Nombre del usuario que creó la serie
   bool isPublic; // Indica si la serie es pública o privada
@@ -20,7 +19,6 @@ class WorkoutSeries {
   WorkoutSeries({
     this.id,
     required this.name,
-    required this.urlImagen,
     required this.nick,
     required this.isPublic,
     required this.primaryFocus,
@@ -40,7 +38,6 @@ class WorkoutSeries {
     return WorkoutSeries(
       id: map['id'],
       name: map['name'],
-      urlImagen: map['urlImagen'],
       nick: map['nick'],
       isPublic: map['isPublic'],
       primaryFocus: map['primaryFocus'],
@@ -62,7 +59,6 @@ class WorkoutSeries {
   Map<String, dynamic> toMap() {
     return {
       'name': name,
-      'urlImagen': urlImagen,
       'nick': nick,
       'isPublic': isPublic,
       'primaryFocus': primaryFocus,

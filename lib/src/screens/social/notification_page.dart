@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:gym_check/src/models/social/notificaciones.dart';
 import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/values/app_colors.dart';
@@ -15,6 +14,8 @@ class NotificatoinsPage extends StatefulWidget {
 }
 
 class _NotificatoinsPageState extends State<NotificatoinsPage> {
+  String? userProfileImageUrl;
+
   @override
   Widget build(BuildContext context) {
     final globales = context.watch<Globales>();

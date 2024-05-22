@@ -10,6 +10,7 @@ import 'package:gym_check/src/values/app_colors.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:tflite_v2/tflite_v2.dart';
 
 class CreatePostPage extends StatefulWidget {
   const CreatePostPage({super.key});
@@ -27,6 +28,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
   File? imagen;
   String link = "";
   String url = "";
+  String resultados = "";
+  String label = "";
+  double confianza = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadModel().then((value) {
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,48 +107,54 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             }
                             //Agregar publicacion con imagen
                           } else {
-                            final file = File(imagen!.path);
+                            if (label == "1 nonude" && confianza == 1) {
+                              final file = File(imagen!.path);
 
-                            final metadata =
-                                SettableMetadata(contentType: "image/jpeg");
+                              final metadata =
+                                  SettableMetadata(contentType: "image/jpeg");
 
-                            final storageRef =
-                                FirebaseStorage.instance.ref("/post");
+                              final storageRef =
+                                  FirebaseStorage.instance.ref("/post");
 
-                            SmartDialog.showLoading(msg: "Publicando");
+                              SmartDialog.showLoading(msg: "Publicando");
 
-                            try {
-                              final uploadTask =
-                                  storageRef.child(url).putFile(file, metadata);
-                              await uploadTask.whenComplete(() => null);
+                              try {
+                                final uploadTask = storageRef
+                                    .child(url)
+                                    .putFile(file, metadata);
+                                await uploadTask.whenComplete(() => null);
 
-                              // Obtener la URL de descarga después de que la carga sea exitosa
-                              link =
-                                  await storageRef.child(url).getDownloadURL();
+                                // Obtener la URL de descarga después de que la carga sea exitosa
+                                link = await storageRef
+                                    .child(url)
+                                    .getDownloadURL();
 
-                              Post newPost = Post(
-                                userId: globales.idAuth,
-                                texto: _textoController.text,
-                                nick: globales.nick,
-                                lugar: "",
-                                fechaCreacion: DateTime.now(),
-                                urlImagen: link,
-                                editad: false,
-                              );
+                                Post newPost = Post(
+                                  userId: globales.idAuth,
+                                  texto: _textoController.text,
+                                  nick: globales.nick,
+                                  lugar: "",
+                                  fechaCreacion: DateTime.now(),
+                                  urlImagen: link,
+                                  editad: false,
+                                );
 
-                              int resultado = await crearPost(newPost);
-                              if (!mounted) return;
-                              if (resultado == 200) {
+                                int resultado = await crearPost(newPost);
+                                if (!mounted) return;
+                                if (resultado == 200) {
+                                  SmartDialog.dismiss();
+                                  Navigator.of(context).pushNamedAndRemoveUntil(
+                                      "/principal", (route) => false);
+                                  SmartDialog.showToast("Publicación Creada");
+                                } else {
+                                  SmartDialog.showToast("Ocurrio un error");
+                                }
+                              } catch (e) {
                                 SmartDialog.dismiss();
-                                Navigator.of(context).pushNamedAndRemoveUntil(
-                                    "/principal", (route) => false);
-                                SmartDialog.showToast("Publicación Creada");
-                              } else {
                                 SmartDialog.showToast("Ocurrio un error");
                               }
-                            } catch (e) {
-                              SmartDialog.dismiss();
-                              SmartDialog.showToast("Ocurrio un error");
+                            } else {
+                              SmartDialog.showToast("Eliga otra imagen");
                             }
                           }
                         }
@@ -294,11 +313,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
       url = picture.name;
       updateButtonState();
     });
+    prediction(imagen!);
   }
 
 //subir imagen desde la camara
   Future<void> _getImageCamera() async {
-    final picture = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final picture = await ImagePicker().pickImage(source: ImageSource.camera);
     if (picture == null) {
       return;
     }
@@ -307,6 +327,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       url = picture.name;
       updateButtonState();
     });
+    prediction(imagen!);
   }
 
 //funcion para el estado del boton
@@ -342,5 +363,39 @@ class _CreatePostPageState extends State<CreatePostPage> {
         );
       },
     );
+  }
+
+  loadModel() async {
+    await Tflite.loadModel(
+        model: "assets/tf/model_unquant.tflite",
+        labels: "assets/tf/labels.txt");
+  }
+
+  Future prediction(File imagen) async {
+    try {
+      var reconocimiento = await Tflite.runModelOnImage(path: imagen.path);
+
+      for (var elemento in reconocimiento!) {
+        setState(() {});
+
+        label = elemento['label'];
+        confianza = elemento['confidence'];
+        resultados = 'Label: $label, Confianza: $confianza';
+
+        if (label == '0 nude' && confianza > .9) {
+          // Aquí puedes poner el código para mostrar la advertencia
+
+          SmartDialog.showToast(
+              'Advertencia: No se pueden subir ese tipo de imágenes');
+        }
+
+        if (label == "1 nonude" && confianza < 1) {
+          SmartDialog.showToast(
+              'Advertencia: No se pueden subir ese tipo de imágenes');
+        }
+      }
+    } catch (e) {
+      resultados = "Ha ocurrido un error";
+    }
   }
 }

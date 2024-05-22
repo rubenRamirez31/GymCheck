@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/excercise_model.dart';
 import 'package:gym_check/src/screens/crear/series/create_serie_page.dart';
 import 'package:gym_check/src/screens/crear/widgets/create_widgets.dart';
-import 'package:gym_check/src/screens/crear/widgets/custom_button.dart';
 import 'package:gym_check/src/services/excercise_service.dart';
 
 class ViewExercisePage extends StatefulWidget {
@@ -83,51 +82,13 @@ class _ViewExercisePageState extends State<ViewExercisePage> {
                     child: Column(
                       children: [
                         _buildImage(),
-                        const SizedBox(height: 10),
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            // color: const Color.fromARGB(255, 30, 30, 30),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                RawMaterialButton(
-                                  onPressed: _toggleFavoriteStatus,
-                                  fillColor: Colors.grey[200],
-                                  shape: const CircleBorder(),
-                                  child: Icon(
-                                    _isFavorite
-                                        ? Icons.favorite
-                                        : Icons.favorite_border,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                                RawMaterialButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => CrearSeriePage(
-                                                ejercicioId: widget.id,
-                                              )),
-                                    );
-                                  },
-                                  fillColor: Colors.grey[200],
-                                  shape: const CircleBorder(),
-                                  child: const Icon(Icons.playlist_add,
-                                      color: Colors.black),
-                                ),
-                              ],
-                            ),
-                          ),
+                        const SizedBox(
+                          width: 10,
+                          height: 10,
                         ),
-                        const SizedBox(height: 10),
                         CreateWidgets.buildLabelDetailsRowOnly(
-                            _exercise!.name, MainAxisAlignment.center),
+                          _exercise!.name, MainAxisAlignment.center
+                        ),
                         const SizedBox(
                           width: 10,
                           height: 10,
@@ -138,34 +99,33 @@ class _ViewExercisePageState extends State<ViewExercisePage> {
                           width: 10,
                           height: 10,
                         ),
-                        CreateWidgets.buildLabelDetailsRow(
+                       CreateWidgets.buildLabelDetailsRow(
                             "Enfoque secundario:", _exercise!.secondaryFocus),
                         const SizedBox(
                           width: 10,
                           height: 10,
                         ),
-                        CreateWidgets.buildLabelDetailsRowOnly(
-                            "Descripción:", MainAxisAlignment.center),
+                        CreateWidgets.buildLabelDetailsRowOnly("Descripción:", MainAxisAlignment.center),
                         const SizedBox(
                           width: 10,
                           height: 10,
                         ),
-                        CreateWidgets.buildLabelGeneral(
-                            _exercise!.description, 14),
+                        CreateWidgets.buildLabelGeneral(_exercise!.description, 14),
                         const SizedBox(
                           width: 10,
                           height: 10,
                         ),
-                        CreateWidgets.buildLabelGeneralList(
-                            _exercise!.equipment, 14),
+                        CreateWidgets.buildLabelGeneralList(_exercise!.equipment, 14),
                         const SizedBox(
                           height: 10,
                         ),
-                        CustomButton(
-                          onPressed: () {},
-                          text: 'Ver video',
-                          icon: Icons.play_arrow,
-                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            print(
+                                'Agrega a rutina'); // Mensaje a imprimir en la consola
+                          },
+                          child: Text('Ver video explicativo'),
+                        )
                       ],
                     ),
                   ),
@@ -192,16 +152,19 @@ class _ViewExercisePageState extends State<ViewExercisePage> {
                       ),
                     ),
                   ),
-                if (widget.buttons == true)
+                if (widget.buttons  == true)
                   Positioned(
                     top: 20,
                     right: 20,
+                    
                     child: FloatingActionButton(
-                      tooltip: 'Agregar a favoritos',
+                       tooltip: 'Agregar a favoritos',
                       backgroundColor: const Color(0xff0C1C2E),
                       onPressed: _toggleFavoriteStatus,
                       child: Icon(
-                        _isFavorite ? Icons.favorite : Icons.favorite_border,
+                        _isFavorite
+                            ? Icons.favorite
+                            : Icons.favorite_border,
                         color: Colors.white,
                       ),
                     ),
