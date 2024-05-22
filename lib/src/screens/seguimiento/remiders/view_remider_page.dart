@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/add_remider_page.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/update_remider_page.dart';
 import 'package:gym_check/src/screens/seguimiento/tracking_funtions.dart';
+import 'package:gym_check/src/screens/seguimiento/widgets/custom_button.dart';
 
 import 'package:gym_check/src/services/reminder_service.dart';
 import 'package:intl/intl.dart';
@@ -43,13 +44,20 @@ class _ViewReminderState extends State<ViewReminder> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Eliminar Recordatorio'),
+            backgroundColor: Colors.black,
+            title: const Text(
+              'Eliminar recordatorios',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             content: const Text(
               '¿Estás seguro de que deseas eliminar este recordatorio? Toma en cuenta que esta acción también eliminará todos los recordatorios asociados. Esta acción no se puede deshacer.',
               style: TextStyle(
                 fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+                // fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
             actions: [
@@ -57,13 +65,19 @@ class _ViewReminderState extends State<ViewReminder> {
                 onPressed: () {
                   Navigator.of(context).pop(false); // Cancelar eliminación
                 },
-                child: const Text('Cancelar'),
+                child: const Text(
+                  'Cancelar',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(true); // Confirmar eliminación
                 },
-                child: const Text('Eliminar'),
+                child: const Text(
+                  'Eliminar',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           );
@@ -99,13 +113,20 @@ class _ViewReminderState extends State<ViewReminder> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Eliminar Recordatorio'),
+            backgroundColor: Colors.black,
+            title: const Text(
+              'Eliminar recordatorio',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             content: const Text(
               '¿Estás seguro de que deseas eliminar este recordatorio? solo se elimnara le recordatorio en esta fecha, los demas no se vrán afectados',
               style: TextStyle(
                 fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+                //fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
             actions: [
@@ -113,13 +134,17 @@ class _ViewReminderState extends State<ViewReminder> {
                 onPressed: () {
                   Navigator.of(context).pop(false); // Cancelar eliminación
                 },
-                child: const Text('Cancelar'),
+                child: const Text(
+                  'Cancelar',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(true); // Confirmar eliminación
                 },
-                child: const Text('Eliminar'),
+                child: const Text('Eliminar',
+                    style: TextStyle(color: Colors.white)),
               ),
             ],
           );
@@ -153,12 +178,14 @@ class _ViewReminderState extends State<ViewReminder> {
     final screenWidth = MediaQuery.of(context).size.width;
     // Verificar si _reminderData es nulo antes de acceder a sus propiedades
     final String fechaInicio = _reminderData != null
-        ?  TrackingFunctions.formatDateTime(_reminderData!['startTime'])
+        ? TrackingFunctions.formatDateTime(_reminderData!['startTime'])
         : '';
-    final String fechaFin =
-        _reminderData != null ? TrackingFunctions.formatDateTime(_reminderData!['endTime']) : '';
+    final String fechaFin = _reminderData != null
+        ? TrackingFunctions.formatDateTime(_reminderData!['endTime'])
+        : '';
 
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 18, 18, 18),
       body: _isLoading
           ? const Center(
               child: CircularProgressIndicator(),
@@ -175,9 +202,9 @@ class _ViewReminderState extends State<ViewReminder> {
                         const Text(
                           'Detalles del Recordatorio',
                           style: TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                          ),
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
                         ),
                         const SizedBox(height: 16.0),
                         Container(
@@ -231,50 +258,42 @@ class _ViewReminderState extends State<ViewReminder> {
                         ),
                         const SizedBox(height: 16.0),
                         SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          //scrollDirection: Axis.horizontal,
+                          child: Column(
+                            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              ElevatedButton(
+                              CustomButton(
                                 onPressed: () {
                                   _deleteReminderAll();
                                 },
-                                child: const Text('Eliminar Recordatorios'),
+                                text: 'Eliminar Recordatorios',
+                                icon: Icons.delete_sweep,
                               ),
                               _reminderData!['modelo'] == 'clon'
-                                  ? ElevatedButton(
+                                  ? CustomButton(
                                       onPressed: () {
                                         _deleteReminderDay();
                                       },
-                                      child: const Text(
-                                          'Eliminar Recordatorio de este dia'),
+                                      text: 'Eliminar Recordatorio de este dia',
+                                      icon: Icons.delete,
                                     )
                                   : const SizedBox(),
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
+                              CustomButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
 
-                                  showModalBottomSheet(
-                                    showDragHandle: true,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(15),
-                                      ),
-                                    ),
-                                    context: context,
-                                    isScrollControlled: true,
-                                    builder: (context) {
-                                      return FractionallySizedBox(
-                                        heightFactor: 0.60,
-                                        child: AddReminderPage(tipo: "Rutina",
-                                        rutinaId: widget.reminderId,
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                                child: const Text('Modificar Recordatorio'),
-                              ),
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => AddReminderPage(
+                                                tipo: _reminderData!['tipo'],
+                                                recordatorioId:
+                                                    _reminderData!['id'],
+                                              )),
+                                    );
+                                  },
+                                  text: 'Modificar Recordatorio',
+                                  icon: Icons.edit),
                             ],
                           ),
                         ),

@@ -3,6 +3,7 @@
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:gym_check/src/screens/seguimiento/widgets/custom_button.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/recomerdar_premium_page.dart';
 import 'package:gym_check/src/services/firebase_services.dart';
 import 'package:gym_check/src/utils/common_widgets/gradient_background.dart';
@@ -59,31 +60,33 @@ class _FirstPhotoPageState extends State<FirstPhotoPage> {
                     : Container(), // Mostrar la imagen seleccionada si existe
                 const SizedBox(height: 20),
                 _imageFile != null
-                    ? ElevatedButton(
+                    ? CustomButton(
                         onPressed: () => _seleccionarFoto(),
-                        child: const Text('Cambiar Imagen'),
+                        text:'Cambiar Foto',
+                         icon: Icons.add_photo_alternate,
                       )
                     : const SizedBox(height: 20),
                 const SizedBox(height: 20),
                 _imageFile != null
-                    ? ElevatedButton(
+                    ? CustomButton(
                         onPressed: () => _subirFoto(context),
-                        child: const Text('Continuar'),
+                       text:'Continuar',
                       )
                     : const SizedBox(height: 20),
                 const SizedBox(height: 20),
 
                 _imageFile == null
-                    ? ElevatedButton(
+                    ? CustomButton(
                         onPressed: _seleccionarFoto,
-                        child: const Text('Agregar Foto'),
+                        text:'Agregar Foto',
+                        icon: Icons.add_photo_alternate,
                       )
                     : Container(),
                 _imageFile != null
                     ? const SizedBox(height: 20)
-                    : ElevatedButton(
+                    : CustomButton(
                         onPressed: () => _subirDespues(context),
-                        child: const Text('Agregar Foto Después'),
+                       text: 'Agregar Foto Después',
                       ),
                 const SizedBox(height: 20),
               ],

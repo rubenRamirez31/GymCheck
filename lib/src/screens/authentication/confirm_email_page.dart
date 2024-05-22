@@ -1,6 +1,8 @@
 // ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/globales.dart';
+import 'package:gym_check/src/screens/crear/widgets/custom_button.dart';
+import 'package:gym_check/src/screens/seguimiento/widgets/tracking_widgets.dart';
 import 'package:gym_check/src/services/firebase_services.dart';
 import 'package:provider/provider.dart'; // Importa el servicio de usuario
 
@@ -37,6 +39,7 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
 
 // Llamar al método updateUser con el mapa de datos y el contexto
       await updateUser(userData, context);
+      
       // Mostrar un mensaje de éxito
       showDialog(
         context: context,
@@ -172,22 +175,18 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
                 ),
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
+              CustomButton(
                 onPressed: () {
                   // Validar si se han ingresado los 4 dígitos del código
                   if (_validateVerificationCode()) {
                     _confirmEmail(
                         context); // Llamar al método para confirmar el correo
                   } else {
-                    // Mostrar un mensaje indicando que se deben ingresar los 4 dígitos
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text(
-                              'Por favor, ingresa los 4 dígitos del código de verificación')),
-                    );
+                    TrackingWidgets.showInfo(context, "Código",
+                        'Por favor, ingresa los 4 dígitos del código de verificación');
                   }
                 },
-                child: const Text('Continuar'),
+                text: 'Continuar',
               ),
             ],
           ),

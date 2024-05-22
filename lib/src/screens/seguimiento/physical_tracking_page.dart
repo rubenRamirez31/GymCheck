@@ -33,9 +33,9 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
   ]; // Lista de opciones
 
   List<Color> highlightColors = [
-    Colors.green, // Color de resaltado para 'Fisico'
-    Colors.green, // Color de resaltado para 'Emocional'
-    Colors.green, // Color de resaltado para 'Nutricional'
+    Colors.white, // Color de resaltado para 'Fisico'
+    Colors.white, // Color de resaltado para 'Emocional'
+    Colors.white, // Color de resaltado para 'Nutricional'
   ];
 
   @override

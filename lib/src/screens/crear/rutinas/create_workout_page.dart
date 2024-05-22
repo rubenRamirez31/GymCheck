@@ -1,13 +1,18 @@
 import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/workout_model.dart';
 import 'package:gym_check/src/providers/globales.dart';
+
 import 'package:gym_check/src/screens/crear/series/all_series_page.dart';
 import 'package:gym_check/src/models/workout_series_model.dart';
 import 'package:gym_check/src/screens/crear/series/view_serie_page.dart';
+import 'package:gym_check/src/screens/crear/widgets/create_widgets.dart';
+import 'package:gym_check/src/screens/crear/widgets/custom_button.dart';
 import 'package:gym_check/src/services/serie_service.dart';
 import 'package:gym_check/src/services/workout_service.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class CrearWorkoutPage extends StatefulWidget {
@@ -27,6 +32,7 @@ class _CrearWorkoutPageState extends State<CrearWorkoutPage> {
   bool _esPublica = false;
   List<Map<String, dynamic>> _series = [];
   File? _image;
+  String? url;
 
   @override
   void initState() {
@@ -51,10 +57,11 @@ class _CrearWorkoutPageState extends State<CrearWorkoutPage> {
               Colors.white, // Cambia el color del icono de retroceso a blanco
         ),
         actions: [
-          IconButton(
+         IconButton(
             icon: const Icon(Icons.info),
             onPressed: () {
-              //agregarEjercicio();
+              CreateWidgets.showInfo(context, "Crear rutina",
+                  "Una rutina lleva series y una serie lleva ejercicios");
             },
           ),
         ],
@@ -69,23 +76,47 @@ class _CrearWorkoutPageState extends State<CrearWorkoutPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 GestureDetector(
-                  //onTap: print("d"),
-                  child: Container(
-                    height: 200,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: _image != null
-                        ? Image.file(
-                            _image!,
-                            fit: BoxFit.cover,
-                          )
-                        : const Icon(
-                            Icons.add_photo_alternate,
-                            size: 50,
+                  onTap: _seleccionarFoto,
+                  child: Stack(
+                    children: [
+                      Container(
+                        height: 200,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: _image != null
+                            ? ClipRRect(
+                                // ClipRRect para redondear las esquinas de la imagen
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.file(
+                                  _image!,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : Icon(
+                                Icons.add_photo_alternate,
+                                size: 50,
+                              ),
+                      ),
+                      if (_image != null) // Botón de quitar imagen
+                        Positioned(
+                          top: 8,
+                          right: 8,
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.clear,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _image = null;
+                              });
+                            },
                           ),
+                        ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -121,22 +152,10 @@ class _CrearWorkoutPageState extends State<CrearWorkoutPage> {
                     return null;
                   },
                 ),
+              
+                _buildSelectorDescanso(),
+                
                 const SizedBox(height: 15),
-                TextFormField(
-                  keyboardType: TextInputType.number,
-                  maxLength: 3,
-                  decoration: const InputDecoration(
-                    labelText: 'Descanso entre series (segundos)',
-                    counterStyle: TextStyle(color: Colors.white),
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                      _descansoEntreSeries = int.tryParse(value) ?? 0;
-                    });
-                  },
-                  style: const TextStyle(color: Colors.white),
-                ),
-                  const SizedBox(height: 15),
                 _series.isNotEmpty
                     ? Container(
                         padding: const EdgeInsets.all(5),
@@ -197,7 +216,7 @@ class _CrearWorkoutPageState extends State<CrearWorkoutPage> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          'Nombre: $nombre',
+                                          'Serie: $nombre',
                                           style: const TextStyle(
                                               fontSize: 16,
                                               color: Colors.white),
@@ -275,7 +294,7 @@ class _CrearWorkoutPageState extends State<CrearWorkoutPage> {
                           ),
                           child: const Center(
                             child: Text(
-                              'Agregar una serie',
+                              'Agrega una serie',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
@@ -290,11 +309,12 @@ class _CrearWorkoutPageState extends State<CrearWorkoutPage> {
                 ),
                 Row(
                   children: [
-                    ElevatedButton(
+                    CustomButton(
                       onPressed: () {
                         _mostrarSeleccionarSeries();
                       },
-                      child: const Text('Seleccionar serie'),
+                      text: 'Serie',
+                      icon: Icons.playlist_add,
                     ),
                   ],
                 ),
@@ -310,23 +330,122 @@ class _CrearWorkoutPageState extends State<CrearWorkoutPage> {
                     });
                   },
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
+               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                 children: [
+                 CustomButton(
                       onPressed: () {
-                        _crearRutina();
+                        if (_series.isEmpty ||
+                            !_series.any(
+                                (element) => element.containsKey('serie'))) {
+                          CreateWidgets.showInfo(
+                            context,
+                            'Error al crear rutina',
+                            'Debe agregar al menos una serie antes de crear la rutina.',
+                          );
+                        }
+                        if(_image == null){
+                           CreateWidgets.showInfo(
+                            context,
+                            'Error al crear rutina',
+                            'Debes de agregar una imagen representativa',
+                          );
+
+                        } else {
+                          _crearRutina();
+                        }
                       },
-                      child: const Text('Crear Rutina'),
+                      text: 'Crear serie',
                     ),
-                  ],
-                ),
+                 ],
+               ),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildSelectorDescanso() {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Text(
+              "Descanso entre series:",
+              style: TextStyle(color: Colors.white),
+              textAlign: TextAlign.left,
+            ),
+            IconButton(
+              icon: const Icon(
+                Icons.info,
+                color: Colors.white,
+              ),
+              tooltip: 'Más informacion',
+              onPressed: () {
+                CreateWidgets.showInfo(context, "Descanso entre series",
+                    "Tiempo en segundos que vas a descansar cuando termines una serie de ejercicios");
+              },
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(
+              flex: 3,
+              child: Slider(
+                activeColor: const Color.fromARGB(255, 25, 57, 94),
+                value: _descansoEntreSeries.toDouble(),
+                min: 0,
+                max: 120,
+                divisions: 120,
+                label: _descansoEntreSeries.toString(),
+                onChanged: (value) {
+                  setState(() {
+                    _descansoEntreSeries = value.toInt();
+                    //_updateSelectedValue();
+                  });
+                },
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Row(
+                children: [
+                  Text(
+                    _descansoEntreSeries.toString(),
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  const Text(
+                    " segundos",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Future<void> _seleccionarFoto() async {
+    try {
+      final picker = ImagePicker();
+      final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+
+      if (pickedImage != null) {
+        setState(() {
+          _image = File(pickedImage.path);
+          url = pickedImage.name;
+        });
+      }
+    } catch (error) {
+      print('Error al seleccionar la foto de perfil: $error');
+      // Manejar el error si es necesario
+    }
   }
 
   Future<void> _loadSerieSelect() async {
@@ -494,9 +613,17 @@ class _CrearWorkoutPageState extends State<CrearWorkoutPage> {
       String thirdFocus =
           sortedMuscleFocusSum.length > 2 ? sortedMuscleFocusSum[2].key : '';
 
+           // Subir la imagen al almacenamiento en la nube
+      final storageRef = FirebaseStorage.instance.ref("/Rutinas").child(url!);
+      await storageRef.putFile(_image!);
+
+      // Obtener el enlace de descarga de la imagen subida
+      final imageUrl = await storageRef.getDownloadURL();
+
       // Crear el objeto Workout
       Workout rutina = Workout(
         name: _nombreController.text,
+        urlImagen: imageUrl,
         nick: globales.nick,
         isPublic: _esPublica,
         primaryFocus: primaryFocus,
