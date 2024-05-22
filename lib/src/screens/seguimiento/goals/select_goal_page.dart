@@ -1,6 +1,11 @@
+
+
+import 'dart:core';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/screens/seguimiento/goals/select_tdee_page.dart';
+import 'package:gym_check/src/screens/seguimiento/widgets/custom_drop_dowm_wiget.dart';
 
 class SelectGoalPage extends StatefulWidget {
   const SelectGoalPage({Key? key}) : super(key: key);
@@ -9,12 +14,9 @@ class SelectGoalPage extends StatefulWidget {
   _SelectGoalPageState createState() => _SelectGoalPageState();
 }
 
-String quitarAcentos(String texto) {
-  return describeEnum(texto);
-}
-
 class _SelectGoalPageState extends State<SelectGoalPage> {
-  String _selectedGoal = 'Pérdida de peso'; // Meta predeterminada
+   String? _selectedGoal = 'Pérdida de peso'; // Meta predeterminada
+   
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class _SelectGoalPageState extends State<SelectGoalPage> {
       appBar: AppBar(
         backgroundColor: const Color(0xff0C1C2E),
         title: const Text(
-          'Selecciona tu Meta',
+          'Selecciona tu meta',
           style: TextStyle(
             color: Colors.white,
             fontSize: 26,
@@ -33,63 +35,48 @@ class _SelectGoalPageState extends State<SelectGoalPage> {
       body: Container(
         color: Color.fromARGB(255, 18, 18, 18),
         child: Padding(
-         padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(20.0),
           child: Column(
             //mainAxisAlignment: MainAxisAlignment.center,
             children: [
-             
-              DropdownButton<String>(
+              CustomDropdown(
+                hint: 'Seleccionar',
                 value: _selectedGoal,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedGoal = newValue!;
-                  });
-                },
-                style: const TextStyle(
-                    color: Colors.white, fontSize: 20 ), // Estilo del texto
-                dropdownColor:
-                    Colors.grey[700], // Color de fondo del menú desplegable
-                items: <String>[
+                items: const <String>[
                   'Pérdida de peso',
                   'Aumento de masa muscular',
                   'Definición muscular',
                   'Mantener peso',
-                ].map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: TextStyle(
-                          color: Colors
-                              .white), // Color del texto en el menú desplegable
-                    ),
-                  );
-                }).toList(),
+                ],
+                onChanged: (newValue) {
+                  setState(() {
+                    _selectedGoal = newValue;
+                  });
+                },
               ),
               const SizedBox(height: 20),
-              _buildGoalInfo(_selectedGoal),
+              _buildGoalInfo(_selectedGoal??""),
             ],
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-        
-
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SelectTdeePage(tipoMeta: _selectedGoal),
-            ),
-          );
-        
-        },
-        backgroundColor:
-            const Color(0xff0C1C2E), // Color de fondo del botón flotante
-        child: const Icon(Icons.arrow_forward,
-            color: Colors.white), // Color del icono del botón flotante
-      ),
+      floatingActionButton: _selectedGoal != null && _selectedGoal!.isNotEmpty
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        SelectTdeePage(tipoMeta: _selectedGoal ?? ""),
+                  ),
+                );
+              },
+              backgroundColor:
+                  const Color(0xff0C1C2E), // Color de fondo del botón flotante
+              child: const Icon(Icons.arrow_forward,
+                  color: Colors.white), // Color del icono del botón flotante
+            )
+          : null, 
     );
   }
 
@@ -112,21 +99,31 @@ class _SelectGoalPageState extends State<SelectGoalPage> {
         description =
             'Esta meta se trata de mantener un peso corporal saludable y estable una vez que se ha alcanzado. Implica equilibrar la ingesta de alimentos y el gasto energético para evitar ganar o perder peso de manera significativa. Esto generalmente se logra mediante la adopción de hábitos alimenticios saludables y la incorporación de actividad física regular en la rutina diaria.';
         break;
+      case '':
+        description =
+            'Selecciona tu meta principal';
+        break;
     }
 
-    return  Container(
-        decoration: BoxDecoration(
-          color: Color.fromARGB(255, 83, 83, 83),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        padding: const EdgeInsets.all(16),
-        child: Text(
-          description,
-          
-          textAlign: TextAlign.justify,
-          style: TextStyle(fontSize: 16, color: Colors.white),
-        ),
     
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Color.fromARGB(255, 83, 83, 83),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Text(
+        description,
+        textAlign: TextAlign.justify,
+        style: TextStyle(fontSize: 16, color: Colors.white),
+      ),
     );
   }
+
+   
+  
+
+
+  
 }

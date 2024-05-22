@@ -14,6 +14,7 @@ class Usuario {
   DateTime? fechaCreacion;
   bool? verificado;
   int? edad;
+  DateTime? fechaNacimiento;
   String? tokenfcm;
 
   Usuario(
@@ -30,6 +31,7 @@ class Usuario {
       this.fechaCreacion,
       this.verificado,
       this.edad,
+      this.fechaNacimiento,
       this.tokenfcm});
 
   factory Usuario.getFirebaseId(String idd, Map json) {
@@ -46,6 +48,7 @@ class Usuario {
         primerosPasos: json['primeros_pasos'],
         fechaCreacion: (json['fechaCreacion'] as Timestamp).toDate(),
         verificado: json['verificado'],
+        fechaNacimiento: json['fechaNacimiento'],
         edad: json['edad'], // Asignar el valor del campo de edad si existe
         tokenfcm: json['tokenfcm']);
   }
@@ -63,6 +66,7 @@ class Usuario {
       'primeros_pasos': primerosPasos,
       'fechaCreacion': fechaCreacion,
       'verificado': verificado,
+      'fechaNacimiento': fechaNacimiento,
       'edad': edad, // Agregar campo de edad al JSON si existe
       'tokenfcm' : tokenfcm
     };

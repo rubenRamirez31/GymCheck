@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-class CreateWidgets {
- 
-  static Widget buildLabelDetailsRow(String label, String value) {
+class TrackingWidgets {
+static Widget buildLabelDetailsRow(String label, String value) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 0),
     child: Container(
@@ -45,7 +44,10 @@ class CreateWidgets {
 }
 
 
-  static Widget buildLabelDetailsRowOnly(String label, MainAxisAlignment alineacion, {MainAxisSize ajustar = MainAxisSize.max} ) {
+
+  static Widget buildLabelDetailsRowOnly(
+      String label, MainAxisAlignment alineacion,
+      {MainAxisSize ajustar = MainAxisSize.max}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: Container(
@@ -56,10 +58,10 @@ class CreateWidgets {
         ),
         child: Row(
           mainAxisAlignment: alineacion,
-         mainAxisSize: ajustar,
+          mainAxisSize: ajustar,
           children: [
             Text(
-              '$label',
+              label,
               style: const TextStyle(fontSize: 16, color: Colors.white),
             ),
           ],
@@ -68,7 +70,7 @@ class CreateWidgets {
     );
   }
 
- static Widget buildLabelGeneral(String label, double fontSize) {
+  static Widget buildLabelGeneral(String label, double fontSize) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: Container(
@@ -83,7 +85,7 @@ class CreateWidgets {
             Expanded(
               child: Text(
                 label,
-                textAlign: TextAlign.justify,
+                textAlign: TextAlign.center,
                 style: TextStyle(fontSize: fontSize, color: Colors.white),
               ),
             ),
@@ -104,9 +106,9 @@ class CreateWidgets {
         child: ExpansionTile(
           backgroundColor: Colors
               .transparent, // Fondo transparente para evitar duplicar el color del contenedor
-          title: Text(
+          title: const Text(
             '¿Con qué equipo se puede realizar?',
-            style: const TextStyle(fontSize: 16, color: Colors.white),
+            style: TextStyle(fontSize: 16, color: Colors.white),
           ),
           children: [
             for (var item in equipment)
@@ -122,8 +124,7 @@ class CreateWidgets {
       ),
     );
   }
-
-    static void showInfo(BuildContext context, String title, String content) {
+   static void showInfo(BuildContext context, String title, String content) {
     showDialog(
       context: context,
       builder: (BuildContext context) {

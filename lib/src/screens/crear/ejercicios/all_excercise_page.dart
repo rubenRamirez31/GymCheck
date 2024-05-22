@@ -21,7 +21,11 @@ class _AllExercisePageState extends State<AllExercisePage> {
   String? _selectedEnfoque;
 
   List<String> options = ['Todo', 'Por enfoque', 'Favoritos'];
-  List<Color> highlightColors = [Colors.green, Colors.green, Colors.green];
+  List<Color> highlightColors = [
+    Colors.white,
+    Colors.white,
+    Colors.white,
+  ];
 
   @override
   void initState() {
@@ -379,62 +383,76 @@ class _ExerciseContainerState extends State<ExerciseContainer> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          widget.exercise.name,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: _toggleFavoriteStatus,
-                          icon: Icon(
-                            _isFavorite
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                            color: _isFavorite ? Colors.red : Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  if (widget.agregar == true)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "$primary y $secondary",
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            showModalBottomSheet(
-                              backgroundColor:
-                                  const Color.fromARGB(255, 18, 18, 18),
-                              scrollControlDisabledMaxHeightRatio: 0.9,
-                              enableDrag: false,
-                              showDragHandle: true,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(15),
+                        Flexible(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.start, // Align texts left
+                              children: [
+                                Text(
+                                  widget.exercise.name,
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  overflow: TextOverflow
+                                      .ellipsis, // Truncate long text with ellipsis
                                 ),
+                                  const SizedBox(height: 5),
+                                Text(
+                                  "$primary y $secondary",
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14.0,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            IconButton(
+                              onPressed: _toggleFavoriteStatus,
+                              icon: Icon(
+                                _isFavorite
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: _isFavorite ? Colors.red : Colors.grey,
                               ),
-                              context: context,
-                              isScrollControlled: true,
-                              builder: (context) {
-                                return FractionallySizedBox(
-                                  heightFactor: 0.96,
-                                  child: ViewExercisePage(
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                showModalBottomSheet(
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 18, 18, 18),
+                                  scrollControlDisabledMaxHeightRatio: 0.9,
+                                  enableDrag: false,
+                                  showDragHandle: true,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(15.0),
+                                    ),
+                                  ),
+                                  context: context,
+                                  isScrollControlled: true,
+                                  builder: (context) => FractionallySizedBox(
+                                    heightFactor: 0.96,
+                                    child: ViewExercisePage(
                                       id: widget.exercise.id ?? "",
-                                      buttons: false),
+                                      buttons: false,
+                                    ),
+                                  ),
                                 );
                               },
-                            );
-                          },
-                          icon: const Icon(Icons.info, color: Colors.grey),
+                              icon: const Icon(Icons.info, color: Colors.grey),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -442,62 +460,77 @@ class _ExerciseContainerState extends State<ExerciseContainer> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          widget.exercise.name,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                        Flexible(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.start, // Align texts left
+                              children: [
+                                Text(
+                                  widget.exercise.name,
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  overflow: TextOverflow
+                                      .ellipsis, // Truncate long text with ellipsis
+                                ),
+                                  const SizedBox(height: 5),
+                                Text(
+                                  "$primary y $secondary",
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14.0,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                        IconButton(
-                          onPressed: () {
-                            showModalBottomSheet(
-                              backgroundColor:
-                                  const Color.fromARGB(255, 18, 18, 18),
-                              scrollControlDisabledMaxHeightRatio: 0.9,
-                              enableDrag: false,
-                              showDragHandle: true,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(15),
-                                ),
-                              ),
-                              context: context,
-                              isScrollControlled: true,
-                              builder: (context) {
-                                return FractionallySizedBox(
-                                  heightFactor: 0.96,
-                                  child: ViewExercisePage(
-                                      id: widget.exercise.id ?? "",
-                                      buttons: true),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                showModalBottomSheet(
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 18, 18, 18),
+                                  scrollControlDisabledMaxHeightRatio: 0.9,
+                                  enableDrag: false,
+                                  showDragHandle: true,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(15),
+                                    ),
+                                  ),
+                                  context: context,
+                                  isScrollControlled: true,
+                                  builder: (context) {
+                                    return FractionallySizedBox(
+                                      heightFactor: 0.96,
+                                      child: ViewExercisePage(
+                                          id: widget.exercise.id ?? "",
+                                          buttons: true),
+                                    );
+                                  },
                                 );
                               },
-                            );
-                          },
-                          icon: const Icon(Icons.more_horiz),
-                        ),
-                      ],
-                    ),
-                  if (widget.agregar == false)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "$primary y $secondary",
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: _toggleFavoriteStatus,
-                          icon: Icon(
-                            _isFavorite
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                            color: _isFavorite ? Colors.red : Colors.grey,
-                          ),
+                              icon: const Icon(Icons.more_horiz),
+                            ),
+                            IconButton(
+                              onPressed: _toggleFavoriteStatus,
+                              icon: Icon(
+                                _isFavorite
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: _isFavorite ? Colors.red : Colors.grey,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

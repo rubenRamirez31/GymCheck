@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/meta_diaria_model.dart';
 import 'package:gym_check/src/models/meta_principal_model.dart';
+import 'package:gym_check/src/screens/principal.dart';
 import 'package:gym_check/src/services/goals_service.dart';
 import 'package:gym_check/src/services/physical_data_service.dart';
 import 'package:intl/intl.dart';
@@ -219,6 +220,14 @@ class _SelectDurationState extends State<SelectDuration> {
                         crearMetasDiarias(context, widget.selectedGoals);
                         // Ocultar el indicador de carga
                         Navigator.of(context).pop();
+
+                         Navigator.of(context).pushReplacement(
+                      MaterialPageRoute<void>(
+                        builder: (BuildContext context) => const PrincipalPage(
+                          initialPageIndex: 2,
+                        ),
+                      ),
+                    );
                       }
                     },
                     style: ElevatedButton.styleFrom(
