@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 
 import 'package:gym_check/src/screens/calendar/physical-nutritional/month_view_widget.dart';
+import 'package:gym_check/src/screens/seguimiento/physical/alimento_data_page.dart';
 
 import 'package:gym_check/src/screens/seguimiento/physical/corporal_data_page.dart';
 import 'package:gym_check/src/screens/seguimiento/physical/workout_data_page.dart';
@@ -30,11 +31,13 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
     'Rutinas',
     'Datos corporales',
     'Fuerza',
+    'Alimentación'
   ]; // Lista de opciones
 
   List<Color> highlightColors = [
     Colors.white, // Color de resaltado para 'Fisico'
     Colors.white, // Color de resaltado para 'Emocional'
+    Colors.white, // Color de resaltado para 'Nutricional'
     Colors.white, // Color de resaltado para 'Nutricional'
   ];
 
@@ -71,7 +74,7 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
             ),
             const SizedBox(height: 20),
             Container(
-             // padding: EdgeInsets.symmetric(horizontal: 30),
+              // padding: EdgeInsets.symmetric(horizontal: 30),
               color: const Color.fromARGB(255, 18, 18, 18),
               width: MediaQuery.of(context).size.width,
               child: SingleChildScrollView(
@@ -81,8 +84,6 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
                       .center, // Alinea los botones en el centro horizontal
                   children: <Widget>[
                     MenuButtonOption(
-                    
-                      
                       options: options,
                       highlightColors: highlightColors,
                       onItemSelected: (index) async {
@@ -93,7 +94,8 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
                           globalVariable.selectedMenuOptionTrackingPhysical =
                               _selectedMenuOption;
                         });
-                        await prefs.setInt('selectedMenuOptionTrackingPhysical', index);
+                        await prefs.setInt(
+                            'selectedMenuOptionTrackingPhysical', index);
                       },
                       selectedMenuOptionGlobal:
                           globalVariable.selectedMenuOptionTrackingPhysical,
@@ -118,13 +120,8 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
                     width: MediaQuery.of(context).size.width,
                   )
                 : const SizedBox(), // Si _selectedMenuOption no es 2, no mostrar el contenedor
-            _selectedMenuOption == 4
-                ? Container(
-                    color: const Color.fromARGB(
-                        255, 255, 255, 0), // Contenedor amarillo
-                    height: 250,
-                    width: MediaQuery.of(context).size.width,
-                  )
+            _selectedMenuOption == 3
+                ? FoodDataPage()
                 : const SizedBox(), // Si _selectedMenuOption no es 3, no mostrar el contenedor
             const SizedBox(height: 20),
           ],
@@ -136,7 +133,8 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
   Future<void> _loadSelectedMenuOption() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _selectedMenuOption = prefs.getInt('selectedMenuOptionTrackingPhysical') ?? 0;
+      _selectedMenuOption =
+          prefs.getInt('selectedMenuOptionTrackingPhysical') ?? 0;
     });
   }
 }

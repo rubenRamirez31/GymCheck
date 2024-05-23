@@ -419,7 +419,7 @@ class _CrearWorkoutPageState extends State<CrearWorkoutPage> {
                     style: const TextStyle(color: Colors.white),
                   ),
                   const Text(
-                    " segundos",
+                    " segs",
                     style: TextStyle(color: Colors.white),
                   ),
                 ],
