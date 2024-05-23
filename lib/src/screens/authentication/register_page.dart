@@ -100,7 +100,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   AppTextFormField(
-                    textStyle: const TextStyle(color: Colors.white),
+                    textStyle: const TextStyle(color: Colors.black),
                     labelText: AppStrings.email,
                     controller: emailController,
                     textInputAction: TextInputAction.next,
@@ -115,7 +115,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                   ),
                   AppTextFormField(
-                    textStyle: const TextStyle(color: Colors.white),
+                    textStyle: const TextStyle(color: Colors.black),
                     textInputAction: TextInputAction.next,
                     labelText: 'Usuario',
                     keyboardType: TextInputType.text,
@@ -134,7 +134,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     valueListenable: passwordNotifier,
                     builder: (_, passwordObscure, __) {
                       return AppTextFormField(
-                        textStyle: const TextStyle(color: Colors.white),
+                        textStyle: const TextStyle(color: Colors.black),
                         obscureText: passwordObscure,
                         controller: passwordController,
                         labelText: AppStrings.password,
@@ -179,7 +179,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     valueListenable: confirmPasswordNotifier,
                     builder: (_, confirmPasswordObscure, __) {
                       return AppTextFormField(
-                        textStyle: const TextStyle(color: Colors.white),
+                        textStyle: const TextStyle(color: Colors.black),
                         labelText: AppStrings.confirmPassword,
                         controller: confirmPasswordController,
                         obscureText: confirmPasswordObscure,
@@ -216,7 +216,6 @@ class _RegisterPageState extends State<RegisterPage> {
                               confirmPasswordObscure
                                   ? Icons.visibility_off_outlined
                                   : Icons.visibility_outlined,
-                              color: Colors.black,
                             ),
                           ),
                         ),

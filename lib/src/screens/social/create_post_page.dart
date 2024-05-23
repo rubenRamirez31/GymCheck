@@ -230,8 +230,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         const SizedBox(
                           height: 20,
                         ),
-                        Text(label),
-                        Text(confianza.toString()),
                         imagen != null
                             ? Stack(
                                 children: [
@@ -296,6 +294,16 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     color: AppColors.white,
                     onPressed: _getImageGallery,
                     icon: const Icon(Icons.photo),
+                  ),
+                  IconButton(
+                    color: AppColors.white,
+                    onPressed: () {
+                      SmartDialog.showToast("Agregar Rutina");
+                    },
+                    icon: const Icon(
+                      Icons.add,
+                      size: 30,
+                    ),
                   ),
                 ],
               ),
