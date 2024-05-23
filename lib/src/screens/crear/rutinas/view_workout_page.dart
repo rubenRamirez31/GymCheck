@@ -2,9 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/workout_model.dart';
-import 'package:gym_check/src/models/workout_series_model.dart';
 import 'package:gym_check/src/providers/globales.dart';
-import 'package:gym_check/src/screens/crear/rutinas/create_workout_page.dart';
 import 'package:gym_check/src/screens/crear/series/view_serie_page.dart';
 import 'package:gym_check/src/screens/crear/widgets/create_widgets.dart';
 import 'package:gym_check/src/screens/crear/widgets/custom_button.dart';
@@ -77,7 +75,7 @@ class _ViewWorkoutPageState extends State<ViewWorkoutPage> {
                                 // Acción del botón
                               },
                               child: Text(
-                                globales.nick,
+                                _workout!.nick,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
