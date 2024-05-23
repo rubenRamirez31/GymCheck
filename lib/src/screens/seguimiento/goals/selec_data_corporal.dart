@@ -83,11 +83,15 @@ class _DatosCorporalesPageState extends State<DatosCorporalesPage> {
                       peso.toString(),
                       style: const TextStyle(color: Colors.white),
                     ),
-                    ElevatedButton(
+                    FloatingActionButton(
                       onPressed: () {
                         _showAddData(context);
                       },
-                      child: const Text('Agregar nuevo dato'),
+                      backgroundColor: Colors.white,
+                      child: Icon(
+                        Icons.add,
+                        color: Colors.black,
+                      ),
                     ),
                   ],
                 ),
@@ -110,11 +114,15 @@ class _DatosCorporalesPageState extends State<DatosCorporalesPage> {
                       altura.toString(),
                       style: const TextStyle(color: Colors.white),
                     ),
-                    ElevatedButton(
+                    FloatingActionButton(
                       onPressed: () {
                         _showAddData(context);
                       },
-                      child: const Text('Agregar nuevo dato'),
+                      backgroundColor: Colors.white,
+                      child: Icon(
+                        Icons.add,
+                        color: Colors.black,
+                      ),
                     ),
                   ],
                 ),
@@ -140,17 +148,23 @@ class _DatosCorporalesPageState extends State<DatosCorporalesPage> {
 
             // Mostrar un AlertDialog antes de cambiar de página
             // ignore: use_build_context_synchronously
-            showDialog(
-              context: context,
-              barrierDismissible:
-                  false, // Evita cerrar el dialog haciendo clic fuera de él
-              builder: (BuildContext context) {
-                return const AlertDialog(
-                  title: Text('Creando tus macros...'),
-                  content:  CircularProgressIndicator(),
-                );
-              },
-            );
+  showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return const AlertDialog(
+            backgroundColor: Colors.black, // Fondo negro
+            title: Text(
+             'Creando tus macros...',
+              style: TextStyle(color: Colors.white), // Letras blancas
+            ),
+            content: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(
+                  Colors.white), // Color del indicador de progreso blanco
+            ),
+          );
+        },
+      );
 
             // Simular una demora de 2 segundos para la carga
             await Future.delayed(const Duration(seconds: 2));
@@ -184,8 +198,8 @@ class _DatosCorporalesPageState extends State<DatosCorporalesPage> {
       final globales = Provider.of<Globales>(context, listen: false);
 
       setState(() {
-        // sexo = globales.genero;
-        // edad = globales.edad;
+        sexo = globales.genero;
+        // edad = globales.;
       });
 
       for (String dato in _datos.keys) {
@@ -212,6 +226,7 @@ class _DatosCorporalesPageState extends State<DatosCorporalesPage> {
 
   void _showAddData(BuildContext context) {
     showModalBottomSheet(
+      backgroundColor:  Color.fromARGB(255, 18, 18, 18),
       showDragHandle: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
@@ -223,7 +238,7 @@ class _DatosCorporalesPageState extends State<DatosCorporalesPage> {
       builder: (context) {
         return FractionallySizedBox(
           heightFactor: 0.60,
-          child: AddDataPage(tipoDeRegistro: "corporales"),
+          child: AddDataPage(tipoDeRegistro: "corporales", goal: true,),
         );
       },
     );
@@ -235,7 +250,8 @@ class _DatosCorporalesPageState extends State<DatosCorporalesPage> {
     // Aquí puedes usar los datos actuales del usuario para calcular los datos corporales
     // Por ahora, estoy usando los datos predeterminados para simular el cálculo
     final double tmb = 10 * peso + 6.25 * altura - 5 * edad + 5;
-    final double tdee = tmb * widget.tdee; // Utilizando una PAL predeterminada de 2.2
+    final double tdee =
+        tmb * widget.tdee; // Utilizando una PAL predeterminada de 2.2
 
     // Crear el mapa de datos corporales y devolverlo
     Map<String, dynamic> datosCorporalesCalculados = {

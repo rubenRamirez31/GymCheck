@@ -3,6 +3,8 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/screens/seguimiento/goals/select_goal_page.dart';
+import 'package:gym_check/src/screens/seguimiento/widgets/custom_button.dart';
+import 'package:gym_check/src/screens/seguimiento/widgets/tracking_widgets.dart';
 import 'package:gym_check/src/services/goals_service.dart';
 import 'package:gym_check/src/services/physical_data_service.dart';
 import 'package:provider/provider.dart';
@@ -26,15 +28,12 @@ class _ViewMainGoalWidgetState extends State<ViewMainGoalWidget> {
     'altura': 'Centimetros:',
   };
 
-  
-
   @override
   void initState() {
     super.initState();
     _loadUserDataLastDataPhysical();
     _loadMetaPrincipalActiva();
     //diasrest = calcularDiasRestantes(_meta['fechaFinalizacion']) as int;
-    
   }
 
   Future<void> _loadMetaPrincipalActiva() async {
@@ -47,9 +46,9 @@ class _ViewMainGoalWidgetState extends State<ViewMainGoalWidget> {
 
   @override
   Widget build(BuildContext context) {
-     //diasrest = calcularDiasRestantes(_meta['fechaFinalizacion']) as int;
+    //diasrest = calcularDiasRestantes(_meta['fechaFinalizacion']) as int;
     print(diasrest);
-    
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 18, 18, 18),
@@ -68,7 +67,7 @@ class _ViewMainGoalWidgetState extends State<ViewMainGoalWidget> {
               color: Colors.white,
             ),
             onPressed: () {
-              modificarDatos(context, _meta['id']);
+              //modificarDatos(context, _meta['id']);
             },
           ),
           IconButton(
@@ -96,9 +95,14 @@ class _ViewMainGoalWidgetState extends State<ViewMainGoalWidget> {
                   SingleChildScrollView(
                     child: Column(
                       children: [
-                        Text("Aun no haz creado tus metas", style: TextStyle(fontSize: 18, color: Colors.white),),
-                        SizedBox(height: 10,),
-                        ElevatedButton(
+                        const Text(
+                          "Aun no haz creado tus metas",
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        CustomButton(
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -106,13 +110,12 @@ class _ViewMainGoalWidgetState extends State<ViewMainGoalWidget> {
                                   builder: (context) => const SelectGoalPage()),
                             );
                           },
-                          child: const Text('Crear'),
+                          text:'Crear',
                         ),
                         Container(
                           height: 5000,
-                          color: Color.fromARGB(255, 18, 18, 18),
+                          color: const Color.fromARGB(255, 18, 18, 18),
                         )
-                    
                       ],
                     ),
                   ),
@@ -139,8 +142,6 @@ class _ViewMainGoalWidgetState extends State<ViewMainGoalWidget> {
   }
 
   Widget _buildMetaPrincipalInfo() {
-    
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -153,12 +154,12 @@ class _ViewMainGoalWidgetState extends State<ViewMainGoalWidget> {
             color: const Color.fromARGB(255, 70, 70, 70), // Color más fuerte
             borderRadius: BorderRadius.circular(20), // Bordes redondeados
           ),
-          child: Row(
+          child: const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Column(
                 children: [
-                  const Text(
+                  Text(
                     'Meta Principal:',
                     style: TextStyle(
                       fontSize: 20,
@@ -166,7 +167,6 @@ class _ViewMainGoalWidgetState extends State<ViewMainGoalWidget> {
                       color: Colors.white,
                     ),
                   ),
-                 
                 ],
               ),
             ],
@@ -185,13 +185,22 @@ class _ViewMainGoalWidgetState extends State<ViewMainGoalWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildDataRow('Tipo de meta', '${_meta['tipoMeta']}'),
-              _buildDataRow('Duración', '${_meta['duracion']} días'),
-              _buildDataRow(
-                  'Fecha de Inicio', _formatDate(_meta['fechaInicio'])),
-              _buildDataRow('Fecha de Finalización',
+              TrackingWidgets.buildLabelDetailsRowOnly(
+                  '${_meta['tipoMeta']}', MainAxisAlignment.center),
+              const SizedBox(height: 10),
+              TrackingWidgets.buildLabelDetailsRow(
+                  'Duración ', '${_meta['duracion']} días'),
+              const SizedBox(height: 10),
+              TrackingWidgets.buildLabelDetailsRow(
+                  'Fecha de Inicio ', _formatDate(_meta['fechaInicio'])),
+              const SizedBox(height: 10),
+              TrackingWidgets.buildLabelDetailsRow('Fecha de Finalización ',
                   _formatDate(_meta['fechaFinalizacion'])),
-              _buildDataRow('Días restantes',  _calcularDiasRestantes(_meta['fechaFinalizacion']).toString() ),
+              const SizedBox(height: 10),
+              TrackingWidgets.buildLabelDetailsRow(
+                  'Días restantes ',
+                  _calcularDiasRestantes(_meta['fechaFinalizacion'])
+                      .toString()),
             ],
           ),
         ),
@@ -218,7 +227,7 @@ class _ViewMainGoalWidgetState extends State<ViewMainGoalWidget> {
               Column(
                 children: [
                   Text(
-                    'Metas diarias:',
+                    'Macros:',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -243,12 +252,15 @@ class _ViewMainGoalWidgetState extends State<ViewMainGoalWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildDataRow('Duración', '${_meta['duracion']} días'),
-              _buildDataRow(
-                  'Fecha de Inicio', _formatDate(_meta['fechaInicio'])),
-              _buildDataRow('Fecha de Finalización',
-                  _formatDate(_meta['fechaFinalizacion'])),
-              _buildDataRow('Tipo de Meta', _meta['tipoMeta']),
+              TrackingWidgets.buildLabelDetailsRow(
+                  'Carbohidratos: ', '${_meta['macros']['carbohidratos']} gr'),
+              const SizedBox(height: 10),
+              TrackingWidgets.buildLabelDetailsRow(
+                  'Proteínas: ', '${_meta['macros']['proteinas']} gr'),
+              const SizedBox(height: 10),
+              TrackingWidgets.buildLabelDetailsRow(
+                  'Grasas: ', '${_meta['macros']['grasas']} gr'),
+              const SizedBox(height: 10),
             ],
           ),
         ),
@@ -256,64 +268,6 @@ class _ViewMainGoalWidgetState extends State<ViewMainGoalWidget> {
     );
   }
 
-  Widget _buildDataRow(String macro, String cantidad) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Container(
-        padding: const EdgeInsets.all(10.0),
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 18, 18, 18),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              '$macro:',
-              style: const TextStyle(fontSize: 16, color: Colors.white),
-            ),
-            Text(
-              cantidad,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoContainer(String title, String value) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 59, 59, 59),
-        borderRadius: BorderRadius.circular(5), // Bordes redondeados
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 5),
-          Text(
-            value,
-            style: const TextStyle(
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   void modificarDatos(BuildContext context, String id) async {
     macros = calcularMacros(_meta['tipoMeta'], _datosCorporales);
@@ -425,17 +379,18 @@ class _ViewMainGoalWidgetState extends State<ViewMainGoalWidget> {
     return DateFormat('dd-MM-yyyy').format(DateTime.parse(date));
   }
 
-  int _calcularDiasRestantes(String fechaFinalizacionString)  {
-  // Obtener la fecha actual
-  DateTime fechaActual = DateTime.now();
+  int _calcularDiasRestantes(String fechaFinalizacionString) {
+    // Obtener la fecha actual
+    DateTime fechaActual = DateTime.now();
 
-  // Convertir la fecha de finalización de String a DateTime
-  DateTime fechaFinalizacion = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS").parse(fechaFinalizacionString);
+    // Convertir la fecha de finalización de String a DateTime
+    DateTime fechaFinalizacion = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+        .parse(fechaFinalizacionString);
 
-  // Calcular la diferencia en días
-  Duration diferencia = fechaFinalizacion.difference(fechaActual);
-  int diasRestantes = diferencia.inDays;
+    // Calcular la diferencia en días
+    Duration diferencia = fechaFinalizacion.difference(fechaActual);
+    int diasRestantes = diferencia.inDays;
 
-  return diasRestantes;
-}
+    return diasRestantes;
+  }
 }

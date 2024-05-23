@@ -230,6 +230,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         const SizedBox(
                           height: 20,
                         ),
+                        Text(label),
+                        Text(confianza.toString()),
                         imagen != null
                             ? Stack(
                                 children: [

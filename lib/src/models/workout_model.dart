@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Workout {
   String? id; // ID del documento (se generará automáticamente)
   String name; // Nombre de la rutina
+  String urlImagen;
   String nick; // Nombre del usuario que creó la rutina
   bool isPublic; // Indica si la rutina es pública o privada
   String primaryFocus; // Enfoque principal de la rutina
@@ -19,6 +20,7 @@ class Workout {
   Workout({
     this.id,
     required this.name,
+    required this.urlImagen,
     required this.nick,
     required this.isPublic,
     required this.primaryFocus,
@@ -35,6 +37,7 @@ class Workout {
     return Workout(
       id: map['id'],
       name: map['name'],
+      urlImagen: map['urlImagen'],
       nick: map['nick'],
       isPublic: map['isPublic'],
       primaryFocus: map['primaryFocus'],
@@ -52,6 +55,7 @@ class Workout {
     return {
      
       'name': name,
+      'urlImagen': urlImagen,
       'nick': nick,
       'isPublic': isPublic,
       'primaryFocus': primaryFocus,

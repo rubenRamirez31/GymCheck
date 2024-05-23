@@ -2,7 +2,6 @@ import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/screens/calendar/physical-nutritional/create_event_page.dart';
 
-
 import 'package:gym_check/src/screens/seguimiento/remiders/add_remider_page.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/view_remider_page.dart';
 
@@ -41,7 +40,7 @@ class _MonthViewWidgetState extends State<MonthViewWidget> {
 
   Future<void> _loadRoutines() async {
     try {
-      final routines = await ReminderService.getAllRemindersClon (context);
+      final routines = await ReminderService.getAllRemindersClon(context);
       setState(() {
         _routines = routines;
       });
@@ -94,6 +93,8 @@ class _MonthViewWidgetState extends State<MonthViewWidget> {
         );
         if (eventId.isNotEmpty) {
           showModalBottomSheet(
+            //   barrierColor: Colors.black,
+            backgroundColor: Colors.black,
             showDragHandle: true,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(
@@ -126,14 +127,16 @@ class _MonthViewWidgetState extends State<MonthViewWidget> {
   void _showOptionsBottomSheet(BuildContext context, DateTime selectedDay) {
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
+      backgroundColor: const Color.fromARGB(255, 18, 18, 18),
       builder: (context) {
         return Container(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: Icon(Icons.calendar_today),
-                title: Text('Ver día'),
+                leading: Icon(Icons.calendar_today, color: Colors.white),
+                title: Text('Ver día', style: TextStyle(color: Colors.white)),
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -143,57 +146,36 @@ class _MonthViewWidgetState extends State<MonthViewWidget> {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.add_alert),
-                title: Text('Agregar Recordatorio'),
+                leading: Icon(Icons.add_alert, color: Colors.white),
+                title: Text('Agregar Recordatorio',
+                    style: TextStyle(color: Colors.white)),
                 onTap: () {
-                  showModalBottomSheet(
-                    showDragHandle: true,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(15),
-                      ),
-                    ),
-                    context: context,
-                    isScrollControlled: true,
-                    builder: (context) {
-                      return FractionallySizedBox(
-                        heightFactor: 0.90,
-                        child: AddReminderPage(
-                          selectedDate: selectedDay,
-                          tipo: "Recordatorio",
-                        ),
-                      );
-                    },
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddReminderPage(
+                              tipo: "Recordatorio",
+                            )),
                   );
                 },
               ),
               ListTile(
-                  leading: Icon(Icons.fitness_center),
-                  title: Text('Agregar Rutina'),
+                  leading: Icon(Icons.fitness_center, color: Colors.white),
+                  title: Text('Agregar Rutina',
+                      style: TextStyle(color: Colors.white)),
                   onTap: () {
-                    showModalBottomSheet(
-                      showDragHandle: true,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(15),
-                        ),
-                      ),
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (context) {
-                        return FractionallySizedBox(
-                          heightFactor: 0.90,
-                          child: AddReminderPage(
-                            selectedDate: selectedDay,
-                            tipo: "Rutina",
-                          ),
-                        );
-                      },
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddReminderPage(
+                                tipo: "Rutina",
+                              )),
                     );
                   }),
               ListTile(
-                leading: Icon(Icons.fastfood),
-                title: Text('Agregar Comida'),
+                leading: Icon(Icons.fastfood, color: Colors.white),
+                title: Text('Agregar Comida',
+                    style: TextStyle(color: Colors.white)),
                 onTap: () {
                   // Acción cuando se selecciona "Agregar Comida"
                   Navigator.pop(context);

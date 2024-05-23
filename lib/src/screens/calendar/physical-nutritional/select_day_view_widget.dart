@@ -1,5 +1,7 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
+import 'package:gym_check/src/screens/calendar/physical-nutritional/select_day_view_page.dart';
+import 'package:gym_check/src/screens/seguimiento/remiders/add_remider_page.dart';
 import 'package:gym_check/src/services/reminder_service.dart';
 
 import '../event_details_page.dart';
@@ -45,7 +47,6 @@ class _SelectDayViewWidgetState extends State<SelectDayViewWidget> {
   }
 
   void _addEvents() {
-    
     _remider.forEach((routine) {
       CalendarEventData eventData = CalendarEventData(
         title: routine['title'],
@@ -55,7 +56,7 @@ class _SelectDayViewWidgetState extends State<SelectDayViewWidget> {
         startTime: routine['startTime'],
         endTime: routine['endTime'],
       );
-    
+
       _eventController.add(eventData);
     });
   }
@@ -83,7 +84,9 @@ class _SelectDayViewWidgetState extends State<SelectDayViewWidget> {
           ),
         );
       },
-      onDateLongPress: (date) => print(date),
+      onDateLongPress: (date) {
+        _showOptionsBottomSheet(context, date);
+      },
       halfHourIndicatorSettings: HourIndicatorSettings(
         color: Theme.of(context).dividerColor,
         lineStyle: LineStyle.dashed,
@@ -135,6 +138,60 @@ class _SelectDayViewWidgetState extends State<SelectDayViewWidget> {
           ),
         ),
       ],
+    );
+  }
+
+  void _showOptionsBottomSheet(BuildContext context, DateTime selectedDay) {
+    showModalBottomSheet(
+      context: context,
+      showDragHandle: true,
+      backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+      builder: (context) {
+        return Container(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+             
+              ListTile(
+                leading: Icon(Icons.add_alert, color: Colors.white),
+                title: Text('Agregar Recordatorio',
+                    style: TextStyle(color: Colors.white)),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddReminderPage(
+                              tipo: "Recordatorio",
+                            )),
+                  );
+                },
+              ),
+              ListTile(
+                  leading: Icon(Icons.fitness_center, color: Colors.white),
+                  title: Text('Agregar Rutina',
+                      style: TextStyle(color: Colors.white)),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddReminderPage(
+                                tipo: "Rutina",
+                              )),
+                    );
+                  }),
+              ListTile(
+                leading: Icon(Icons.fastfood, color: Colors.white),
+                title: Text('Agregar Comida',
+                    style: TextStyle(color: Colors.white)),
+                onTap: () {
+                  // Acción cuando se selecciona "Agregar Comida"
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
