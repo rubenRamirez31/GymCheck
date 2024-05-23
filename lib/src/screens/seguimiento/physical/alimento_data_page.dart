@@ -11,16 +11,16 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class WorkOutDataPage extends StatefulWidget {
-  const WorkOutDataPage({Key? key}) : super(key: key);
+class FoodDataPage extends StatefulWidget {
+  const FoodDataPage({Key? key}) : super(key: key);
 
   @override
-  State<WorkOutDataPage> createState() => _WorkOutDataPageState();
+  State<FoodDataPage> createState() => _FoodDataPageState();
 }
 
-class _WorkOutDataPageState extends State<WorkOutDataPage> {
+class _FoodDataPageState extends State<FoodDataPage> {
   int _selectedMenuOption = 0;
-  List<Map<String, dynamic>?> _routines = [];
+  List<Map<String, dynamic>?> _foods = [];
   List<String> options = [
     'L',
     'M',
@@ -40,12 +40,12 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
     Colors.white,
   ];
   bool _isLoading =
-      false; // Variable para indicar si se están cargando las rutinas
+      false; // Variable para indicar si se están cargando los alimentos
   @override
   void initState() {
     super.initState();
     _loadSelectedMenuOption(); // Cargar el estado guardado de _selectedMenuOption
-    _loadRoutines();
+    _loadFoods();
   }
 
   Future<void> _loadSelectedMenuOption() async {
@@ -54,26 +54,26 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
       setState(() {
         _selectedMenuOption = prefs.getInt('diaSeleccionado') ?? 0;
       });
-      _loadRoutines();
+      _loadFoods();
     }
   }
 
-  Future<void> _loadRoutines() async {
+  Future<void> _loadFoods() async {
     setState(() {
       _isLoading =
           true; // Se inicia la carga, por lo que el indicador de carga será visible
     });
 
     try {
-      final routines = await ReminderService.getFilteredPrimeReminders(
-          context, "Rutina", _selectedMenuOption + 1);
+      final foods = await ReminderService.getFilteredPrimeReminders(
+          context, "Alimento", _selectedMenuOption + 1);
       setState(() {
-        _routines = routines;
+        _foods = foods;
         _isLoading =
             false; // Se ha completado la carga, por lo que se desactiva el indicador de carga
       });
     } catch (error) {
-      print('Error al cargar las rutinas: $error');
+      print('Error al cargar los alimentos: $error');
     }
   }
 
@@ -103,7 +103,7 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
             Container(
               padding: const EdgeInsets.all(16),
               child: const Text(
-                'Mis Rutinas',
+                'Mis Alimentos',
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -141,7 +141,7 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
                           });
                           await prefs.setInt('diaSeleccionado', index);
                           // print(index);
-                          _loadRoutines();
+                          _loadFoods();
                         },
                         selectedMenuOptionGlobal:
                             globalVariable.selectedMenuOptionDias),
@@ -171,10 +171,9 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
               context,
               MaterialPageRoute(
                   builder: (context) => AddReminderPage(
-                        tipo: "Rutina",
+                        tipo: "Alimento",
                       )),
             );
-          
           },
           iconData: Icons.add,
           iconColor: Colors.white,
@@ -186,7 +185,7 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
   Widget _view() {
     print("hola $_selectedMenuOption");
     return SingleChildScrollView(
-      child: _routines.isEmpty
+      child: _foods.isEmpty
           ? _isLoading
               ? Center(
                   child: CircularProgressIndicator(), // Indicador de carga
@@ -203,7 +202,7 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TrackingWidgets.buildLabelDetailsRowOnly(
-                          "No hay rutinas", MainAxisAlignment.center),
+                          "No hay alimentos", MainAxisAlignment.center),
                       SizedBox(height: 10, width: 10),
                       // _buildRoutineDetailsRow("Agrega rutinas:", "primaryFocus"),
                       // _buildRoutineDetailsRow("Enfoque Secundario:", "secondaryFocus"),
@@ -213,17 +212,16 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
           : Container(
               // width: screenSize.width,
               child: Column(
-                children: _routines.map((routine) {
-                  return _buildRoutineContainer(
-                    routine!['routineName'],
-                    routine['primaryFocus'],
-                    routine['secondaryFocus'],
-                    routine['startTime'],
-                    routine['endTime'],
-                    routine['title'],
-                    routine['description'],
-                    routine['color'],
-                    routine['id'],
+                children: _foods.map((food) {
+                  return _buildFoodContainer(
+                   
+                    food!['startTime'],
+                    food['endTime'],
+                    food['title'],
+                    food['description'],
+                    food['color'],
+                    food['id'],
+                    food['datosAliemnto']
                   );
                 }).toList(),
               ),
@@ -231,21 +229,23 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
     );
   }
 
-  Widget _buildRoutineContainer(
-    String routineName,
-    String primaryFocus,
-    String secondaryFocus,
+  Widget _buildFoodContainer(
+  
     DateTime startTime,
     DateTime endTime,
     String title,
     String description,
     int color,
     String idRecordar,
+     Map<String, dynamic> datosAliemnto
+
   ) {
+
+     
     return GestureDetector(
       onTap: () {
         showModalBottomSheet(
-           backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+          backgroundColor:   const Color.fromARGB(255, 18, 18, 18),
           showDragHandle: true,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -279,9 +279,12 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
                 title, MainAxisAlignment.center),
             SizedBox(height: 10, width: 10),
             TrackingWidgets.buildLabelDetailsRow(
-                "Enfoque Principal:", primaryFocus),
+                "Proteinas:", datosAliemnto['Proteínas'].toString()),
             TrackingWidgets.buildLabelDetailsRow(
-                "Enfoque Secundario:", secondaryFocus),
+                "Grasas:", datosAliemnto['Grasas'].toString()),
+            TrackingWidgets.buildLabelDetailsRow(
+                "Carbos:", datosAliemnto['Carbos'].toString()),
+           
             TrackingWidgets.buildLabelDetailsRow(
                 "Hora de inicio:", formatDateTime(startTime.toIso8601String())),
           ],

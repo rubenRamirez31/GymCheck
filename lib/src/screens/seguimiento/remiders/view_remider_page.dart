@@ -226,13 +226,23 @@ class _ViewReminderState extends State<ViewReminder> {
                                 ),
                               ),
                               const SizedBox(height: 8.0),
-                              if (_reminderData!['routineName'] != null)
-                                ElevatedButton(
+                              if (_reminderData!['workoutID'] != null)
+                                CustomButton(
                                   onPressed: () {
                                     // Navegar a la página de la rutina
                                     // Implementa la navegación según tus necesidades
                                   },
-                                  child: const Text('Ir a Rutina'),
+                                  text: 'Ir a Rutina',
+                                  icon: Icons.sports_gymnastics,
+                                ),
+                              if (_reminderData!['dietID'] != null)
+                                CustomButton(
+                                  onPressed: () {
+                                    // Navegar a la página de la rutina
+                                    // Implementa la navegación según tus necesidades
+                                  },
+                                  text: 'Ir a alimento',
+                                  icon: Icons.restaurant_menu,
                                 ),
                               Text(
                                 'Descripción: ${_reminderData!['description'] ?? 'Sin descripción'}',

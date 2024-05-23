@@ -55,21 +55,7 @@ class _AddDataPageState extends State<AddDataPage> {
                 },
               ),
 
-              // DropdownButton<String>(
-              //   value: _selectedField,
-              //   hint: const Text('Seleccionar tipo de dato'),
-              //   items: _getCamposPorRegistro().map((campo) {
-              //     return DropdownMenuItem<String>(
-              //       value: campo,
-              //       child: Text(campo),
-              //     );
-              //   }).toList(),
-              //   onChanged: (newValue) {
-              //     setState(() {
-              //       _selectedField = newValue;
-              //     });
-              //   },
-              // ),
+           
               const SizedBox(height: 20),
               if (_selectedField != null) ...[
                 Text(
