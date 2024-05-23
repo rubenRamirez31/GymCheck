@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/excercise_model.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:gym_check/src/providers/globales.dart';
+import 'package:gym_check/src/screens/crear/alimentacion/all_alimento_page.dart';
 import 'package:gym_check/src/screens/crear/alimentacion/create_alimento_page.dart';
 import 'package:gym_check/src/screens/crear/ejercicios/all_excercise_page.dart';
 import 'package:gym_check/src/screens/crear/ejercicios/home_excercise_page.dart';
@@ -155,6 +156,9 @@ class _HomeCreatePageState extends State<HomeCreatePage>
                     : const SizedBox(),
                 _selectedMenuOption == 2
                     ? const AllWorkoutPage(agregar: false,)
+                    : const SizedBox(),
+                _selectedMenuOption == 3
+                    ? const AllAlimentosPage(agregar: false,)
                     : const SizedBox(),
               ],
             ),

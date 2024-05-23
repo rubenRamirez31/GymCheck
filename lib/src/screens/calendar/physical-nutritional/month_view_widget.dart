@@ -153,7 +153,7 @@ class _MonthViewWidgetState extends State<MonthViewWidget> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => AddReminderPage(
+                        builder: (context) => AddReminderPage( selectedDate:selectedDay ,
                               tipo: "Recordatorio",
                             )),
                   );
@@ -167,7 +167,7 @@ class _MonthViewWidgetState extends State<MonthViewWidget> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AddReminderPage(
+                          builder: (context) => AddReminderPage(selectedDate:selectedDay,
                                 tipo: "Rutina",
                               )),
                     );

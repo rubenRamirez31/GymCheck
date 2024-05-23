@@ -513,7 +513,7 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
                     style: const TextStyle(color: Colors.white),
                   ),
                   const Text(
-                    " segundos",
+                    " segs",
                     style: TextStyle(color: Colors.white),
                   ),
                 ],

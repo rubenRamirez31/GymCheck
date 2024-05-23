@@ -13,14 +13,16 @@ class Reminder {
   DateTime startTime;
   DateTime endTime;
   bool terminado;
+  Map<String, dynamic>? datosAliemnto;
 
-  Color color; 
-  String? workoutID; 
-  String? dietID; 
+  Color color;
+  String? workoutID;
+  String? dietID;
   List<int> repeatDays; // Agregar lista de días de repetición
 
   Reminder({
     this.day,
+    this.datosAliemnto,
     required this.idRecordar,
     required this.title,
     required this.tipo,
@@ -36,7 +38,8 @@ class Reminder {
     this.workoutID, // Campo de tipo String opcional
     this.dietID, // Campo de tipo String opcional
     List<int>? repeatDays, // Lista opcional de días de repetición
-  }) : repeatDays = repeatDays ?? []; // Asignar una lista vacía si no se proporciona
+  }) : repeatDays =
+            repeatDays ?? []; // Asignar una lista vacía si no se proporciona
 
   factory Reminder.fromJson(Map<String, dynamic> json) {
     return Reminder(
@@ -45,6 +48,7 @@ class Reminder {
       terminado: json['terminado'],
       title: json['title'],
       tipo: json['tipo'],
+      datosAliemnto: json['datosAliemnto'],
       modelo: json['modelo'],
       description: json['description'],
       routineName: json['routineName'],
@@ -57,13 +61,15 @@ class Reminder {
           Color(json['color']), // Convertimos el valor del color de int a Color
       workoutID: json['workoutID'], // Campo de tipo String opcional
       dietID: json['dietID'], // Campo de tipo String opcional
-      repeatDays: List<int>.from(json['repeatDays'] ?? []), // Convertir lista de JSON a lista de enteros
+      repeatDays: List<int>.from(json['repeatDays'] ??
+          []), // Convertir lista de JSON a lista de enteros
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'idRecordar': idRecordar,
+      'datosAliemnto': datosAliemnto,
       'day': day,
       'terminado': terminado,
       'modelo': modelo,
@@ -83,25 +89,25 @@ class Reminder {
     };
   }
 
-   Reminder clone() {
-  return Reminder(
-    idRecordar: idRecordar,
-    day: day,
-    terminado: terminado,
-    modelo: modelo,
-    tipo: tipo,
-    title: title,
-    description: description,
-    routineName: routineName,
-    primaryFocus: primaryFocus,
-    secondaryFocus: secondaryFocus,
-    startTime: startTime,
-    endTime: endTime,
-    color: color, // Convertimos el valor entero a Color
-    workoutID: workoutID,
-    dietID: dietID,
-    repeatDays: repeatDays != null ? List<int>.from(repeatDays!) : null,
-  );
-}
-
+  Reminder clone() {
+    return Reminder(
+      idRecordar: idRecordar,
+      day: day,
+      datosAliemnto: datosAliemnto,
+      terminado: terminado,
+      modelo: modelo,
+      tipo: tipo,
+      title: title,
+      description: description,
+      routineName: routineName,
+      primaryFocus: primaryFocus,
+      secondaryFocus: secondaryFocus,
+      startTime: startTime,
+      endTime: endTime,
+      color: color, // Convertimos el valor entero a Color
+      workoutID: workoutID,
+      dietID: dietID,
+      repeatDays: repeatDays != null ? List<int>.from(repeatDays!) : null,
+    );
+  }
 }

@@ -140,11 +140,14 @@ class _ViewWorkoutPageState extends State<ViewWorkoutPage> {
                                     ),
                                   RawMaterialButton(
                                     onPressed: () {
-                                       Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>AddReminderPage(tipo: "Rutina",rutinaId: widget.id)),
-                                  );
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                AddReminderPage(
+                                                    tipo: "Rutina",
+                                                    rutinaId: widget.id)),
+                                      );
 
                                       //AddReminderPage(tipo: "Rutina",rutinaId: widget.id);
                                       // Lógica para editar

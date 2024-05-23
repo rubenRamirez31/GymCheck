@@ -123,6 +123,75 @@ class CreateWidgets {
     );
   }
 
+static Widget buildLabelGeneralListV2(List<String> ingredients, double fontSize) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 0),
+    child: Container(
+      decoration: BoxDecoration(
+        color: const Color.fromARGB(255, 18, 18, 18),
+        borderRadius: BorderRadius.circular(10), // Bordes redondeados
+      ),
+      child: ExpansionTile(
+        backgroundColor: Colors.transparent,
+        title: Text(
+          'Ingredientes:',
+          style: const TextStyle(fontSize: 16, color: Colors.white),
+        ),
+        children: [
+          for (var ingredient in ingredients)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: Row(
+                children: [
+                  const Icon(Icons.fiber_manual_record, size: 12, color: Colors.white), // Icono de viñeta
+                  const SizedBox(width: 5), // Espacio entre el icono y el texto
+                  Expanded(
+                    child: Text(
+                      ingredient,
+                      style: TextStyle(fontSize: fontSize, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    ),
+  );
+}
+static Widget builPreparacion(String preparation) {
+ return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 18, 18, 18),
+          borderRadius: BorderRadius.circular(10), // Bordes redondeados
+        ),
+        child: ExpansionTile(
+          backgroundColor: Colors.transparent, // Fondo transparente para evitar duplicar el color del contenedor
+          title: Text(
+            'Preparación:',
+            style: const TextStyle(fontSize: 16, color: Colors.white),
+          ),
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+              child: Text(
+                preparation,
+                style: const TextStyle(fontSize: 14, color: Colors.white),
+                textAlign: TextAlign.justify, // Alineación justificada del texto
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  
+}
+
+
+
+
     static void showInfo(BuildContext context, String title, String content) {
     showDialog(
       context: context,

@@ -3,9 +3,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:gym_check/src/models/alimento.dart';
 import 'package:gym_check/src/models/reminder_model.dart';
 import 'package:gym_check/src/models/workout_model.dart';
 import 'package:gym_check/src/screens/calendar/widgets/date_time_selector.dart';
+import 'package:gym_check/src/screens/crear/alimentacion/all_alimento_page.dart';
+import 'package:gym_check/src/screens/crear/alimentacion/view_food_page.dart';
 import 'package:gym_check/src/screens/crear/home_create_page.dart';
 import 'package:gym_check/src/screens/crear/rutinas/all_workout_page.dart';
 import 'package:gym_check/src/screens/crear/rutinas/view_workout_page.dart';
@@ -15,6 +18,7 @@ import 'package:gym_check/src/screens/seguimiento/widgets/color_menu_widget.dart
 import 'package:gym_check/src/screens/seguimiento/widgets/custom_button.dart';
 import 'package:gym_check/src/screens/seguimiento/widgets/days_menu_widget.dart';
 import 'package:gym_check/src/screens/seguimiento/widgets/tracking_widgets.dart';
+import 'package:gym_check/src/services/food_service.dart';
 
 import 'package:gym_check/src/services/reminder_service.dart';
 import 'package:gym_check/src/services/workout_service.dart';
@@ -24,6 +28,7 @@ class AddReminderPage extends StatefulWidget {
   final DateTime? selectedDate;
   final String tipo;
   final String? rutinaId;
+  final String? alimentoId;
   final String? idRecordar;
   final String? recordatorioId;
 
@@ -32,6 +37,7 @@ class AddReminderPage extends StatefulWidget {
       this.selectedDate,
       required this.tipo,
       this.rutinaId,
+      this.alimentoId,
       this.idRecordar,
       this.recordatorioId})
       : super(key: key);
@@ -44,6 +50,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
   TextEditingController _nombreController = TextEditingController();
   TextEditingController _descripcionController = TextEditingController();
   List<Map<String, dynamic>> _rutina = [];
+  List<Map<String, dynamic>> _alimento = [];
 
   String _title = "";
   String _description = "";
@@ -73,6 +80,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
     }
 
     _loadRutinaSelect();
+    _loadAlimentoSelect();
   }
 
   Future<void> _loadReminderData() async {
@@ -262,121 +270,8 @@ class _AddReminderPageState extends State<AddReminderPage> {
                 ],
               ),
               const SizedBox(height: 15.0),
-              if (widget.tipo == "Rutina") ...[
-                _rutina.isNotEmpty
-                    ? Container(
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 18, 18, 18),
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.white, width: 0.5),
-                        ),
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(
-                            maxHeight: 75, // Altura máxima de 300 píxeles
-                          ),
-                          child: ReorderableListView(
-                            padding: EdgeInsets.zero,
-                            physics: const BouncingScrollPhysics(),
-                            children: _rutina
-                                .where((item) => item.containsKey('rutina'))
-                                .map((item) {
-                              String idRutina = item['rutina']['id'];
-                              String nombre = item['rutina']['nombre'];
-                              return GestureDetector(
-                                onTap: () {
-                                  showModalBottomSheet(
-                                    backgroundColor:
-                                        const Color.fromARGB(255, 18, 18, 18),
-                                    scrollControlDisabledMaxHeightRatio: 0.9,
-                                    enableDrag: false,
-                                    showDragHandle: true,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(15),
-                                      ),
-                                    ),
-                                    context: context,
-                                    isScrollControlled: true,
-                                    builder: (context) {
-                                      return FractionallySizedBox(
-                                        heightFactor: 0.96,
-                                        child: ViewWorkoutPage(
-                                          id: idRutina,
-                                          buttons: false,
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                                key: ValueKey(idRutina),
-                                child: Container(
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 5),
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    color:
-                                        const Color.fromARGB(255, 83, 83, 83),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'Rutina: $nombre',
-                                        style: const TextStyle(
-                                            fontSize: 16, color: Colors.white),
-                                      ),
-                                      IconButton(
-                                        onPressed: () {
-                                          _eliminar(item);
-                                        },
-                                        icon: const Icon(Icons.delete),
-                                        color: Colors.white,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                            onReorder: (oldIndex, newIndex) {
-                              setState(() {
-                                if (newIndex > oldIndex) {
-                                  newIndex -= 1;
-                                }
-                                final item = _rutina.removeAt(oldIndex);
-                                _rutina.insert(newIndex, item);
-                              });
-                            },
-                          ),
-                        ),
-                      )
-                    : GestureDetector(
-                        onTap: () {
-                          _mostrarSeleccionarRutina();
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(5),
-                          height: 75,
-                          decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 18, 18, 18),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Colors.white, width: 0.5),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              'Agregar una rutina',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-              ],
+              if (widget.tipo == "Rutina") ...[_builRutinas()],
+              if (widget.tipo == "Alimento") ...[_builAlimetos()],
               const SizedBox(height: 15.0),
               ColorDropdown(
                 onColorSelected: (color) {
@@ -416,21 +311,19 @@ class _AddReminderPageState extends State<AddReminderPage> {
               const SizedBox(height: 20.0),
               CustomButton(
                 onPressed: () {
-                  if(widget.tipo == "Rutina"){
-                    if(_rutina.isEmpty){
-                       TrackingWidgets.showInfo(
-                            context,
-                            'Error al crear recordatorio',
-                            'Debes de agregar una rutina antes de crear el recordatorio ;).',
-                          );
-                    }else{
-                       _addReminder();
+                  if (widget.tipo == "Rutina") {
+                    if (_rutina.isEmpty) {
+                      TrackingWidgets.showInfo(
+                        context,
+                        'Error al crear recordatorio',
+                        'Debes de agregar una rutina antes de crear el recordatorio ;).',
+                      );
+                    } else {
+                      _addReminder();
                     }
-                  }else{
-                     _addReminder();
-
+                  } else {
+                    _addReminder();
                   }
-                 
                 },
                 text: 'Agregar',
                 icon: Icons.add_alarm,
@@ -440,6 +333,230 @@ class _AddReminderPageState extends State<AddReminderPage> {
         ),
       ),
     );
+  }
+
+  Widget _builRutinas() {
+    return _rutina.isNotEmpty
+        ? Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 18, 18, 18),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.white, width: 0.5),
+            ),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxHeight: 75, // Altura máxima de 300 píxeles
+              ),
+              child: ReorderableListView(
+                padding: EdgeInsets.zero,
+                physics: const BouncingScrollPhysics(),
+                children: _rutina
+                    .where((item) => item.containsKey('rutina'))
+                    .map((item) {
+                  String idRutina = item['rutina']['id'];
+                  String nombre = item['rutina']['nombre'];
+                  return GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                        backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+                        scrollControlDisabledMaxHeightRatio: 0.9,
+                        enableDrag: false,
+                        showDragHandle: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(15),
+                          ),
+                        ),
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (context) {
+                          return FractionallySizedBox(
+                            heightFactor: 0.96,
+                            child: ViewWorkoutPage(
+                              id: idRutina,
+                              buttons: false,
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    key: ValueKey(idRutina),
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 5),
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 83, 83, 83),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Rutina: $nombre',
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.white),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              _eliminar(item);
+                            },
+                            icon: const Icon(Icons.delete),
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+                onReorder: (oldIndex, newIndex) {
+                  setState(() {
+                    if (newIndex > oldIndex) {
+                      newIndex -= 1;
+                    }
+                    final item = _rutina.removeAt(oldIndex);
+                    _rutina.insert(newIndex, item);
+                  });
+                },
+              ),
+            ),
+          )
+        : GestureDetector(
+            onTap: () {
+              _mostrarSeleccionarRutina();
+            },
+            child: Container(
+              padding: const EdgeInsets.all(5),
+              height: 75,
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 18, 18, 18),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.white, width: 0.5),
+              ),
+              child: const Center(
+                child: Text(
+                  'Agregar una rutina',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          );
+  }
+
+  Widget _builAlimetos() {
+    return _alimento.isNotEmpty
+        ? Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 18, 18, 18),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.white, width: 0.5),
+            ),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxHeight: 75, // Altura máxima de 300 píxeles
+              ),
+              child: ReorderableListView(
+                padding: EdgeInsets.zero,
+                physics: const BouncingScrollPhysics(),
+                children: _alimento
+                    .where((item) => item.containsKey('alimento'))
+                    .map((item) {
+                  String idAlimeto = item['alimento']['id'];
+                  String nombre = item['alimento']['nombre'];
+                  return GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                        backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+                        scrollControlDisabledMaxHeightRatio: 0.9,
+                        enableDrag: false,
+                        showDragHandle: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(15),
+                          ),
+                        ),
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (context) {
+                          return FractionallySizedBox(
+                            heightFactor: 0.96,
+                            child: ViewFoodPage(
+                              id: idAlimeto,
+                              buttons: false,
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    key: ValueKey(idAlimeto),
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 5),
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 83, 83, 83),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Alimento: $nombre',
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.white),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              _eliminar(item);
+                            },
+                            icon: const Icon(Icons.delete),
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+                onReorder: (oldIndex, newIndex) {
+                  setState(() {
+                    if (newIndex > oldIndex) {
+                      newIndex -= 1;
+                    }
+                    final item = _alimento.removeAt(oldIndex);
+                    _alimento.insert(newIndex, item);
+                  });
+                },
+              ),
+            ),
+          )
+        : GestureDetector(
+            onTap: () {
+              _mostrarSeleccionarAlimento();
+            },
+            child: Container(
+              padding: const EdgeInsets.all(5),
+              height: 75,
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 18, 18, 18),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.white, width: 0.5),
+              ),
+              child: const Center(
+                child: Text(
+                  'Agregar un alimento',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          );
   }
 
   Future<void> _loadRutinaSelect() async {
@@ -452,6 +569,25 @@ class _AddReminderPageState extends State<AddReminderPage> {
           if (serie != null) {
             _agregarSerie(serie);
             print(serie);
+          }
+          //_exercise = exercise;
+        });
+      }
+    } catch (error) {
+      print('Error loading exercise: $error');
+    }
+  }
+
+  Future<void> _loadAlimentoSelect() async {
+    print(widget.alimentoId);
+    try {
+      if (widget.alimentoId != null) {
+        final alimento =
+            await FoodService.obtenerAlimentoPorId(context, widget.alimentoId!);
+        setState(() {
+          if (alimento != null) {
+            _agregarAlimento(alimento);
+            print(alimento);
           }
           //_exercise = exercise;
         });
@@ -489,9 +625,44 @@ class _AddReminderPageState extends State<AddReminderPage> {
     }
   }
 
+  void _mostrarSeleccionarAlimento() async {
+    final alimento = await showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+      enableDrag: false,
+      showDragHandle: true,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(15),
+        ),
+      ),
+      builder: (context) {
+        // Aquí puedes implementar la lógica para mostrar una lista de series disponibles
+        return const FractionallySizedBox(
+          heightFactor: 0.96,
+          child: AllAlimentosPage(
+            agregar: true,
+          ),
+        );
+      },
+    );
+
+    if (alimento != null) {
+      _agregarAlimento(alimento);
+    }
+  }
+
   void _agregarSerie(Workout rutina) {
     _rutina.add({
       'rutina': {'id': rutina.id, 'nombre': rutina.name}
+    });
+    setState(() {});
+  }
+
+  void _agregarAlimento(Food alimento) {
+    _alimento.add({
+      'alimento': {'id': alimento.id, 'nombre': alimento.name}
     });
     setState(() {});
   }
@@ -512,7 +683,12 @@ class _AddReminderPageState extends State<AddReminderPage> {
           ),
           ElevatedButton(
             onPressed: () {
-              _rutina.remove(item);
+              if (widget.tipo == "Rutina") {
+                _rutina.remove(item);
+              } else if (widget.tipo == "Alimento") {
+                _alimento.remove(item);
+              }
+
               setState(() {});
               Navigator.of(context).pop();
             },
@@ -648,12 +824,62 @@ class _AddReminderPageState extends State<AddReminderPage> {
           startTime: combinedStartTime, // Usar la fecha y hora combinadas
           endTime: combinedEndTime, // Usar la fecha y hora combinadas
           repeatDays: _selectedRepeatDays);
+     
+      final response =
+          await ReminderService.createReminder(context, reminder.toJson());
+
+      ReminderScheduler.scheduleReminders(context, reminder, dropdownValue, widget.selectedDate?? DateTime.now());
+
+      if (response.containsKey('message')) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response['message']!)),
+        );
+      } else if (response.containsKey('error')) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response['error']!)),
+        );
+      } else {
+        // Si se creó el recordatorio "Prime" correctamente, programar la replicación
+        Reminder clonedReminder = reminder.clone();
+        clonedReminder.modelo = 'clon';
+      }
+    } else if (widget.tipo == "Alimento") {
+      if (_alimento.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Por favor selecciona una rutina')),
+        );
+        return;
+      }
+      final alimento = await FoodService.obtenerAlimentoPorId(
+          context, _alimento.first['alimento']['id']);
+
+      Map<String, dynamic> datosAliemnto = {
+        'Proteínas': alimento!.nutrients['Proteínas'] ?? 0,
+        'Carbos': alimento.nutrients['Carbos'] ?? 0,
+        'Grasas': alimento.nutrients['Grasas'] ?? 0
+      };
+
+      Reminder reminder = Reminder(
+          //day: _getDayOfWeek(_currentDate),
+          modelo: tipoModelo,
+          //workoutID: _rutina.first['rutina']['id'],
+          idRecordar: generateRandomNumber(),
+          terminado: false,
+          tipo: widget.tipo,
+          datosAliemnto: datosAliemnto,
+          title: _nombreController.text,
+          description: _descripcionController.text,
+          color: _selectedColor,
+          dietID: _alimento.first['alimento']['id'],
+          startTime: combinedStartTime, // Usar la fecha y hora combinadas
+          endTime: combinedEndTime, // Usar la fecha y hora combinadas
+          repeatDays: _selectedRepeatDays);
       // print(si);
       final response =
           await ReminderService.createReminder(context, reminder.toJson());
       // ignore: use_build_context_synchronously
       //if (repeatReminder == true) {
-      ReminderScheduler.scheduleReminders(context, reminder, dropdownValue);
+      ReminderScheduler.scheduleReminders(context, reminder, dropdownValue, widget.selectedDate?? DateTime.now());
       //}
 
       if (response.containsKey('message')) {
@@ -669,7 +895,6 @@ class _AddReminderPageState extends State<AddReminderPage> {
         Reminder clonedReminder = reminder.clone();
         clonedReminder.modelo = 'clon';
       }
-    } else if (widget.tipo == "Comida") {
     } else if (widget.tipo == "Recordatorio") {
       // Crear un recordatorio simple
       reminder = Reminder(
@@ -690,7 +915,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
           await ReminderService.createReminder(context, reminder.toJson());
 
       // if (repeatReminder == true) {
-      ReminderScheduler.scheduleReminders(context, reminder, dropdownValue);
+      ReminderScheduler.scheduleReminders(context, reminder, dropdownValue, widget.selectedDate?? DateTime.now());
       // }
 
       if (response.containsKey('message')) {
@@ -715,7 +940,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
         return AlertDialog(
           backgroundColor: Colors.black, // Fondo negro
           title: const Text(
-            'Rutina creada',
+            'Recordatorio creado',
             style: TextStyle(color: Colors.white), // Letras blancas
           ),
           content: Column(
