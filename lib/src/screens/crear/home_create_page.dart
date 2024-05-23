@@ -1,5 +1,6 @@
 import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:gym_check/src/models/excercise_model.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:gym_check/src/providers/globales.dart';
@@ -98,7 +99,7 @@ class _HomeCreatePageState extends State<HomeCreatePage>
             IconButton(
               icon: const Icon(Icons.info),
               onPressed: () {
-                agregarEjercicio();
+                SmartDialog.showToast("Información de la sección");
               },
               color: Colors.white,
             ),
@@ -152,7 +153,9 @@ class _HomeCreatePageState extends State<HomeCreatePage>
                       )
                     : const SizedBox(),
                 _selectedMenuOption == 3
-                    ? const AllAlimentosPage(agregar: false,)
+                    ? const AllAlimentosPage(
+                        agregar: false,
+                      )
                     : const SizedBox(),
               ],
             ),
