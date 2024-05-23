@@ -139,12 +139,22 @@ class _AllSeriePageState extends State<AllSeriePage> {
                                   _selectedMenuOption);
                             });
                           },
-                          items: <String>[
-                            'Pecho',
-                            'Espalda',
-                            'Bicep',
-                            'Cuadricep',
-                          ].map<DropdownMenuItem<String>>((String value) {
+                         items: <String>[
+  'Pecho',
+  'Espalda',
+  'Hombros',
+  'Bíceps',
+  'Tríceps',
+  'Antebrazo',
+  'Cuádriceps',
+  'Femoral',
+  'Abductores',
+  'Glúteos',
+  'Gemelos',
+  'Abdomen',
+  'Core',
+  'Trapecio',
+].map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Text(

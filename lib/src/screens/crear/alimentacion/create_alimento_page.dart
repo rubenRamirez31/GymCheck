@@ -1,7 +1,14 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/alimento.dart';
+import 'package:gym_check/src/providers/globales.dart';
+import 'package:gym_check/src/screens/seguimiento/widgets/custom_button.dart';
+import 'package:gym_check/src/screens/seguimiento/widgets/tracking_widgets.dart';
+import 'package:gym_check/src/services/food_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+
+import 'package:provider/provider.dart';
 
 class CreateFoodPage extends StatefulWidget {
   @override
@@ -12,6 +19,7 @@ class _CreateFoodPageState extends State<CreateFoodPage> {
   final _formKey = GlobalKey<FormState>();
   final ImagePicker _imagePicker = ImagePicker();
   File? _image;
+  String? url;
   String _name = '';
   String _description = '';
   List<String> _ingredients = [];
@@ -68,23 +76,47 @@ class _CreateFoodPageState extends State<CreateFoodPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               GestureDetector(
-                //onTap: print("d"),
-                child: Container(
-                  height: 200,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: _image != null
-                      ? Image.file(
-                          _image!,
-                          fit: BoxFit.cover,
-                        )
-                      : const Icon(
-                          Icons.add_photo_alternate,
-                          size: 50,
+                onTap: _seleccionarFoto,
+                child: Stack(
+                  children: [
+                    Container(
+                      height: 200,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: _image != null
+                          ? ClipRRect(
+                              // ClipRRect para redondear las esquinas de la imagen
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.file(
+                                _image!,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : Icon(
+                              Icons.add_photo_alternate,
+                              size: 50,
+                            ),
+                    ),
+                    if (_image != null) // Botón de quitar imagen
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.clear,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _image = null;
+                            });
+                          },
                         ),
+                      ),
+                  ],
                 ),
               ),
               const SizedBox(height: 20),
@@ -181,7 +213,7 @@ class _CreateFoodPageState extends State<CreateFoodPage> {
                 decoration: const InputDecoration(
                     counterStyle: TextStyle(color: Colors.white),
                     labelText: 'Preparación (max. 500 caracteres)'),
-                     style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
                 maxLength: 500,
                 maxLines: null,
                 validator: (value) {
@@ -221,9 +253,8 @@ class _CreateFoodPageState extends State<CreateFoodPage> {
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Proteínas (g)'),
                 keyboardType: TextInputType.number,
-                 style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
                 onChanged: (value) {
-
                   setState(() {
                     _proteins = int.tryParse(value) ?? 0;
                   });
@@ -234,7 +265,7 @@ class _CreateFoodPageState extends State<CreateFoodPage> {
                 decoration:
                     const InputDecoration(labelText: 'Carbohidratos (g)'),
                 keyboardType: TextInputType.number,
-                 style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
                 onChanged: (value) {
                   setState(() {
                     _carbs = int.tryParse(value) ?? 0;
@@ -245,7 +276,7 @@ class _CreateFoodPageState extends State<CreateFoodPage> {
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Grasas (g)'),
                 keyboardType: TextInputType.number,
-                 style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
                 onChanged: (value) {
                   setState(() {
                     _fats = int.tryParse(value) ?? 0;
@@ -269,13 +300,19 @@ class _CreateFoodPageState extends State<CreateFoodPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton(
+                  CustomButton(
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
+                      if (_image == null) {
+                        TrackingWidgets.showInfo(
+                          context,
+                          'Error al crear la receta',
+                          'Debes de agregar una imagen representativa',
+                        );
+                      } else if (_formKey.currentState!.validate()) {
                         _crearAlimento();
                       }
                     },
-                    child: const Text('Crear Receta'),
+                    text: 'Crear Receta',
                   ),
                 ],
               ),
@@ -286,8 +323,26 @@ class _CreateFoodPageState extends State<CreateFoodPage> {
     );
   }
 
+  Future<void> _seleccionarFoto() async {
+    try {
+      final picker = ImagePicker();
+      final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+
+      if (pickedImage != null) {
+        setState(() {
+          _image = File(pickedImage.path);
+          url = pickedImage.name;
+        });
+      }
+    } catch (error) {
+      print('Error al seleccionar la foto de perfil: $error');
+      // Manejar el error si es necesario
+    }
+  }
+
   void _crearAlimento() async {
     if (_formKey.currentState!.validate()) {
+      Globales globales = Provider.of<Globales>(context, listen: false);
       // Mostrar AlertDialog mientras se crea la rutina
       showDialog(
         context: context,
@@ -307,8 +362,18 @@ class _CreateFoodPageState extends State<CreateFoodPage> {
         },
       );
 
+      
+           // Subir la imagen al almacenamiento en la nube
+      final storageRef = FirebaseStorage.instance.ref("/Alimentos").child(url!);
+      await storageRef.putFile(_image!);
+
+      // Obtener el enlace de descarga de la imagen subida
+      final imageUrl = await storageRef.getDownloadURL();
+
       Food newFood = Food(
-        urlImage: '', // Placeholder, replace with actual image URL
+        isPublic: _esPublica,
+        nick: globales.nick,
+        urlImage: imageUrl, // Placeholder, replace with actual image URL
         name: _name,
         description: _description,
         ingredients: _ingredients,
@@ -321,6 +386,7 @@ class _CreateFoodPageState extends State<CreateFoodPage> {
         },
       );
       // Print the created Food object
+      FoodService.agregarAlimento(context, newFood);
       print(newFood.toJson());
 
       // Variables para almacenar la suma de los enfoques de los músculos

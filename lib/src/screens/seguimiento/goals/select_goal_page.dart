@@ -37,7 +37,7 @@ class _SelectGoalPageState extends State<SelectGoalPage> {
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
-            //mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               CustomDropdown(
                 hint: 'Seleccionar',

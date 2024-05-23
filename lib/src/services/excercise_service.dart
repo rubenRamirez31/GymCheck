@@ -27,6 +27,30 @@ class ExerciseService {
     }
   }
 
+  static Future<void> agregarEjercicios(
+    BuildContext context, List<Exercise> exercises) async {
+  try {
+    // Accede a la referencia de la colección "Ejercicios" en Firestore
+    final exerciseCollectionRef =
+        FirebaseFirestore.instance.collection('Ejercicios');
+
+    // Itera sobre la lista de ejercicios y agrega cada uno a Firestore
+    for (Exercise exercise in exercises) {
+      // Convierte el ejercicio a un mapa JSON para guardarlo en Firestore
+      final exerciseMap = exercise.toMap();
+
+      // Agrega el ejercicio a Firestore
+      await exerciseCollectionRef.add(exerciseMap);
+    }
+
+    print('Ejercicios agregados con éxito.');
+  } catch (error) {
+    print('Error al agregar los ejercicios: $error');
+    throw error; // Puedes manejar el error según tus necesidades
+  }
+}
+
+
   ///Favoritos
   static Future<void> agregarAFavoritos(
       BuildContext context, Exercise exercise) async {

@@ -82,60 +82,63 @@ class _ViewWorkoutSeriesPageState extends State<ViewWorkoutSeriesPage> {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            if (widget.buttons == true)
-                              RawMaterialButton(
-                                onPressed: () {
-                                  // Lógica para agregar a favoritos
-                                  print('Agregar a favoritos');
-                                },
-                                fillColor: Colors.grey[200],
-                                shape: const CircleBorder(),
-                                child: const Icon(Icons.favorite_border,
-                                    color: Colors.black),
-                              ),
-                            if (widget.buttons == true)
-                              RawMaterialButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => CrearWorkoutPage(
-                                            serieID: widget.id)),
-                                  );
-                                },
-                                fillColor: Colors.grey[200],
-                                shape: const CircleBorder(),
-                                child: const Icon(Icons.sports_gymnastics,
-                                    color: Colors.black),
-                              ),
-                            if (widget.buttons == true)
-                              if (_workoutSeries?.nick == globales.nick)
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              if (widget.buttons == true)
                                 RawMaterialButton(
                                   onPressed: () {
-                                    // Lógica para editar
-                                    print('Editar');
+                                    // Lógica para agregar a favoritos
+                                    print('Agregar a favoritos');
                                   },
                                   fillColor: Colors.grey[200],
                                   shape: const CircleBorder(),
-                                  child: const Icon(Icons.edit,
+                                  child: const Icon(Icons.favorite_border,
                                       color: Colors.black),
                                 ),
-                            if (widget.buttons == true)
-                              if (_workoutSeries?.isPublic == true)
+                              if (widget.buttons == true)
                                 RawMaterialButton(
                                   onPressed: () {
-                                    // Lógica para editar
-                                    print('Editar');
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => CrearWorkoutPage(
+                                              serieID: widget.id)),
+                                    );
                                   },
                                   fillColor: Colors.grey[200],
                                   shape: const CircleBorder(),
-                                  child: const Icon(Icons.share,
+                                  child: const Icon(Icons.sports_gymnastics,
                                       color: Colors.black),
                                 ),
-                          ],
+                              if (widget.buttons == true)
+                                if (_workoutSeries?.nick == globales.nick)
+                                  RawMaterialButton(
+                                    onPressed: () {
+                                      // Lógica para editar
+                                      print('Editar');
+                                    },
+                                    fillColor: Colors.grey[200],
+                                    shape: const CircleBorder(),
+                                    child: const Icon(Icons.edit,
+                                        color: Colors.black),
+                                  ),
+                              if (widget.buttons == true)
+                                if (_workoutSeries?.isPublic == true)
+                                  RawMaterialButton(
+                                    onPressed: () {
+                                      // Lógica para editar
+                                      print('Editar');
+                                    },
+                                    fillColor: Colors.grey[200],
+                                    shape: const CircleBorder(),
+                                    child: const Icon(Icons.share,
+                                        color: Colors.black),
+                                  ),
+                            ],
+                          ),
                         ),
                         const SizedBox(height: 10),
                         CreateWidgets.buildLabelDetailsRowOnly(

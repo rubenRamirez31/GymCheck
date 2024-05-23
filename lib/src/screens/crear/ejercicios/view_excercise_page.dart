@@ -170,42 +170,7 @@ class _ViewExercisePageState extends State<ViewExercisePage> {
                     ),
                   ),
                 ),
-                if (widget.buttons == true)
-                  Positioned(
-                    top: 80,
-                    right: 20,
-                    child: FloatingActionButton(
-                      backgroundColor: const Color(0xff0C1C2E),
-                      tooltip: 'Agregar a rutina',
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CrearSeriePage(
-                                    ejercicioId: widget.id,
-                                  )),
-                        );
-                      },
-                      child: Icon(
-                        Icons.playlist_add,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                if (widget.buttons == true)
-                  Positioned(
-                    top: 20,
-                    right: 20,
-                    child: FloatingActionButton(
-                      tooltip: 'Agregar a favoritos',
-                      backgroundColor: const Color(0xff0C1C2E),
-                      onPressed: _toggleFavoriteStatus,
-                      child: Icon(
-                        _isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                
               ],
             )
           : const Center(

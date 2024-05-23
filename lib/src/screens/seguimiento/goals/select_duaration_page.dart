@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/meta_diaria_model.dart';
 import 'package:gym_check/src/models/meta_principal_model.dart';
 import 'package:gym_check/src/screens/principal.dart';
+import 'package:gym_check/src/screens/seguimiento/widgets/tracking_widgets.dart';
 import 'package:gym_check/src/services/goals_service.dart';
 import 'package:gym_check/src/services/physical_data_service.dart';
 import 'package:intl/intl.dart';
@@ -110,53 +111,59 @@ class _SelectDurationState extends State<SelectDuration> {
                 ],
               ),
 
-              _buildDataRow('Proteínas', '${widget.macros['proteinas']} g'),
-              _buildDataRow(
+               TrackingWidgets.buildLabelDetailsRow('Proteínas', '${widget.macros['proteinas']} g'),
+               TrackingWidgets.buildLabelDetailsRow(
                   'Carbohidratos', '${widget.macros['carbohidratos']} g'),
-              _buildDataRow('Grasas', '${widget.macros['grasas']} g'),
+              TrackingWidgets.buildLabelDetailsRow('Grasas', '${widget.macros['grasas']} g'),
               const SizedBox(height: 20),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Metas diarias seleccionadas:',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.info, color: Colors.white),
-                    onPressed: () {
-                      //_showInfoDialog(context);
-                    },
-                  ),
-                ],
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Metas diarias seleccionadas:',
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.info, color: Colors.white),
+                      onPressed: () {
+                        //_showInfoDialog(context);
+                      },
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 8),
               _buildSelectedGoalsList(),
               const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Tus datos corporales hasta ahora:',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.info, color: Colors.white),
-                    onPressed: () {
-                      //_showInfoDialog(context);
-                    },
-                  ),
-                ],
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Tus datos corporales hasta ahora:',
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.info, color: Colors.white),
+                      onPressed: () {
+                        //_showInfoDialog(context);
+                      },
+                    ),
+                  ],
+                ),
               ),
-              _buildDataRow('Peso', '$_peso kg'),
-              _buildDataRow('Altura', '$_altura cm'),
+              TrackingWidgets.buildLabelDetailsRow('Peso', '$_peso kg'),
+              TrackingWidgets.buildLabelDetailsRow('Altura', '$_altura cm'),
               const SizedBox(height: 20),
 
               Row(
@@ -180,9 +187,9 @@ class _SelectDurationState extends State<SelectDuration> {
               //const SizedBox(height: 8),
               _buildDurationSelector(),
               const SizedBox(height: 16),
-              _buildDataRow('Fecha de inicio:',
+              TrackingWidgets.buildLabelDetailsRow('Fecha de inicio:',
                   DateFormat('dd-MM-yyyy').format(_startDate)),
-              _buildDataRow('Fecha de finalización:',
+              TrackingWidgets.buildLabelDetailsRow('Fecha de finalización:',
                   DateFormat('dd-MM-yyyy').format(_endDate)),
 
               const SizedBox(height: 16),
@@ -250,35 +257,7 @@ class _SelectDurationState extends State<SelectDuration> {
     );
   }
 
-  Widget _buildDataRow(String macro, String cantidad) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Container(
-        padding: const EdgeInsets.all(10.0),
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 83, 83, 83),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              '$macro:',
-              style: const TextStyle(fontSize: 16, color: Colors.white),
-            ),
-            Text(
-              cantidad,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+ 
 
   Widget _buildSelectedGoalsList() {
     return Column(

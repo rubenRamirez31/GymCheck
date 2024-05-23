@@ -198,37 +198,40 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
                                           const Color.fromARGB(255, 83, 83, 83),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          '$nombreEjercicio: $repeticiones reps',
-                                          style: const TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.white),
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: [
-                                            IconButton(
-                                              onPressed: () {
-                                                _editarAtributos(item);
-                                              },
-                                              color: Colors.white,
-                                              icon: const Icon(Icons.edit),
-                                            ),
-                                            IconButton(
-                                              onPressed: () {
-                                                _eliminar(item);
-                                              },
-                                              color: Colors.white,
-                                              icon: const Icon(Icons.delete),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            '$nombreEjercicio: $repeticiones reps',
+                                            style: const TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.white),
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              IconButton(
+                                                onPressed: () {
+                                                  _editarAtributos(item);
+                                                },
+                                                color: Colors.white,
+                                                icon: const Icon(Icons.edit),
+                                              ),
+                                              IconButton(
+                                                onPressed: () {
+                                                  _eliminar(item);
+                                                },
+                                                color: Colors.white,
+                                                icon: const Icon(Icons.delete),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 );
@@ -1023,24 +1026,21 @@ class _CrearSeriePageState extends State<CrearSeriePage> {
                     style: TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 20),
-                  Row(
+                  Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      ElevatedButton(
+                      CustomButton(
                         onPressed: () {
                           // Crear otra serie
                         },
-                        child: const Text('Crear otra serie',
-                            style: TextStyle(
-                                color: Colors.black)), // Letras blancas
+                        text:'Crear otra serie',
+                             // Letras blancas
                       ),
-                      ElevatedButton(
+                      CustomButton(
                         onPressed: () {
                           // Crear rutina
                         },
-                        child: const Text('Crear rutina',
-                            style: TextStyle(
-                                color: Colors.black)), // Letras blancas
+                      text: 'Crear rutina', // Letras blancas
                       ),
                     ],
                   ),

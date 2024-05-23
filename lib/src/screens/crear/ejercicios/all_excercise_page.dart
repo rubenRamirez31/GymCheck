@@ -154,8 +154,18 @@ class _AllExercisePageState extends State<AllExercisePage> {
                             items: <String>[
                               'Pecho',
                               'Espalda',
-                              'Bicep',
-                              'Cuadricep',
+                              'Hombros',
+                              'Bíceps',
+                              'Tríceps',
+                              'Antebrazo',
+                              'Cuádriceps',
+                              'Femoral',
+                              'Abductores',
+                              'Glúteos',
+                              'Gemelos',
+                              'Abdomen',
+                              'Core',
+                              'Trapecio',
                             ].map<DropdownMenuItem<String>>((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
@@ -401,7 +411,7 @@ class _ExerciseContainerState extends State<ExerciseContainer> {
                                   overflow: TextOverflow
                                       .ellipsis, // Truncate long text with ellipsis
                                 ),
-                                  const SizedBox(height: 5),
+                                const SizedBox(height: 5),
                                 Text(
                                   "$primary y $secondary",
                                   style: const TextStyle(
@@ -478,7 +488,7 @@ class _ExerciseContainerState extends State<ExerciseContainer> {
                                   overflow: TextOverflow
                                       .ellipsis, // Truncate long text with ellipsis
                                 ),
-                                  const SizedBox(height: 5),
+                                const SizedBox(height: 5),
                                 Text(
                                   "$primary y $secondary",
                                   style: const TextStyle(

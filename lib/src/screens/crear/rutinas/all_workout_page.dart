@@ -126,11 +126,21 @@ class _AllWorkoutPageState extends State<AllWorkoutPage> {
                             });
                           },
                           items: <String>[
-                            'Pecho',
-                            'Espalda',
-                            'Bicep',
-                            'Cuadricep',
-                          ].map<DropdownMenuItem<String>>((String value) {
+  'Pecho',
+  'Espalda',
+  'Hombros',
+  'Bíceps',
+  'Tríceps',
+  'Antebrazo',
+  'Cuádriceps',
+  'Femoral',
+  'Abductores',
+  'Glúteos',
+  'Gemelos',
+  'Abdomen',
+  'Core',
+  'Trapecio',
+].map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Text(
