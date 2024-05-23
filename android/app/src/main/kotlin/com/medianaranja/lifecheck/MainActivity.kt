@@ -1,4 +1,4 @@
-package com.example.gym_check
+package com.medianaranja.lifecheck
 
 import io.flutter.embedding.android.FlutterActivity
 
