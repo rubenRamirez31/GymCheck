@@ -82,12 +82,12 @@ class _ViewWorkoutSeriesPageState extends State<ViewWorkoutSeriesPage> {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              if (widget.buttons == true)
+                        if (widget.buttons == true)
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
                                 RawMaterialButton(
                                   onPressed: () {
                                     // Lógica para agregar a favoritos
@@ -98,14 +98,14 @@ class _ViewWorkoutSeriesPageState extends State<ViewWorkoutSeriesPage> {
                                   child: const Icon(Icons.favorite_border,
                                       color: Colors.black),
                                 ),
-                              if (widget.buttons == true)
                                 RawMaterialButton(
                                   onPressed: () {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => CrearWorkoutPage(
-                                              serieID: widget.id)),
+                                          builder: (context) =>
+                                              CrearWorkoutPage(
+                                                  serieID: widget.id)),
                                     );
                                   },
                                   fillColor: Colors.grey[200],
@@ -113,7 +113,6 @@ class _ViewWorkoutSeriesPageState extends State<ViewWorkoutSeriesPage> {
                                   child: const Icon(Icons.sports_gymnastics,
                                       color: Colors.black),
                                 ),
-                              if (widget.buttons == true)
                                 if (_workoutSeries?.nick == globales.nick)
                                   RawMaterialButton(
                                     onPressed: () {
@@ -125,7 +124,6 @@ class _ViewWorkoutSeriesPageState extends State<ViewWorkoutSeriesPage> {
                                     child: const Icon(Icons.edit,
                                         color: Colors.black),
                                   ),
-                              if (widget.buttons == true)
                                 if (_workoutSeries?.isPublic == true)
                                   RawMaterialButton(
                                     onPressed: () {
@@ -137,9 +135,9 @@ class _ViewWorkoutSeriesPageState extends State<ViewWorkoutSeriesPage> {
                                     child: const Icon(Icons.share,
                                         color: Colors.black),
                                   ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
                         const SizedBox(height: 10),
                         CreateWidgets.buildLabelDetailsRowOnly(
                             _workoutSeries!.name, MainAxisAlignment.center),
@@ -268,49 +266,49 @@ class _ViewWorkoutSeriesPageState extends State<ViewWorkoutSeriesPage> {
   }
 
   Widget _buildImage() {
-  return Container(
-    height: 200,
-    width: double.infinity,
-    decoration: BoxDecoration(
-      color: Colors.grey[200],
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: Image.network(
-        _workoutSeries!.urlImagen,
-        loadingBuilder: (BuildContext context, Widget child,
-            ImageChunkEvent? loadingProgress) {
-          if (loadingProgress == null) {
-            return child;
-          } else {
-            return const CircularProgressIndicator();
-          }
-        },
-        errorBuilder: (context, error, stackTrace) {
-          return const Text('No hay imagen');
-        },
-        frameBuilder: (BuildContext context, Widget child, int? frame,
-            bool wasSynchronouslyLoaded) {
-          if (wasSynchronouslyLoaded) {
-            return child;
-          }
-          return AnimatedOpacity(
-            child: child,
-            opacity: frame == null ? 0 : 1,
-            duration: const Duration(seconds: 1),
-            curve: Curves.easeOut,
-          );
-        },
-        headers: {
-          'Accept': '*/*',
-          'User-Agent': 'your_user_agent',
-        },
-        fit: BoxFit.cover, // Ajusta la imagen al tamaño del contenedor
+    return Container(
+      height: 200,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(10),
       ),
-    ),
-  );
-}
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Image.network(
+          _workoutSeries!.urlImagen,
+          loadingBuilder: (BuildContext context, Widget child,
+              ImageChunkEvent? loadingProgress) {
+            if (loadingProgress == null) {
+              return child;
+            } else {
+              return const CircularProgressIndicator();
+            }
+          },
+          errorBuilder: (context, error, stackTrace) {
+            return const Text('No hay imagen');
+          },
+          frameBuilder: (BuildContext context, Widget child, int? frame,
+              bool wasSynchronouslyLoaded) {
+            if (wasSynchronouslyLoaded) {
+              return child;
+            }
+            return AnimatedOpacity(
+              child: child,
+              opacity: frame == null ? 0 : 1,
+              duration: const Duration(seconds: 1),
+              curve: Curves.easeOut,
+            );
+          },
+          headers: {
+            'Accept': '*/*',
+            'User-Agent': 'your_user_agent',
+          },
+          fit: BoxFit.cover, // Ajusta la imagen al tamaño del contenedor
+        ),
+      ),
+    );
+  }
 
   Widget _buildExercisesList() {
     return Column(

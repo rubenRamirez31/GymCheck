@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/workout_model.dart';
 import 'package:gym_check/src/screens/crear/rutinas/view_workout_page.dart';
-import 'package:gym_check/src/screens/crear/series/view_serie_page.dart';
 import 'package:gym_check/src/services/workout_service.dart';
 import 'package:gym_check/src/widgets/menu_button_option_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';

@@ -8,8 +8,7 @@ import 'package:gym_check/src/providers/globales.dart';
 import 'package:provider/provider.dart';
 
 class FoodService {
-  static Future<void> agregarAlimento(
-      BuildContext context, Food food) async {
+  static Future<void> agregarAlimento(BuildContext context, Food food) async {
     try {
       final foodCollectionRef =
           FirebaseFirestore.instance.collection('Alimentos');
@@ -25,8 +24,7 @@ class FoodService {
     }
   }
 
-  static Future<void> agregarAFavoritos(
-      BuildContext context, Food food) async {
+  static Future<void> agregarAFavoritos(BuildContext context, Food food) async {
     try {
       Globales globales = Provider.of<Globales>(context, listen: false);
       final nick = globales.nick;
@@ -34,11 +32,9 @@ class FoodService {
       final userFavoritesDocRef =
           FirebaseFirestore.instance.collection('Mis-Favoritos').doc(nick);
 
-      final userFoodCollectionRef =
-          userFavoritesDocRef.collection('Alimentos');
+      final userFoodCollectionRef = userFavoritesDocRef.collection('Alimentos');
 
-      final existingFood =
-          await userFoodCollectionRef.doc(food.id).get();
+      final existingFood = await userFoodCollectionRef.doc(food.id).get();
       if (existingFood.exists) {
         print('Este alimento ya está en favoritos.');
         return;
@@ -66,11 +62,9 @@ class FoodService {
       final userFavoritesDocRef =
           FirebaseFirestore.instance.collection('Mis-Favoritos').doc(nick);
 
-      final userFoodCollectionRef =
-          userFavoritesDocRef.collection('Alimentos');
+      final userFoodCollectionRef = userFavoritesDocRef.collection('Alimentos');
 
-      final existingFood =
-          await userFoodCollectionRef.doc(foodId).get();
+      final existingFood = await userFoodCollectionRef.doc(foodId).get();
       if (!existingFood.exists) {
         print('Este alimento no está en favoritos.');
         return;
@@ -85,8 +79,7 @@ class FoodService {
     }
   }
 
-  static Future<bool> esFavorito(
-      BuildContext context, String foodId) async {
+  static Future<bool> esFavorito(BuildContext context, String foodId) async {
     try {
       Globales globales = Provider.of<Globales>(context, listen: false);
       final nick = globales.nick;
@@ -94,11 +87,9 @@ class FoodService {
       final userFavoritesDocRef =
           FirebaseFirestore.instance.collection('Mis-Favoritos').doc(nick);
 
-      final userFoodCollectionRef =
-          userFavoritesDocRef.collection('Alimentos');
+      final userFoodCollectionRef = userFavoritesDocRef.collection('Alimentos');
 
-      final foodDocSnapshot =
-          await userFoodCollectionRef.doc(foodId).get();
+      final foodDocSnapshot = await userFoodCollectionRef.doc(foodId).get();
       return foodDocSnapshot.exists;
     } catch (error) {
       print('Error al verificar si el alimento es favorito: $error');
@@ -106,28 +97,76 @@ class FoodService {
     }
   }
 
-  static Stream<List<Food>> obtenerTodosAlimentosStream(
-      BuildContext context) {
+  static Stream<List<Food>> obtenerAlimentosFiltradosStream(BuildContext context, String query, bool cradospormi, bool todo) {
+    final StreamController<List<Food>> controller =
+        StreamController<List<Food>>();
+
+    // Accede a la colección "Alimentos" en Firestore
+    final CollectionReference alimentosCollectionRef =
+        FirebaseFirestore.instance.collection('Alimentos');
+
+    // Crea una consulta que filtre los alimentos por el término de búsqueda
+    Query filteredQuery = alimentosCollectionRef.where(
+      'name',
+      isGreaterThanOrEqualTo: query,
+      isLessThanOrEqualTo:
+          query + '\uf8ff', // \uf8ff es el último código Unicode
+    );
+
+     // Si se proporciona el parámetro "enfoque", filtra por ese enfoque
+    if (cradospormi == true) {
+       Globales globales = Provider.of<Globales>(context, listen: false);
+      filteredQuery = filteredQuery.where('nick', isEqualTo: globales.nick);
+    }
+    // Si se proporciona el parámetro "enfoque", filtra por ese enfoque
+    if (todo == true) {
+      
+      filteredQuery = filteredQuery.where('isPublic', isEqualTo: true);
+    }
+
+    // Escucha los cambios en la consulta filtrada
+    final StreamSubscription<QuerySnapshot> subscription =
+        filteredQuery.snapshots().listen((QuerySnapshot snapshot) {
+      final List<Food> alimentos = snapshot.docs.map((DocumentSnapshot doc) {
+        final alimento = Food.fromFirestore(doc);
+        alimento.id = doc.id; // Agregar el ID del documento al modelo Food
+        return alimento;
+      }).toList();
+      controller.add(alimentos);
+    }, onError: (error) {
+      print('Error al obtener alimentos filtrados: $error');
+      controller.addError(error);
+    });
+
+    // Cancela la suscripción cuando se cierre el StreamController
+    controller.onCancel = () {
+      subscription.cancel();
+    };
+
+    return controller.stream;
+  }
+
+  static Stream<List<Food>> obtenerTodosAlimentosStream(BuildContext context) {
     final StreamController<List<Food>> controller =
         StreamController<List<Food>>();
 
     try {
-      final foodCollectionRef =
+      final alimentosCollectionRef =
           FirebaseFirestore.instance.collection('Alimentos');
       final StreamSubscription<QuerySnapshot> subscription =
-          foodCollectionRef.snapshots().listen((QuerySnapshot snapshot) {
-        final List<Food> foods =
-            snapshot.docs.map((DocumentSnapshot doc) {
-          final food = Food.fromFirestore(doc);
-          food.id = doc.id;
-          return food;
+          alimentosCollectionRef.snapshots().listen((QuerySnapshot snapshot) {
+        final List<Food> alimentos = snapshot.docs.map((DocumentSnapshot doc) {
+          final alimento = Food.fromMap(doc.data() as Map<String, dynamic>);
+          alimento.id = doc.id; // Agregar el ID del documento al modelo Food
+          return alimento;
         }).toList();
-        controller.add(foods);
+        controller.add(alimentos);
       }, onError: (error) {
         print('Error al obtener stream de alimentos: $error');
         controller.addError(error);
       });
 
+      // Cancela la suscripción cuando se cierre el StreamController
       controller.onCancel = () {
         subscription.cancel();
       };

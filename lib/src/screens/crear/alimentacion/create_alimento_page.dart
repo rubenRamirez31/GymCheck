@@ -380,9 +380,9 @@ class _CreateFoodPageState extends State<CreateFoodPage> {
         type: _type,
         preparation: _preparation,
         nutrients: {
-          'proteins': _proteins,
-          'carbs': _carbs,
-          'fats': _fats,
+          'Proteínas ': _proteins,
+          'Carbos': _carbs,
+          'Grasas': _fats,
         },
       );
       // Print the created Food object
@@ -418,19 +418,17 @@ class _CreateFoodPageState extends State<CreateFoodPage> {
                   style: TextStyle(color: Colors.white),
                 ),
                 const SizedBox(height: 20),
-                ElevatedButton(
+                CustomButton(
                   onPressed: () {
                     // Crear otra rutina
                   },
-                  child: const Text('Crear otra alimento',
-                      style: TextStyle(color: Colors.black)),
+                 text: 'Crear otra alimento',
                 ),
-                ElevatedButton(
+                CustomButton(
                   onPressed: () {
                     // Ver todas las rutinas
                   },
-                  child: const Text('Ver todoss los alimentos',
-                      style: TextStyle(color: Colors.black)),
+                  text: 'Ver todoss los alimentos',
                 ),
               ],
             ),

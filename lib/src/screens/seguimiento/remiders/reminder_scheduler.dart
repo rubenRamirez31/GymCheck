@@ -3,24 +3,24 @@ import 'package:gym_check/src/models/reminder_model.dart';
 import 'package:gym_check/src/services/reminder_service.dart';
 
 class ReminderScheduler {
-  static Future<void> scheduleReminders(
-      BuildContext context, Reminder primeReminder, int dias) async {
+  static Future<void> scheduleReminders(BuildContext context,
+      Reminder primeReminder, int dias, DateTime diaIncio) async {
     try {
       DateTime startTime = primeReminder.startTime;
       DateTime endTime = primeReminder.endTime;
       List<int>? repeatDays = primeReminder.repeatDays;
 
 //if (repeatDays != null && repeatDays.isNotEmpty) {
-        await _createClonedReminders(context, primeReminder, dias);
-   //   }
+      await _createClonedReminders(context, primeReminder, dias, diaIncio);
+      //   }
     } catch (error) {
       print('Error al programar recordatorios: $error');
     }
   }
 
-  static Future<void> _createClonedReminders(
-      BuildContext context, Reminder primeReminder, int dias) async {
-    DateTime currentDate = DateTime.now();
+  static Future<void> _createClonedReminders(BuildContext context,
+      Reminder primeReminder, int dias, DateTime diaInicio) async {
+    DateTime currentDate = diaInicio;
 
     for (int i = 0; i < dias; i++) {
       DateTime nextDay = currentDate.add(Duration(days: i));
