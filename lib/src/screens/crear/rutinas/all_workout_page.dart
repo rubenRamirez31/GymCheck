@@ -28,7 +28,7 @@ class _AllWorkoutPageState extends State<AllWorkoutPage> {
   void initState() {
     super.initState();
     _workoutStream = _getWorkoutStreamForOption(_selectedMenuOption);
-   // _loadSelectedMenuOption();
+    // _loadSelectedMenuOption();
   }
 
   Future<void> _loadSelectedMenuOption() async {
@@ -126,21 +126,21 @@ class _AllWorkoutPageState extends State<AllWorkoutPage> {
                             });
                           },
                           items: <String>[
-  'Pecho',
-  'Espalda',
-  'Hombros',
-  'Bíceps',
-  'Tríceps',
-  'Antebrazo',
-  'Cuádriceps',
-  'Femoral',
-  'Abductores',
-  'Glúteos',
-  'Gemelos',
-  'Abdomen',
-  'Core',
-  'Trapecio',
-].map<DropdownMenuItem<String>>((String value) {
+                            'Pecho',
+                            'Espalda',
+                            'Hombros',
+                            'Bíceps',
+                            'Tríceps',
+                            'Antebrazo',
+                            'Cuádriceps',
+                            'Femoral',
+                            'Abductores',
+                            'Glúteos',
+                            'Gemelos',
+                            'Abdomen',
+                            'Core',
+                            'Trapecio',
+                          ].map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Text(
@@ -275,59 +275,59 @@ class _WorkoutContainerState extends State<WorkoutContainer> {
           children: [
             Column(
               children: [
-               widget.workout.urlImagen.isNotEmpty
-  ? Container(
-      height: 100,
-      width: 100,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: Image.network(
-          widget.workout.urlImagen,
-          loadingBuilder: (BuildContext context, Widget child,
-              ImageChunkEvent? loadingProgress) {
-            if (loadingProgress == null) {
-              return child;
-            } else {
-              return const CircularProgressIndicator();
-            }
-          },
-          errorBuilder: (context, error, stackTrace) {
-            return const Text('No hay imagen');
-          },
-          frameBuilder: (BuildContext context, Widget child,
-              int? frame, bool wasSynchronouslyLoaded) {
-            if (wasSynchronouslyLoaded) {
-              return child;
-            }
-            return AnimatedOpacity(
-              child: child,
-              opacity: frame == null ? 0 : 1,
-              duration: const Duration(seconds: 1),
-              curve: Curves.easeOut,
-            );
-          },
-          headers: {
-            'Accept': '*/*',
-            'User-Agent': 'your_user_agent',
-          },
-          fit: BoxFit.cover, // Ajusta la imagen al tamaño del contenedor
-        ),
-      ),
-    )
-  : Container(
-      height: 100,
-      width: 100,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: const Center(
-        child: Text('Imagen no encontrada'),
-      ),
-    ),
-
+                widget.workout.urlImagen.isNotEmpty
+                    ? Container(
+                        height: 100,
+                        width: 100,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.network(
+                            widget.workout.urlImagen,
+                            loadingBuilder: (BuildContext context, Widget child,
+                                ImageChunkEvent? loadingProgress) {
+                              if (loadingProgress == null) {
+                                return child;
+                              } else {
+                                return const CircularProgressIndicator();
+                              }
+                            },
+                            errorBuilder: (context, error, stackTrace) {
+                              return const Text('No hay imagen');
+                            },
+                            frameBuilder: (BuildContext context, Widget child,
+                                int? frame, bool wasSynchronouslyLoaded) {
+                              if (wasSynchronouslyLoaded) {
+                                return child;
+                              }
+                              return AnimatedOpacity(
+                                child: child,
+                                opacity: frame == null ? 0 : 1,
+                                duration: const Duration(seconds: 1),
+                                curve: Curves.easeOut,
+                              );
+                            },
+                            headers: {
+                              'Accept': '*/*',
+                              'User-Agent': 'your_user_agent',
+                            },
+                            fit: BoxFit
+                                .cover, // Ajusta la imagen al tamaño del contenedor
+                          ),
+                        ),
+                      )
+                    : Container(
+                        height: 100,
+                        width: 100,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Center(
+                          child: Text('Imagen no encontrada'),
+                        ),
+                      ),
               ],
             ),
             const SizedBox(width: 16),
@@ -495,14 +495,13 @@ class _WorkoutContainerState extends State<WorkoutContainer> {
                                     return FractionallySizedBox(
                                       heightFactor: 0.96,
                                       child: ViewWorkoutPage(
-                                        id: widget.workout.id ?? "",
-                                        buttons: true
-                                      ),
+                                          id: widget.workout.id ?? "",
+                                          buttons: true),
                                     );
                                   },
                                 );
                               },
-                              icon: const Icon(Icons.more_horiz),
+                              icon: const Icon(Icons.remove_red_eye),
                             ),
                             IconButton(
                               onPressed: () {

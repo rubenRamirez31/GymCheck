@@ -3,11 +3,15 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
 import 'package:gym_check/src/models/social/post_model.dart';
+import 'package:gym_check/src/models/workout_model.dart';
 import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/screens/social/ver_rutinas.dart';
 import 'package:gym_check/src/services/firebase_services.dart';
 import 'package:gym_check/src/values/app_colors.dart';
+import 'package:gym_check/src/widgets/social/rutina_card.dart';
+import 'package:gym_check/src/widgets/social/rutina_cardCreatePage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -231,6 +235,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         const SizedBox(
                           height: 20,
                         ),
+                        globales.rutinas.isNotEmpty
+                            ? RutinaCardCreatePage(workout: globales.rutinas[0])
+                            : Container(),
                         imagen != null
                             ? Stack(
                                 children: [
@@ -309,9 +316,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         context: context,
                         isScrollControlled: true,
                         builder: (context) {
-                          return const FractionallySizedBox(
-                            heightFactor: 0.94,
-                            child: VerRutinas(),
+                          return FractionallySizedBox(
+                            heightFactor: 0.93,
+                            child: VerRutinas(nick: globales.nick),
                           );
                         },
                       );
