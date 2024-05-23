@@ -358,18 +358,21 @@ class ExerciseContainer extends StatelessWidget {
           color: Colors.grey[200],
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              name,
-              style: const TextStyle(fontSize: 16),
-            ),
-            Text(
-              'Repeticiones: $repetitions',
-              style: const TextStyle(fontSize: 16),
-            ),
-          ],
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                name,
+                style: const TextStyle(fontSize: 16),
+              ),
+              Text(
+                ' Repeticiones: $repetitions',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
         ),
       ),
     );
