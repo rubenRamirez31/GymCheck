@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gym_check/src/models/workout_model.dart';
 
 class Globales extends ChangeNotifier {
   String primerNombre = "";
@@ -13,6 +14,17 @@ class Globales extends ChangeNotifier {
   int? primerosPasos;
   DateTime? fechaCreacion;
   bool? verificado;
+  List<Workout> rutinas = [];
+
+  void agregarRutina(Workout w) {
+    rutinas.add(w);
+    notifyListeners();
+  }
+
+  void quitarRutina() {
+    rutinas = [];
+    notifyListeners();
+  }
 
   Future<void> cargarDatosUsuario(String userId) async {
     try {

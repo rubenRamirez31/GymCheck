@@ -3,11 +3,15 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
 import 'package:gym_check/src/models/social/post_model.dart';
+import 'package:gym_check/src/models/workout_model.dart';
 import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/screens/social/ver_rutinas.dart';
 import 'package:gym_check/src/services/firebase_services.dart';
 import 'package:gym_check/src/values/app_colors.dart';
+import 'package:gym_check/src/widgets/social/rutina_card.dart';
+import 'package:gym_check/src/widgets/social/rutina_cardCreatePage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -32,7 +36,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   String resultados = "";
   String label = "";
   double confianza = 0;
-
+  String idRutina = "";
   @override
   void initState() {
     // TODO: implement initState
@@ -45,6 +49,16 @@ class _CreatePostPageState extends State<CreatePostPage> {
   @override
   Widget build(BuildContext context) {
     final globales = context.watch<Globales>();
+    if (globales.rutinas.isNotEmpty) {
+      for (Workout workout in globales.rutinas) {
+        setState(() {
+          idRutina = workout.id!;
+        });
+      }
+
+      print(idRutina);
+    }
+
     return PopScope(
         canPop: false,
         onPopInvoked: ((didPop) {
@@ -83,14 +97,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               SmartDialog.showLoading(msg: "Publicando");
 
                               Post newPost = Post(
-                                userId: globales.idAuth,
-                                texto: _textoController.text,
-                                nick: globales.nick,
-                                lugar: "",
-                                fechaCreacion: DateTime.now(),
-                                urlImagen: link,
-                                editad: false,
-                              );
+                                  userId: globales.idAuth,
+                                  texto: _textoController.text,
+                                  nick: globales.nick,
+                                  lugar: "",
+                                  fechaCreacion: DateTime.now(),
+                                  urlImagen: link,
+                                  editad: false,
+                                  idRutina: idRutina);
 
                               int resultado = await crearPost(newPost);
 
@@ -131,14 +145,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                     .getDownloadURL();
 
                                 Post newPost = Post(
-                                  userId: globales.idAuth,
-                                  texto: _textoController.text,
-                                  nick: globales.nick,
-                                  lugar: "",
-                                  fechaCreacion: DateTime.now(),
-                                  urlImagen: link,
-                                  editad: false,
-                                );
+                                    userId: globales.idAuth,
+                                    texto: _textoController.text,
+                                    nick: globales.nick,
+                                    lugar: "",
+                                    fechaCreacion: DateTime.now(),
+                                    urlImagen: link,
+                                    editad: false,
+                                    idRutina: idRutina);
 
                                 int resultado = await crearPost(newPost);
                                 if (!mounted) return;
@@ -231,6 +245,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         const SizedBox(
                           height: 20,
                         ),
+                        globales.rutinas.isNotEmpty
+                            ? RutinaCardCreatePage(workout: globales.rutinas[0])
+                            : Container(),
                         imagen != null
                             ? Stack(
                                 children: [
@@ -309,9 +326,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         context: context,
                         isScrollControlled: true,
                         builder: (context) {
-                          return const FractionallySizedBox(
-                            heightFactor: 0.94,
-                            child: VerRutinas(),
+                          return FractionallySizedBox(
+                            heightFactor: 0.93,
+                            child: VerRutinas(nick: globales.nick),
                           );
                         },
                       );

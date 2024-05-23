@@ -500,7 +500,7 @@ class _WorkoutContainerState extends State<WorkoutContainer> {
                                   },
                                 );
                               },
-                              icon: const Icon(Icons.more_horiz),
+                              icon: const Icon(Icons.remove_red_eye),
                             ),
                             IconButton(
                               onPressed: () {

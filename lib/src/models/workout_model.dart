@@ -12,7 +12,8 @@ class Workout {
   String secondaryFocus; // Enfoque secundario de la rutina
   String thirdFocus; // Enfoque terciario de la rutina
   String description; // Descripción de la rutina
-  String type; // Tipo de rutina (de algún grupo muscular, cardio, etc. Este se coloca manualmente)
+  String
+      type; // Tipo de rutina (de algún grupo muscular, cardio, etc. Este se coloca manualmente)
   int restBetweenSets; // Descanso entre series en segundos
   List<Map<String, dynamic>> series; // Lista de series en la rutina
 
@@ -53,7 +54,6 @@ class Workout {
   // Método para convertir una instancia de Workout en un mapa
   Map<String, dynamic> toMap() {
     return {
-     
       'name': name,
       'urlImagen': urlImagen,
       'nick': nick,
@@ -68,7 +68,6 @@ class Workout {
     };
   }
 
-  
   // Método para convertir un JSON en una instancia de Workout
   factory Workout.fromJson(String json) => Workout.fromMap(jsonDecode(json));
 
@@ -80,5 +79,23 @@ class Workout {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     data['id'] = doc.id;
     return Workout.fromMap(data);
+  }
+
+  // Método para crear una instancia de Workout desde un ID de Firebase y un mapa de datos
+  factory Workout.getFirebaseId(String idd, Map<String, dynamic> json) {
+    return Workout(
+      id: idd,
+      name: json['name'],
+      urlImagen: json['urlImagen'],
+      nick: json['nick'],
+      isPublic: json['isPublic'],
+      primaryFocus: json['primaryFocus'],
+      secondaryFocus: json['secondaryFocus'],
+      thirdFocus: json['thirdFocus'],
+      description: json['description'],
+      type: json['type'],
+      restBetweenSets: json['restBetweenSets'],
+      series: List<Map<String, dynamic>>.from(json['series']),
+    );
   }
 }
