@@ -5,6 +5,7 @@ class Post {
   String userId;
   String? lugar;
   String? texto;
+  String? idRutina;
   String nick;
   DateTime? fechaCreacion;
   String? urlImagen;
@@ -14,6 +15,7 @@ class Post {
       {required this.userId,
       this.lugar,
       this.texto,
+      this.idRutina,
       required this.nick,
       this.fechaCreacion,
       this.urlImagen,
@@ -26,6 +28,7 @@ class Post {
       userId: json['userIdAuth'],
       lugar: json['lugar'],
       texto: json['texto'],
+      idRutina: json['idRutina'],
       nick: json['nick'],
       fechaCreacion: (json['fechaCreacion'] as Timestamp).toDate(),
       urlImagen: json['urlImagen'],
@@ -38,6 +41,7 @@ class Post {
       'userIdAuth': userId,
       'lugar': lugar,
       'texto': texto,
+      'idRutina': idRutina,
       'nick': nick,
       'fechaCreacion': fechaCreacion,
       'urlImagen': urlImagen,
@@ -50,6 +54,7 @@ class Post {
       userId: json['userIdAuth'],
       lugar: json['lugar'],
       texto: json['texto'],
+      idRutina: json['idRutina'],
       nick: json['nick'],
       fechaCreacion: (json['fechaCreacion'] as Timestamp).toDate(),
       urlImagen: json['URLimagen'],
