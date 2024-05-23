@@ -49,6 +49,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
   @override
   Widget build(BuildContext context) {
     final globales = context.watch<Globales>();
+    if (globales.rutinas.isNotEmpty) {
+      for (Workout workout in globales.rutinas) {
+        print(workout.id); // Imprime el id de cada Workout
+      }
+    }
+
     return PopScope(
         canPop: false,
         onPopInvoked: ((didPop) {
