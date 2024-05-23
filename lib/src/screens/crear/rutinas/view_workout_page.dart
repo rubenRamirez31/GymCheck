@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:gym_check/src/models/workout_model.dart';
 import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/screens/crear/series/view_serie_page.dart';
@@ -76,7 +77,7 @@ class _ViewWorkoutPageState extends State<ViewWorkoutPage> {
                               },
                               child: Text(
                                 _workout!.nick,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
                                 ),
@@ -92,6 +93,32 @@ class _ViewWorkoutPageState extends State<ViewWorkoutPage> {
                             icon: Icons.play_arrow,
                           ),
                         const SizedBox(height: 10),
+                        if (widget.buttons == false)
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              //color: const Color.fromARGB(255, 30, 30, 30),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  RawMaterialButton(
+                                    onPressed: () {
+                                      SmartDialog.showToast(
+                                          "Agregar a mis favoritos");
+                                    },
+                                    fillColor: Colors.grey[200],
+                                    shape: const CircleBorder(),
+                                    child: const Icon(Icons.favorite_border,
+                                        color: Colors.black),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
                         if (widget.buttons == true)
                           Container(
                             padding: const EdgeInsets.all(8),
