@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:gym_check/src/models/social/post_model.dart';
 import 'package:gym_check/src/providers/globales.dart';
+import 'package:gym_check/src/screens/social/ver_rutinas.dart';
 import 'package:gym_check/src/services/firebase_services.dart';
 import 'package:gym_check/src/values/app_colors.dart';
 import 'package:image_picker/image_picker.dart';
@@ -298,7 +299,22 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   IconButton(
                     color: AppColors.white,
                     onPressed: () {
-                      SmartDialog.showToast("Agregar Rutina");
+                      showModalBottomSheet(
+                        showDragHandle: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(15),
+                          ),
+                        ),
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (context) {
+                          return const FractionallySizedBox(
+                            heightFactor: 0.94,
+                            child: VerRutinas(),
+                          );
+                        },
+                      );
                     },
                     icon: const Icon(
                       Icons.add,

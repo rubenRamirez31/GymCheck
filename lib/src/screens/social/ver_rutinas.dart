@@ -10,11 +10,13 @@ class VerRutinas extends StatefulWidget {
 class _VerRutinasState extends State<VerRutinas> {
   @override
   Widget build(BuildContext context) {
-    return const Padding(padding: EdgeInsets.all(10),
-    child: Column(
-      children: [
-        ListTile()
-      ],
-    ),);
+    return const Padding(
+      padding: EdgeInsets.all(10),
+      child: Column(
+        children: [ListTile(
+          
+        )],
+      ),
+    );
   }
 }
