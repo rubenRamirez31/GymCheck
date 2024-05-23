@@ -11,6 +11,9 @@ import 'package:gym_check/src/widgets/social/comment_box.dart';
 import 'package:gym_check/src/widgets/social/commentcount.dart';
 import 'package:gym_check/src/widgets/social/favoritoitem.dart';
 import 'package:gym_check/src/widgets/social/likecount.dart';
+import 'package:gym_check/src/widgets/social/rutina_Card_post.dart';
+import 'package:gym_check/src/widgets/social/rutina_cardCreatePage.dart';
+import 'package:gym_check/src/widgets/social/rutina_post.dart';
 import 'package:gym_check/src/widgets/social/share_box.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -197,46 +200,42 @@ class _PostWidgetState extends State<PostWidget> {
                         ),
                       ],
                     ),
+                    widget.post.idRutina != null
+                        ? RutinaLoader(
+                            idRutina: widget.post.idRutina!,
+                            builder: (workout) {
+                              // Mostrar el widget RutinaCardCreatePage con los datos de la rutina
+                              return RutinaCardPostPage(workout: workout);
+                            })
+                        : Container(),
                     Stack(
                       children: [
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
                           ),
-                          child: GestureDetector(
-                            onDoubleTap: () async {
-/*                               if (!isFavorite) {
-                                // Cambiar el estado local para indicar que el post es favorito
-                                agregarAFavoritos(
-                                    globales.correo, globales.idAuth);
-                              }
-                              setState(() {
-                                isFavorite = true;
-                              }); */
-                            },
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(15),
-                              child: widget.post.urlImagen != null &&
-                                      widget.post.urlImagen!.isNotEmpty
-                                  ? Stack(
-                                      children: [
-                                        const SizedBox(
-                                          height: 100,
-                                          child: Center(
-                                            child: CircularProgressIndicator(),
-                                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: widget.post.urlImagen != null &&
+                                    widget.post.urlImagen!.isNotEmpty
+                                ? Stack(
+                                    children: [
+                                      const SizedBox(
+                                        height: 100,
+                                        child: Center(
+                                          child: CircularProgressIndicator(),
                                         ),
-                                        Center(
-                                          child: FadeInImage.memoryNetwork(
-                                            placeholder: kTransparentImage,
-                                            image: widget.post.urlImagen!,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        )
-                                      ],
-                                    )
-                                  : Container(),
-                            ),
+                                      ),
+                                      Center(
+                                        child: FadeInImage.memoryNetwork(
+                                          placeholder: kTransparentImage,
+                                          image: widget.post.urlImagen!,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                : Container(),
                           ),
                         ),
                       ],
