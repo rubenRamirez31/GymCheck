@@ -195,11 +195,6 @@ class _RutinaCardState extends State<RutinaCard> {
                                 series: widget.workout.series));
                             Navigator.of(context).pop();
                             SmartDialog.showToast("Rutina agregada");
-
-                            for (Workout workout in globales.rutinas) {
-                              print(
-                                  workout.id); // Imprime el id de cada Workout
-                            }
                           }
                         });
                       },

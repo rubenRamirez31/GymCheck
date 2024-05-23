@@ -36,7 +36,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   String resultados = "";
   String label = "";
   double confianza = 0;
-
+  String idRutina = "";
   @override
   void initState() {
     // TODO: implement initState
@@ -51,8 +51,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
     final globales = context.watch<Globales>();
     if (globales.rutinas.isNotEmpty) {
       for (Workout workout in globales.rutinas) {
-        print(workout.id); // Imprime el id de cada Workout
+        setState(() {
+          idRutina = workout.id!;
+        });
       }
+
+      print(idRutina);
     }
 
     return PopScope(
@@ -93,14 +97,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               SmartDialog.showLoading(msg: "Publicando");
 
                               Post newPost = Post(
-                                userId: globales.idAuth,
-                                texto: _textoController.text,
-                                nick: globales.nick,
-                                lugar: "",
-                                fechaCreacion: DateTime.now(),
-                                urlImagen: link,
-                                editad: false,
-                              );
+                                  userId: globales.idAuth,
+                                  texto: _textoController.text,
+                                  nick: globales.nick,
+                                  lugar: "",
+                                  fechaCreacion: DateTime.now(),
+                                  urlImagen: link,
+                                  editad: false,
+                                  idRutina: idRutina);
 
                               int resultado = await crearPost(newPost);
 
@@ -141,14 +145,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                     .getDownloadURL();
 
                                 Post newPost = Post(
-                                  userId: globales.idAuth,
-                                  texto: _textoController.text,
-                                  nick: globales.nick,
-                                  lugar: "",
-                                  fechaCreacion: DateTime.now(),
-                                  urlImagen: link,
-                                  editad: false,
-                                );
+                                    userId: globales.idAuth,
+                                    texto: _textoController.text,
+                                    nick: globales.nick,
+                                    lugar: "",
+                                    fechaCreacion: DateTime.now(),
+                                    urlImagen: link,
+                                    editad: false,
+                                    idRutina: idRutina);
 
                                 int resultado = await crearPost(newPost);
                                 if (!mounted) return;
