@@ -1,4 +1,4 @@
-package com.medianaranja.lifecheck
+package com.medianaranja.LifeCheck
 
 import io.flutter.embedding.android.FlutterActivity
 
