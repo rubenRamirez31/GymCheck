@@ -40,22 +40,25 @@ class _AddDataPageState extends State<AddDataPage> {
       backgroundColor: const Color.fromARGB(255, 18, 18, 18),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(10.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CustomDropdown(
-                hint: 'Seleccionar',
-                value: _selectedField,
-                items: _getCamposPorRegistro(),
-                onChanged: (newValue) {
-                  setState(() {
-                    _selectedField = newValue;
-                  });
-                },
+              Column(
+                //mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CustomDropdown(
+                    hint: 'Seleccionar',
+                    value: _selectedField,
+                    items: _getCamposPorRegistro(),
+                    onChanged: (newValue) {
+                      setState(() {
+                        _selectedField = newValue;
+                      });
+                    },
+                  ),
+                ],
               ),
-
-           
               const SizedBox(height: 20),
               if (_selectedField != null) ...[
                 Text(
@@ -91,7 +94,7 @@ class _AddDataPageState extends State<AddDataPage> {
                   onPressed: () {
                     _guardarDatos(context);
                   },
-                  text:'Agregar',
+                  text: 'Agregar',
                 ),
               ],
               const SizedBox(height: 20),
@@ -232,11 +235,9 @@ class _AddDataPageState extends State<AddDataPage> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-
-                    if(widget.goal == true){
-                        // Cerrar el AlertDialog
-            Navigator.of(context).pop();
-
+                    if (widget.goal == true) {
+                      // Cerrar el AlertDialog
+                      Navigator.of(context).pop();
                     }
                     // Reinicia la página
                     Navigator.of(context).pushReplacement(

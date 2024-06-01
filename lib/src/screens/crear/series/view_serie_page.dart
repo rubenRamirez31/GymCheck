@@ -72,7 +72,7 @@ class _ViewWorkoutSeriesPageState extends State<ViewWorkoutSeriesPage> {
                                 // Acción del botón
                               },
                               child: Text(
-                                globales.nick,
+                                _workoutSeries!.nick,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,

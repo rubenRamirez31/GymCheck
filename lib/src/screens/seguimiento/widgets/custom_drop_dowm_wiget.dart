@@ -40,7 +40,7 @@ class CustomDropdown extends StatelessWidget {
                 value: item,
                 child: Text(
                   item,
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white, fontSize: 13),
                 ),
               );
             }).toList(),

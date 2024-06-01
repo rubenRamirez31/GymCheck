@@ -1,5 +1,3 @@
-
-
 import 'dart:core';
 
 import 'package:flutter/foundation.dart';
@@ -15,8 +13,7 @@ class SelectGoalPage extends StatefulWidget {
 }
 
 class _SelectGoalPageState extends State<SelectGoalPage> {
-   String? _selectedGoal = 'Pérdida de peso'; // Meta predeterminada
-   
+  String? _selectedGoal = 'Pérdida de peso'; // Meta predeterminada
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +34,7 @@ class _SelectGoalPageState extends State<SelectGoalPage> {
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            // mainAxisAlignment: MainAxisAlignment.start,
             children: [
               CustomDropdown(
                 hint: 'Seleccionar',
@@ -55,7 +52,7 @@ class _SelectGoalPageState extends State<SelectGoalPage> {
                 },
               ),
               const SizedBox(height: 20),
-              _buildGoalInfo(_selectedGoal??""),
+              _buildGoalInfo(_selectedGoal ?? ""),
             ],
           ),
         ),
@@ -76,7 +73,7 @@ class _SelectGoalPageState extends State<SelectGoalPage> {
               child: const Icon(Icons.arrow_forward,
                   color: Colors.white), // Color del icono del botón flotante
             )
-          : null, 
+          : null,
     );
   }
 
@@ -100,12 +97,9 @@ class _SelectGoalPageState extends State<SelectGoalPage> {
             'Esta meta se trata de mantener un peso corporal saludable y estable una vez que se ha alcanzado. Implica equilibrar la ingesta de alimentos y el gasto energético para evitar ganar o perder peso de manera significativa. Esto generalmente se logra mediante la adopción de hábitos alimenticios saludables y la incorporación de actividad física regular en la rutina diaria.';
         break;
       case '':
-        description =
-            'Selecciona tu meta principal';
+        description = 'Selecciona tu meta principal';
         break;
     }
-
-    
 
     return Container(
       decoration: BoxDecoration(
@@ -120,10 +114,4 @@ class _SelectGoalPageState extends State<SelectGoalPage> {
       ),
     );
   }
-
-   
-  
-
-
-  
 }
