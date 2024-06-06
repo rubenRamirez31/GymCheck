@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gym_check/src/screens/seguimiento/calendar/widgets/calendar_views.dart';
 
 import '../enumerations.dart';
 import '../widgets/calendar_configs.dart';
-import '../widgets/calendar_views.dart';
 
 class WebHomePage extends StatefulWidget {
   WebHomePage({

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:gym_check/src/providers/globales.dart';
-import 'package:gym_check/src/providers/user_session_provider.dart';
-import 'package:gym_check/src/screens/seguimiento/physical/add_data_page.dart';
-import 'package:gym_check/src/screens/seguimiento/widgets/data_tracking_widget.dart';
+import 'package:gym_check/src/screens/crear/widgets/custom_button.dart';
+import 'package:gym_check/src/screens/seguimiento/physical/add_corporal_data_page.dart';
+import 'package:gym_check/src/screens/seguimiento/widgets/data_physical_tracking_widget.dart';
 import 'package:gym_check/src/services/physical_data_service.dart';
-import 'package:gym_check/src/services/user_service.dart';
 import 'package:gym_check/src/widgets/create_button_widget.dart';
-import 'package:provider/provider.dart';
 
 class CorporalDataPage extends StatefulWidget {
   const CorporalDataPage({Key? key}) : super(key: key);
@@ -78,15 +75,13 @@ class _CorporalDataPageState extends State<CorporalDataPage> {
             return const SizedBox();
           }
 
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            child: _buildDataTrackingContainer(
+          return  _buildDataTrackingContainer(
               nameView,
               dataType,
               data,
               lastRecordDate,
               icon,
-            ),
+
           );
         },
       ).toList(),
@@ -96,13 +91,14 @@ class _CorporalDataPageState extends State<CorporalDataPage> {
   Widget _buildDataTrackingContainer(String name, String dataType, String data,
       String lastRecordDate, IconData icon) {
     return Container(
-      width: MediaQuery.of(context).size.width - 30,
+      //width: MediaQuery.of(context).size.width - 30,
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Colors.black),
+        //color: Colors.white,
+       // border: Border.all(color: Colors.black),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: DataTracking(
+      child: DataPhysicalTracking(
+        agregar: () => _showAddDataSelect(context, name),
         icon: icon,
         name: name,
         dataType: dataType,
@@ -176,7 +172,7 @@ class _CorporalDataPageState extends State<CorporalDataPage> {
               Container(
                 padding: const EdgeInsets.all(16),
                 child: const Text(
-                  'Mis Registros',
+                  'Mis Registros Corporales',
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -193,15 +189,12 @@ class _CorporalDataPageState extends State<CorporalDataPage> {
           const SizedBox(height: 10),
           _buildDataTrackingContainers(),
           const SizedBox(height: 20),
-          CreateButton(
+          CustomButton(
             text: 'Agregar',
-            textColor: Colors.white,
-            buttonColor: Colors.green,
             onPressed: () {
               _showAddData(context);
             },
-            iconData: Icons.add,
-            iconColor: Colors.white,
+            icon: Icons.add,
           ),
         ],
       ),
@@ -222,7 +215,29 @@ class _CorporalDataPageState extends State<CorporalDataPage> {
       builder: (context) {
         return FractionallySizedBox(
           heightFactor: 0.60,
-          child: AddDataPage(tipoDeRegistro: "corporales"),
+          child: AddCorporalDataPage(),
+        );
+      },
+    );
+  }
+
+  void _showAddDataSelect(BuildContext context, String data) {
+    showModalBottomSheet(
+      showDragHandle: true,
+      backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(15),
+        ),
+      ),
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return FractionallySizedBox(
+          heightFactor: 0.60,
+          child: AddCorporalDataPage(
+            selectedFieldType: data,
+          ),
         );
       },
     );

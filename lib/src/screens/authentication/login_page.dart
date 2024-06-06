@@ -5,7 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:gym_check/src/components/app_text_form_field.dart';
 import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/resources/resources.dart';
-import 'package:gym_check/src/screens/calendar/app_colors.dart';
+import 'package:gym_check/src/screens/seguimiento/calendar/app_colors.dart';
 import 'package:gym_check/src/services/firebase_services.dart';
 import 'package:gym_check/src/utils/common_widgets/gradient_background.dart';
 import 'package:gym_check/src/values/app_constants.dart';

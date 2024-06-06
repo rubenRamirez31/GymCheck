@@ -97,32 +97,6 @@ class PhysicalDataService {
   }
 
 
- static Stream<Map<String, dynamic>> latestPhysicalDataStream(
-      BuildContext context, String collection, String typeData) {
-    final globales = Provider.of<Globales>(context, listen: false);
-    final userCollectionRef = FirebaseFirestore.instance
-        .collection('Seguimiento')
-        .doc(globales.nick)
-        .collection(collection);
-
-    return userCollectionRef
-        .where('tipo', isEqualTo: typeData)
-        .orderBy('fecha', descending: true)
-        .limit(1)
-        .snapshots()
-        .map((snapshot) {
-      if (snapshot.docs.isNotEmpty) {
-        final latestData = snapshot.docs.first.data();
-        final timestamp = (latestData['fecha'] as Timestamp).toDate();
-        final formattedDate = DateFormat('dd-MM-yyyy').format(timestamp);
-        latestData['fecha'] = formattedDate;
-
-        return latestData;
-      } else {
-        return {};
-      }
-    });
-  }
 
     static Future<Map<String, dynamic>> getLatestPhysicalData(BuildContext context,String collection, String typeData) async {
     try {
@@ -145,6 +119,36 @@ class PhysicalDataService {
       return {'error': 'Error en la solicitud'};
     }
   }
+
+  static Future<Map<String, dynamic>> getLatestPhysicalDataV2(BuildContext context, String collection) async {
+  try {
+    final globales = Provider.of<Globales>(context, listen: false);
+    final userCollectionRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.nick).collection(collection);
+    final querySnapshot = await userCollectionRef.orderBy('fecha', descending: true).get();
+
+    // Crear un mapa para almacenar los últimos datos de cada tipo
+    Map<String, dynamic> latestDataByType = {};
+
+    // Iterar sobre los documentos para obtener los últimos datos de cada tipo
+    querySnapshot.docs.forEach((doc) {
+      final latestData = doc.data();
+      final tipo = latestData['tipo'];
+      if (!latestDataByType.containsKey(tipo)) {
+        // Si aún no se ha agregado ningún dato de este tipo, agregarlo al mapa
+        final timestamp = (latestData['fecha'] as Timestamp).toDate();
+        final formattedDate = DateFormat('dd-MM-yyyy').format(timestamp);
+        latestData['fecha'] = formattedDate;
+        latestDataByType[tipo] = latestData;
+      }
+    });
+
+    return latestDataByType;
+  } catch (error) {
+    print('Error al obtener los últimos datos físicos: $error');
+    return {'error': 'Error en la solicitud'};
+  }
+}
+
 
   static Future<Map<String, dynamic>> updatePhysicalDataByNick(BuildContext context,Map<String, dynamic> physicalData) async {
     try {

@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
-
-import 'package:gym_check/src/screens/calendar/physical-nutritional/month_view_widget.dart';
-import 'package:gym_check/src/screens/seguimiento/physical/alimento_data_page.dart';
-
+import 'package:gym_check/src/screens/seguimiento/nutritional/food_data_page.dart';
 import 'package:gym_check/src/screens/seguimiento/physical/corporal_data_page.dart';
+import 'package:gym_check/src/screens/seguimiento/physical/force_data_page.dart';
 import 'package:gym_check/src/screens/seguimiento/physical/workout_data_page.dart';
-
 import 'package:gym_check/src/widgets/menu_button_option_widget.dart';
-import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,24 +17,27 @@ class PhysicalTrackingPage extends StatefulWidget {
 }
 
 class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
-  final GlobalKey<LiquidPullToRefreshState> _refreshIndicatorKey =
-      GlobalKey<LiquidPullToRefreshState>();
   int _selectedMenuOption = 0;
-  //String _nick = '';
-  //String _urlImagen = '';
 
   List<String> options = [
     'Rutinas',
     'Datos corporales',
     'Fuerza',
-    'Alimentación'
+    'Consejos',
   ]; // Lista de opciones
 
   List<Color> highlightColors = [
-    Colors.white, // Color de resaltado para 'Fisico'
-    Colors.white, // Color de resaltado para 'Emocional'
-    Colors.white, // Color de resaltado para 'Nutricional'
-    Colors.white, // Color de resaltado para 'Nutricional'
+    Colors.white,
+    Colors.white,
+    Colors.white,
+    Colors.white,
+  ];
+
+   List<IconData> myIcons = [
+    Icons.sports_gymnastics,
+    Icons.accessibility,
+    Icons.fitness_center,
+    Icons.lightbulb_outline,
   ];
 
   @override
@@ -53,28 +52,16 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
         context); // Obtiene la instancia de GlobalVariable
 
     return SingleChildScrollView(
+      clipBehavior: Clip.hardEdge,
       child: Container(
         color: const Color.fromARGB(255, 18, 18, 18),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SingleChildScrollView(
-              child: Container(
-                height: 300, // Altura específica del área de desplazamiento
-                // Ajusta los márgenes y el tamaño del contenedor según tus necesidades
-                margin: const EdgeInsets.all(16.0),
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: const MonthViewWidget(),
-              ),
-            ),
-            const SizedBox(height: 20),
+           
+            const SizedBox(height: 5),
             Container(
-              // padding: EdgeInsets.symmetric(horizontal: 30),
+              padding: EdgeInsets.symmetric(horizontal: 1),
               color: const Color.fromARGB(255, 18, 18, 18),
               width: MediaQuery.of(context).size.width,
               child: SingleChildScrollView(
@@ -85,6 +72,7 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
                   children: <Widget>[
                     MenuButtonOption(
                       options: options,
+                      icons: myIcons,
                       highlightColors: highlightColors,
                       onItemSelected: (index) async {
                         SharedPreferences prefs =
@@ -113,15 +101,10 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
                 ? const CorporalDataPage()
                 : const SizedBox(),
             _selectedMenuOption == 2
-                ? Container(
-                    color:
-                        const Color.fromARGB(255, 0, 0, 255), // Contenedor azul
-                    height: 250,
-                    width: MediaQuery.of(context).size.width,
-                  )
+                ? ForceDataPage()
                 : const SizedBox(), // Si _selectedMenuOption no es 2, no mostrar el contenedor
             _selectedMenuOption == 3
-                ? FoodDataPage()
+                ? const SizedBox()
                 : const SizedBox(), // Si _selectedMenuOption no es 3, no mostrar el contenedor
             const SizedBox(height: 20),
           ],

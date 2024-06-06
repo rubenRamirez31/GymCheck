@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../app_colors.dart';
 import '../enumerations.dart';
-import '../physical-nutritional/day_view_widget.dart';
 import '../physical-nutritional/month_view_widget.dart';
-import 'week_view_widget.dart';
 
 class CalendarViews extends StatelessWidget {
   final CalendarView view;
@@ -27,15 +25,11 @@ class CalendarViews extends StatelessWidget {
       child: Center(
         child: view == CalendarView.month
             ? MonthViewWidget(
-                width: width,
+                width: width, cellAspectRatio: 1,
               )
             : view == CalendarView.day
-                ? DayViewWidget(
-                    width: width,
-                  )
-                : WeekViewWidget(
-                    width: width,
-                  ),
+                ?SizedBox()
+                : SizedBox()
       ),
     );
   }

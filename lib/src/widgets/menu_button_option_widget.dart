@@ -5,12 +5,14 @@ class MenuButtonOption extends StatefulWidget {
   final Function(int) onItemSelected;
   final List<Color> highlightColors; // Lista de colores de resaltado
   final int selectedMenuOptionGlobal;
+  final List<IconData?>? icons; // Lista de iconos opcionales
 
   MenuButtonOption({
     required this.options,
     required this.onItemSelected,
     required this.highlightColors, // Recibe una lista de colores de resaltado
     required this.selectedMenuOptionGlobal,
+    this.icons, // Lista de iconos opcionales
   });
 
   @override
@@ -38,6 +40,9 @@ class _MenuButtonOptionState extends State<MenuButtonOption> {
         children: widget.options.asMap().entries.map((entry) {
           final int index = entry.key;
           final String option = entry.value;
+          final IconData? icon = widget.icons != null && index < widget.icons!.length
+              ? widget.icons![index]
+              : null;
 
           return GestureDetector(
             onTap: () {
@@ -56,11 +61,23 @@ class _MenuButtonOptionState extends State<MenuButtonOption> {
                   color: option == selectedOption
                       ? widget.highlightColors[index] // Usa el color de resaltado correspondiente
                       : const Color.fromARGB(255, 83, 83, 83),
-                  child: Text(
-                    option,
-                    style: TextStyle(
-                      color: option == selectedOption ? Colors.black : Colors.white,
-                    ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (icon != null) ...[
+                        Icon(
+                          icon,
+                          color: option == selectedOption ? Colors.black : Colors.white,
+                        ),
+                        SizedBox(width: 8), // Espacio entre el icono y el texto
+                      ],
+                      Text(
+                        option,
+                        style: TextStyle(
+                          color: option == selectedOption ? Colors.black : Colors.white,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

@@ -84,6 +84,7 @@ class _ViewExercisePageState extends State<ViewExercisePage> {
                       children: [
                         _buildImage(),
                         const SizedBox(height: 10),
+                        if(widget.buttons == true)
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(

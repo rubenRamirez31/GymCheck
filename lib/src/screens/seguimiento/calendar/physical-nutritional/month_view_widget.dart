@@ -1,23 +1,25 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
-import 'package:gym_check/src/screens/calendar/physical-nutritional/create_event_page.dart';
+
 
 import 'package:gym_check/src/screens/seguimiento/remiders/add_remider_page.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/view_remider_page.dart';
 
 import 'package:gym_check/src/services/reminder_service.dart';
 
-import '../event_details_page.dart';
+
 import 'select_day_view_page.dart';
 
 class MonthViewWidget extends StatefulWidget {
   final GlobalKey<MonthViewState>? state;
   final double? width;
+  final double cellAspectRatio;
 
   const MonthViewWidget({
     Key? key,
     this.state,
     this.width,
+    required this.cellAspectRatio,
   }) : super(key: key);
 
   @override
@@ -77,11 +79,10 @@ class _MonthViewWidgetState extends State<MonthViewWidget> {
     return MonthView(
       key: widget.state,
       width: widget.width,
-      cellAspectRatio: .5,
+      cellAspectRatio: widget.cellAspectRatio,
 
-      // weekDayBuilder: (day) => 1,
-      // startDay: WeekDays.monday,
-      // pageTransitionDuration: Durations.long1,
+
+     
       initialMonth: DateTime.now(),
       borderSize: 1,
       controller: _eventController,

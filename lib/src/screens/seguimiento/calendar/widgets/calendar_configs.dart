@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../app_colors.dart';
 import '../enumerations.dart';
 import '../extension.dart';
-import 'add_event_form.dart';
+
 
 class CalendarConfig extends StatelessWidget {
   final void Function(CalendarView view) onViewChange;
@@ -98,13 +98,7 @@ class CalendarConfig extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
-                AddOrEditEventForm(
-                  onEventAdd: (event) {
-                    CalendarControllerProvider.of(context)
-                        .controller
-                        .add(event);
-                  },
-                ),
+               
               ],
             ),
           ),

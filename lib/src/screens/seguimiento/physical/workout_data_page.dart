@@ -3,6 +3,7 @@ import 'package:gym_check/src/providers/global_variables_provider.dart';
 
 import 'package:gym_check/src/screens/seguimiento/remiders/add_remider_page.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/view_remider_page.dart';
+import 'package:gym_check/src/screens/seguimiento/widgets/custom_button.dart';
 import 'package:gym_check/src/screens/seguimiento/widgets/tracking_widgets.dart';
 import 'package:gym_check/src/services/reminder_service.dart';
 import 'package:gym_check/src/widgets/create_button_widget.dart';
@@ -115,6 +116,8 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
               color: Colors.white,
               onPressed: () {},
             ),
+
+            
           ],
         ),
         Row(
@@ -162,10 +165,8 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
         _selectedMenuOption == 4 ? _view() : const SizedBox(),
         _selectedMenuOption == 5 ? _view() : const SizedBox(),
         _selectedMenuOption == 6 ? _view() : const SizedBox(),
-        CreateButton(
+        CustomButton(
           text: 'Agregar',
-          textColor: Colors.white,
-          buttonColor: Colors.green,
           onPressed: () {
             Navigator.push(
               context,
@@ -176,8 +177,7 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
             );
           
           },
-          iconData: Icons.add,
-          iconColor: Colors.white,
+          icon: Icons.add,
         ),
       ],
     );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
-import 'package:gym_check/src/screens/calendar/physical-nutritional/month_view_widget.dart';
+import 'package:gym_check/src/screens/seguimiento/calendar/physical-nutritional/month_view_widget.dart';
 import 'package:gym_check/src/screens/crear/ejercicios/focus_on_page.dart';
 import 'package:gym_check/src/screens/seguimiento/physical/corporal_data_page.dart';
 import 'package:gym_check/src/screens/seguimiento/physical/workout_data_page.dart';

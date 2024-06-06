@@ -1,10 +1,10 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
-import 'package:gym_check/src/screens/calendar/physical-nutritional/select_day_view_page.dart';
+import 'package:gym_check/src/screens/seguimiento/calendar/physical-nutritional/select_day_view_page.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/add_remider_page.dart';
+import 'package:gym_check/src/screens/seguimiento/remiders/view_remider_page.dart';
 import 'package:gym_check/src/services/reminder_service.dart';
 
-import '../event_details_page.dart';
 
 class SelectDayViewWidget extends StatefulWidget {
   final GlobalKey<DayViewState>? state;
@@ -23,8 +23,10 @@ class SelectDayViewWidget extends StatefulWidget {
 }
 
 class _SelectDayViewWidgetState extends State<SelectDayViewWidget> {
-  late EventController _eventController;
-  List<Map<String, dynamic>> _remider = [];
+late EventController _eventController;
+  List<Map<String, dynamic>> _routines = [];
+  Map<String, CalendarEventData> _eventMap =
+      {}; // Mapa local para asociar IDs con eventos
 
   @override
   void initState() {
@@ -38,7 +40,7 @@ class _SelectDayViewWidgetState extends State<SelectDayViewWidget> {
     try {
       final routines = await ReminderService.getAllRemindersClon(context);
       setState(() {
-        _remider = routines;
+        _routines = routines;
       });
       _addEvents(); // Agregar eventos después de cargar las rutinas
     } catch (error) {
@@ -47,7 +49,9 @@ class _SelectDayViewWidgetState extends State<SelectDayViewWidget> {
   }
 
   void _addEvents() {
-    _remider.forEach((routine) {
+    // Iterar sobre las rutinas obtenidas y agregar eventos
+    _routines.forEach((routine) {
+      // Construir el objeto CalendarEventData a partir de la rutina
       CalendarEventData eventData = CalendarEventData(
         title: routine['title'],
         date: routine['startTime'],
@@ -57,17 +61,21 @@ class _SelectDayViewWidgetState extends State<SelectDayViewWidget> {
         endTime: routine['endTime'],
       );
 
+      // Agregar el evento al controlador
       _eventController.add(eventData);
+
+      // Asociar el ID del recordatorio con el evento en el mapa local
+      _eventMap[routine['id']] = eventData;
+      //print(routine);
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return DayView(
       key: widget.state,
       width: widget.width,
       initialDay: widget.selectedDate,
-      startDuration: Duration(hours: 8),
+      startDuration: const Duration(hours: 8),
       showHalfHours: true,
       heightPerMinute: 2,
       controller: _eventController,
@@ -75,14 +83,36 @@ class _SelectDayViewWidgetState extends State<SelectDayViewWidget> {
       hourIndicatorSettings: HourIndicatorSettings(
         color: Theme.of(context).dividerColor,
       ),
-      onEventTap: (events, date) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => DetailsPage(
-              event: events.first,
-            ),
-          ),
+      onEventTap: (event, date) {
+        // Obtener el ID del evento a partir del mapa local
+        String eventId = _eventMap.keys.firstWhere(
+          (key) => _eventMap[key] == event,
+          orElse: () => 'id',
         );
+        if (eventId.isNotEmpty) {
+          showModalBottomSheet(
+            //   barrierColor: Colors.black,
+            backgroundColor: Colors.black,
+            showDragHandle: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(15),
+              ),
+            ),
+            context: context,
+            isScrollControlled: true,
+            builder: (context) {
+              return FractionallySizedBox(
+                heightFactor: 0.60,
+                child: ViewReminder(
+                  reminderId: eventId,
+                ),
+              );
+            },
+          );
+        }else{
+          print("No hay id");
+        }
       },
       onDateLongPress: (date) {
         _showOptionsBottomSheet(context, date);
@@ -94,7 +124,7 @@ class _SelectDayViewWidgetState extends State<SelectDayViewWidget> {
       verticalLineOffset: 0,
       timeLineWidth: 65,
       showLiveTimeLineInAllDays: true,
-      liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
+      liveTimeIndicatorSettings: const LiveTimeIndicatorSettings(
         color: Colors.redAccent,
         showBullet: false,
         showTime: true,
@@ -153,35 +183,35 @@ class _SelectDayViewWidgetState extends State<SelectDayViewWidget> {
             children: [
              
               ListTile(
-                leading: Icon(Icons.add_alert, color: Colors.white),
-                title: Text('Agregar Recordatorio',
+                leading: const Icon(Icons.add_alert, color: Colors.white),
+                title: const Text('Agregar Recordatorio',
                     style: TextStyle(color: Colors.white)),
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => AddReminderPage(
+                        builder: (context) => const AddReminderPage(
                               tipo: "Recordatorio",
                             )),
                   );
                 },
               ),
               ListTile(
-                  leading: Icon(Icons.fitness_center, color: Colors.white),
-                  title: Text('Agregar Rutina',
+                  leading: const Icon(Icons.fitness_center, color: Colors.white),
+                  title: const Text('Agregar Rutina',
                       style: TextStyle(color: Colors.white)),
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AddReminderPage(
+                          builder: (context) => const AddReminderPage(
                                 tipo: "Rutina",
                               )),
                     );
                   }),
               ListTile(
-                leading: Icon(Icons.fastfood, color: Colors.white),
-                title: Text('Agregar Comida',
+                leading: const Icon(Icons.fastfood, color: Colors.white),
+                title: const Text('Agregar Comida',
                     style: TextStyle(color: Colors.white)),
                 onTap: () {
                   // Acción cuando se selecciona "Agregar Comida"

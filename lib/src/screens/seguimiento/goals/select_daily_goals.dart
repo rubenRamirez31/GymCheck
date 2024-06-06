@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gym_check/src/screens/calendar/widgets/date_time_selector.dart';
+import 'package:gym_check/src/screens/seguimiento/calendar/widgets/date_time_selector.dart';
 
 import 'package:gym_check/src/screens/seguimiento/goals/select_duaration_page.dart';
 

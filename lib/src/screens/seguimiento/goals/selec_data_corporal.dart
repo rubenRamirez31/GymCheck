@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/screens/seguimiento/goals/create_macros_page.dart';
-import 'package:gym_check/src/screens/seguimiento/physical/add_data_page.dart';
+import 'package:gym_check/src/screens/seguimiento/physical/add_corporal_data_page.dart';
 import 'package:gym_check/src/services/physical_data_service.dart';
 import 'package:provider/provider.dart';
 
@@ -238,7 +238,7 @@ class _DatosCorporalesPageState extends State<DatosCorporalesPage> {
       builder: (context) {
         return FractionallySizedBox(
           heightFactor: 0.60,
-          child: AddDataPage(tipoDeRegistro: "corporales", goal: true,),
+          child: AddCorporalDataPage( goal: true,),
         );
       },
     );

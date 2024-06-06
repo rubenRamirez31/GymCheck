@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/alimento.dart';
 import 'package:gym_check/src/models/reminder_model.dart';
 import 'package:gym_check/src/models/workout_model.dart';
-import 'package:gym_check/src/screens/calendar/widgets/date_time_selector.dart';
+import 'package:gym_check/src/screens/seguimiento/calendar/widgets/date_time_selector.dart';
 import 'package:gym_check/src/screens/crear/alimentacion/all_alimento_page.dart';
 import 'package:gym_check/src/screens/crear/alimentacion/view_food_page.dart';
 import 'package:gym_check/src/screens/crear/home_create_page.dart';

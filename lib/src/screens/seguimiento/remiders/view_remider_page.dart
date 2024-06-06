@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gym_check/src/screens/crear/rutinas/view_workout_page.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/add_remider_page.dart';
-import 'package:gym_check/src/screens/seguimiento/remiders/update_remider_page.dart';
 import 'package:gym_check/src/screens/seguimiento/tracking_funtions.dart';
 import 'package:gym_check/src/screens/seguimiento/widgets/custom_button.dart';
-
 import 'package:gym_check/src/services/reminder_service.dart';
-import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 class ViewReminder extends StatefulWidget {
@@ -176,6 +174,7 @@ class _ViewReminderState extends State<ViewReminder> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     // Verificar si _reminderData es nulo antes de acceder a sus propiedades
     final String fechaInicio = _reminderData != null
         ? TrackingFunctions.formatDateTime(_reminderData!['startTime'])
@@ -208,59 +207,104 @@ class _ViewReminderState extends State<ViewReminder> {
                         ),
                         const SizedBox(height: 16.0),
                         Container(
-                          width: screenWidth - 30,
-                          padding: const EdgeInsets.all(16.0),
+                          //width: screenWidth - 30,
+                          padding: const EdgeInsets.all(8.0),
                           decoration: BoxDecoration(
                             color: Color(_reminderData!['color']),
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Row(
                             children: [
-                              Text(
-                                _reminderData!['title'] ?? 'Sin título',
-                                style: const TextStyle(
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      _reminderData!['title'] ?? 'Sin título',
+                                      style: const TextStyle(
+                                        fontSize: 20.0,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    if (_reminderData!['workoutID'] != null)
+                                      CustomButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ViewWorkoutPage(
+                                                id: _reminderData!['workoutID'],
+                                                buttons: true,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        text: 'Ir a Rutina',
+                                        icon: Icons.sports_gymnastics,
+                                      ),
+                                    if (_reminderData!['dietID'] != null)
+                                      CustomButton(
+                                        onPressed: () {},
+                                        text: 'Ir a Alimento',
+                                        icon: Icons.restaurant_menu,
+                                      ),
+                                    const SizedBox(height: 8.0),
+                                    Text(
+                                      'Hora de Inicio: $fechaInicio',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Hora de Fin: $fechaFin',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(height: 8.0),
-                              if (_reminderData!['workoutID'] != null)
-                                CustomButton(
-                                  onPressed: () {
-                                    // Navegar a la página de la rutina
-                                    // Implementa la navegación según tus necesidades
-                                  },
-                                  text: 'Ir a Rutina',
-                                  icon: Icons.sports_gymnastics,
-                                ),
-                              if (_reminderData!['dietID'] != null)
-                                CustomButton(
-                                  onPressed: () {
-                                    // Navegar a la página de la rutina
-                                    // Implementa la navegación según tus necesidades
-                                  },
-                                  text: 'Ir a alimento',
-                                  icon: Icons.restaurant_menu,
-                                ),
-                              Text(
-                                'Descripción: ${_reminderData!['description'] ?? 'Sin descripción'}',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              const SizedBox(height: 8.0),
-                              Text(
-                                'Hora de Inicio: $fechaInicio',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Text(
-                                'Hora de Fin: $fechaFin',
-                                style: const TextStyle(
-                                  color: Colors.white,
+                              //SizedBox(width: 5,),
+                              Expanded(
+                                child: Container(
+                                  height: 120,
+                                  width: 120,
+                                   margin: EdgeInsets.symmetric(vertical: 5.0),
+                                  padding: const EdgeInsets.all(10.0),
+                                  decoration: BoxDecoration(
+                                   // height: 150,
+                                    color: Colors.grey[200], // Color gris claro
+                                    borderRadius: BorderRadius.circular(
+                                        10.0), // Bordes redondos
+                                  ),
+                                  constraints: const BoxConstraints(
+                                    maxHeight: 150,
+                                    maxWidth: 150,
+                                    //maxWidth: (screenWidth - 30) * 0.4 -2.0, // Resta 2 pixeles de cada lado
+                                  ),
+                                  child: SingleChildScrollView(
+                                    scrollDirection:
+                                        Axis.vertical, // Desplazamiento vertical
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              'Descripción: ${_reminderData!['description'] ?? 'Sin descripción'}',
+                                              style: const TextStyle(
+                                                color:
+                                                    Colors.black, // Color del texto
+                                              ),
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],

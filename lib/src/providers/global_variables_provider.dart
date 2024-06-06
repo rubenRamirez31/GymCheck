@@ -13,10 +13,10 @@ class GlobalVariablesProvider extends ChangeNotifier {
     notifyListeners(); // Notifica a los widgets que están escuchando los cambios
   }
 
-
   // Variables, getters y setters para la subpágina de seguimiento físico
   int _selectedMenuOptionTrackingPhysical = 0;
-  int get selectedMenuOptionTrackingPhysical => _selectedMenuOptionTrackingPhysical;
+  int get selectedMenuOptionTrackingPhysical =>
+      _selectedMenuOptionTrackingPhysical;
   set selectedMenuOptionTrackingPhysical(int newValue) {
     _selectedMenuOptionTrackingPhysical = newValue;
     notifyListeners(); // Notifica a los widgets que están escuchando los cambios
@@ -30,6 +30,14 @@ class GlobalVariablesProvider extends ChangeNotifier {
     notifyListeners(); // Notifica a los widgets que están escuchando los cambios
   }
 
+  // Variable, getter y setter para la opción de bienestar diario
+  int _selectedMenuOptionWellness = 0;
+  int get selectedMenuOptionWellness => _selectedMenuOptionWellness;
+  set selectedMenuOptionWellness(int newValue) {
+    _selectedMenuOptionWellness = newValue;
+    notifyListeners(); // Notifica a los widgets que están escuchando los cambios
+  }
+
   // Variable, getter y setter para la opción de días
   int _selectedMenuOptionDias = 0;
   int get selectedMenuOptionDias => _selectedMenuOptionDias;
@@ -37,6 +45,9 @@ class GlobalVariablesProvider extends ChangeNotifier {
     _selectedMenuOptionDias = newValue;
     notifyListeners(); // Notifica a los widgets que están escuchando los cambios
   }
+
+
+
 
   ///modulo de creacion
 
@@ -47,7 +58,6 @@ class GlobalVariablesProvider extends ChangeNotifier {
     _selectedSubPageCreate = newValue;
     notifyListeners(); // Notifica a los widgets que están escuchando los cambios
   }
-
 
   int _selectedMenuOptionHomeExercise = 0;
   int get selectedMenuOptionHomeExercise => _selectedMenuOptionHomeExercise;
@@ -64,7 +74,8 @@ class GlobalVariablesProvider extends ChangeNotifier {
   }
 
   int _selectedMenuOptionExerciseByFocus = 0;
-  int get selectedMenuOptionExerciseByFocus => _selectedMenuOptionExerciseByFocus;
+  int get selectedMenuOptionExerciseByFocus =>
+      _selectedMenuOptionExerciseByFocus;
   set selectedMenuOptionExerciseByFocus(int newValue) {
     _selectedMenuOptionExerciseByFocus = newValue;
     notifyListeners(); // Notifica a los widgets que están escuchando los cambios
