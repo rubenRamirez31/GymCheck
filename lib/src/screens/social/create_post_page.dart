@@ -3,14 +3,12 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:gym_check/src/models/social/post_model.dart';
 import 'package:gym_check/src/models/workout_model.dart';
 import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/screens/social/ver_rutinas.dart';
 import 'package:gym_check/src/services/firebase_services.dart';
 import 'package:gym_check/src/values/app_colors.dart';
-import 'package:gym_check/src/widgets/social/rutina_card.dart';
 import 'package:gym_check/src/widgets/social/rutina_cardCreatePage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -391,6 +389,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
+                final globales = context.watch<Globales>();
+                globales.quitarRutina();
                 Navigator.of(context).pop(); // Cerrar el AlertDialog
               },
               child: const Text('Continuar'),

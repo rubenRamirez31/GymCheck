@@ -122,6 +122,7 @@ class _AddCorporalDataPageState extends State<AddCorporalDataPage> {
                     _guardarDatos(context, _getTipoPorCampo(_selectedField!));
                   },
                   text: 'Agregar',
+                  text: 'Agregar',
                 ),
               ],
               const SizedBox(height: 20),
