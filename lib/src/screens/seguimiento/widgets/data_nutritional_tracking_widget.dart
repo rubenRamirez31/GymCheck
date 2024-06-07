@@ -84,7 +84,7 @@ class DataNutritionalTracking extends StatelessWidget {
                           const Icon(Icons.info, color: Colors.white),
                           const SizedBox(width: 5),
                           Text(
-                            'Cantidad:',
+                            'Consumido:',
                             style: const TextStyle(
                               fontStyle: FontStyle.italic,
                               color: Colors.white,
@@ -134,13 +134,13 @@ class DataNutritionalTracking extends StatelessWidget {
                      CustomButton(
                           onPressed: quitar,
                           text: '',
-                          icon: Icons.add,
+                          icon: Icons.remove,
                         ),
                         SizedBox(width:5,),
                      CustomButton(
                           onPressed: agregar,
                           text: '',
-                          icon: Icons.remove,
+                          icon: Icons.add,
                         ),
                    ],
                  ),

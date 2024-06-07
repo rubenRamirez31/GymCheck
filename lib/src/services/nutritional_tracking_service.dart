@@ -5,53 +5,49 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class NutritionalService {
-  static Future<Map<String, dynamic>> createNutritionalData(BuildContext context) async {
+
+
+
+  static Future<Map<String, dynamic>> getTrackingData(BuildContext context) async {
     try {
       final globales = Provider.of<Globales>(context, listen: false);
-      final userCollectionRef = FirebaseFirestore.instance.collection('Nutricion');
-
-      // Crear un nuevo documento con el mismo nombre que el nick del usuario
-      final userDocRef = userCollectionRef.doc(globales.nick);
-      await userDocRef.set({'meta': '', 'diaFrecuencia': ''});
-
-      // Crear las subcolecciones para los diferentes tipos de datos nutricionales
-      final subCollections = [
-        "Metas",
-        "Registro-Alimentos",
-        "Registro-Semanal",
-        "Registro-Nutricional",
-        // Agrega aquí más subcolecciones si es necesario
-      ];
-
-      // Agregar un dato inicial a cada subcolección
-      await Future.forEach(subCollections, (subCollection) async {
-        final subCollectionRef = userDocRef.collection(subCollection);
-        await subCollectionRef.add({'valor': '', 'fecha': ''});
-      });
-
-      return {'message': 'Datos nutricionales creados exitosamente'};
-    } catch (error) {
-      print('Error al crear datos nutricionales: $error');
-      return {'error': 'Error en la solicitud'};
-    }
-  }
-
-  static Future<Map<String, dynamic>> getNutritionalDataByNick(BuildContext context) async {
-    try {
-      final globales = Provider.of<Globales>(context, listen: false);
-      final userRef = FirebaseFirestore.instance.collection('Nutricion').doc(globales.nick);
+      final userRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.nick);
       final docSnapshot = await userRef.get();
 
       if (docSnapshot.exists) {
-        return {'nutritionalData': docSnapshot.data()};
+        return {'trackingData': docSnapshot.data()};
       } else {
-        return {'error': 'No se encontraron datos nutricionales para el usuario'};
+        return {'error': 'No se encontraron datos de seguimiento para el usuario'};
       }
     } catch (error) {
       print('Error al obtener datos nutricionales por nick: $error');
       return {'error': 'Error en la solicitud'};
     }
   }
+
+   static Future<Map<String, dynamic>> updateTrackingData(BuildContext context, Map<String, dynamic> newData) async {
+    try {
+      final globales = Provider.of<Globales>(context, listen: false);
+      final userRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.nick);
+
+      final docSnapshot = await userRef.get();
+
+      if (docSnapshot.exists) {
+        // Si el documento existe, actualizamos los datos
+        await userRef.update(newData);
+        return {'message': 'Datos actualizados exitosamente'};
+      } else {
+        // Si el documento no existe, lo creamos con los nuevos datos
+        await userRef.set(newData);
+        return {'message': 'Datos creados exitosamente'};
+      }
+    } catch (error) {
+      print('Error al actualizar o crear datos: $error');
+      return {'error': 'Error en la solicitud'};
+    }
+  }
+
+
 
   static Future<Map<String, dynamic>> addNutritionalData(BuildContext context, Map<String, double> data) async {
   try {

@@ -194,11 +194,16 @@ class _AddCorporalDataPageState extends State<AddCorporalDataPage> {
                 ElevatedButton(
                   onPressed: () {
                     if (widget.goal == true) {
-                      setState(() {});
+                      //setState(() {});
                       Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                      //Navigator.of(context).pop();
                       // Navigator.of(context).pop();
-                    }
-                    // Reinicia la página
+                    }else{
+
+                      // Reinicia la página
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute<void>(
                         builder: (BuildContext context) => const PrincipalPage(
@@ -206,6 +211,9 @@ class _AddCorporalDataPageState extends State<AddCorporalDataPage> {
                         ),
                       ),
                     );
+
+                    }
+                    
                   },
                   child: const Text('Aceptar',
                       style: TextStyle(color: Colors.black)),

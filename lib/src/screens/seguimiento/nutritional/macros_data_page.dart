@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/screens/crear/widgets/custom_button.dart';
+import 'package:gym_check/src/screens/seguimiento/goals/select_goal_page.dart';
 import 'package:gym_check/src/screens/seguimiento/nutritional/add_data_page.dart';
 import 'package:gym_check/src/screens/seguimiento/nutritional/view_data_page.dart';
+import 'package:gym_check/src/screens/seguimiento/settings/macros_settings.dart';
 import 'package:gym_check/src/screens/seguimiento/widgets/data_nutritional_tracking_widget.dart';
 import 'package:gym_check/src/services/nutritional_tracking_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,10 +20,17 @@ class _MacrosDataPageState extends State<MacrosDataPage> {
   double carbData = 0.0; // Valor inicial para los carbohidratos
   double fatData = 0.0; // Valor inicial para las grasas
 
+    Map<String, dynamic>? trackingData;
+  String? errorMessage;
+  List<dynamic>? macrosList;
+
   @override
   void initState() {
     super.initState();
-    _loadMacroData();
+   
+    fetchTrackingData();
+     _loadMacroData();
+    
   }
 
   Future<void> _loadMacroData() async {
@@ -31,6 +40,26 @@ class _MacrosDataPageState extends State<MacrosDataPage> {
       carbData = prefs.getDouble('carbData') ?? 0.0;
       fatData = prefs.getDouble('fatData') ?? 0.0;
     });
+  }
+
+    Future<void> fetchTrackingData() async {
+      try{
+            
+    final result = await NutritionalService.getTrackingData(context);
+      setState(() {
+      //  trackingData = result['trackingData'];
+        macrosList =  result['trackingData']['macros'];
+      });
+
+      print(macrosList);
+
+      } catch (error) {
+      print('Error al cargar los datos de fuerza: $error');
+      // Manejo de errores
+    }
+  
+     
+   
   }
 
   @override
@@ -53,9 +82,9 @@ class _MacrosDataPageState extends State<MacrosDataPage> {
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.settings),
+                icon: const Icon(Icons.info),
                 color: Colors.white,
-                onPressed: () {},
+                onPressed: () {_settings(context);},
               ),
             ],
           ),
@@ -64,7 +93,7 @@ class _MacrosDataPageState extends State<MacrosDataPage> {
             icon: Icons.emoji_food_beverage, // Icono para las proteínas
             name: 'Proteínas',
             data: proteinData,
-            meta: 150,
+            meta: macrosList != null ? macrosList![0] : 0,
             verMas: () => _showViewData(context, 'Proteínas'),
             agregar: () => _showAddData(context, 'Proteínas', true),
             quitar: () => _showAddData(context, 'Proteínas', false),
@@ -73,7 +102,7 @@ class _MacrosDataPageState extends State<MacrosDataPage> {
             icon: Icons.local_pizza, // Icono para los carbohidratos
             name: 'Carbohidratos',
             data: carbData,
-            meta: 100,
+            meta: macrosList != null ? macrosList![1] : 0,
             verMas: () => _showViewData(context, 'Carbohidratos'),
             agregar: () => _showAddData(context, 'Carbohidratos', true),
             quitar: () => _showAddData(context, 'Carbohidratos', false),
@@ -83,17 +112,30 @@ class _MacrosDataPageState extends State<MacrosDataPage> {
             name: 'Grasas',
             data: fatData,
 
-            meta: 200,
+            meta: macrosList != null ? macrosList![2] : 0,
             verMas: () => _showViewData(context, 'Grasas'),
             agregar: () => _showAddData(context, 'Grasas', true),
             quitar: () => _showAddData(context, 'Grasas', false),
           ),
           const SizedBox(height: 20),
-          CustomButton(
-              text: "text",
-              onPressed: () {
-                _saveNutritionalData(context, proteinData, carbData, fatData);
-              })
+          Column(
+            children: [
+              CustomButton(
+                icon: Icons.calculate,
+                  text: "Calcular macros",
+                  onPressed: () {
+                    Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const SelectGoalPage()),
+                            );
+                  }),
+              CustomButton(
+                icon: Icons.edit,
+                  text: "Agrear macros manualmente",
+                     onPressed: () {_settings(context);},)
+            ],
+          )
         ],
       ),
     );
@@ -138,6 +180,28 @@ class _MacrosDataPageState extends State<MacrosDataPage> {
           child: AddDataPage(
             macroName: data,
             add: addd,
+          ),
+        );
+      },
+    );
+  }
+
+   void _settings(BuildContext context) {
+    showModalBottomSheet(
+      showDragHandle: true,
+      backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(15),
+        ),
+      ),
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return FractionallySizedBox(
+          heightFactor: 0.93,
+          child: MacroSettingsWidget(
+          
           ),
         );
       },

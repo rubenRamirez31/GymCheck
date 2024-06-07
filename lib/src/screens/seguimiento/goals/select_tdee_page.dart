@@ -17,16 +17,20 @@ class _SelectTdeePageState extends State<SelectTdeePage> {
   void calculateRecommendation() {
     switch (widget.tipoMeta) {
       case 'Pérdida de peso':
-        recommendation = 'Te recomendamos ir al gimnasio al menos 3 veces por semana.';
+        recommendation =
+            'Te recomendamos ir al gimnasio al menos 3 veces por semana.';
         break;
       case 'Aumento de masa muscular':
-        recommendation = 'Te recomendamos ir al gimnasio al menos 4 veces por semana.';
+        recommendation =
+            'Te recomendamos ir al gimnasio al menos 4 veces por semana.';
         break;
       case 'Definición muscular':
-        recommendation = 'Te recomendamos ir al gimnasio al menos 5 veces por semana.';
+        recommendation =
+            'Te recomendamos ir al gimnasio al menos 5 veces por semana.';
         break;
       case 'Mantener peso':
-        recommendation = 'Te recomendamos ir al gimnasio al menos 2 veces por semana.';
+        recommendation =
+            'Te recomendamos ir al gimnasio al menos 2 veces por semana.';
         break;
       default:
         recommendation = '';
@@ -69,7 +73,6 @@ class _SelectTdeePageState extends State<SelectTdeePage> {
   @override
   Widget build(BuildContext context) {
     final tdee = calculateTdee(gymVisitsPerWeek);
-    //final description = getTdeeDescription(tdee);
 
     return Scaffold(
       appBar: AppBar(
@@ -83,82 +86,59 @@ class _SelectTdeePageState extends State<SelectTdeePage> {
         ),
         iconTheme: IconThemeData(color: Colors.white),
       ),
-      body: Center(
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          color: const Color.fromARGB(255, 18, 18, 18),
-          child: Column(
-           // mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'Ingresa la cantidad de veces que vas o irás al gimnasio a la semana:',
-                style: TextStyle(fontSize: 18, color: Colors.white),
+      body: Container(
+        padding: const EdgeInsets.all(20),
+        color: const Color.fromARGB(255, 18, 18, 18),
+        child: Column(
+          children: [
+            const Text(
+              'Ingresa la cantidad de veces que vas o irás al gimnasio a la semana:',
+              style: TextStyle(fontSize: 18, color: Colors.white),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 83, 83, 83),
+                borderRadius: BorderRadius.circular(10),
               ),
-              const SizedBox(height: 20),
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 83, 83, 83),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          if (gymVisitsPerWeek > 0) {
-                            gymVisitsPerWeek--;
-                          }
-                        });
-                      },
-                      icon: const Icon(Icons.remove),
-                      color: Colors.white,
-                    ),
-                    Text(
-                      '$gymVisitsPerWeek veces por semana',
-                      style: const TextStyle(fontSize: 18, color: Colors.white),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          gymVisitsPerWeek++;
-                        });
-                      },
-                      icon: const Icon(Icons.add),
-                      color: Colors.white,
-                    ),
-                  ],
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        if (gymVisitsPerWeek > 0) {
+                          gymVisitsPerWeek--;
+                        }
+                      });
+                    },
+                    icon: const Icon(Icons.remove),
+                    color: Colors.white,
+                  ),
+                  Text(
+                    '$gymVisitsPerWeek veces por semana',
+                    style: const TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        gymVisitsPerWeek++;
+                      });
+                    },
+                    icon: const Icon(Icons.add),
+                    color: Colors.white,
+                  ),
+                ],
               ),
-              const SizedBox(height: 20),
-              // const Text(
-              //   'Recomendación:',
-              //   style: TextStyle(fontSize: 18, color: Colors.white),
-              // ),
-              // Text(
-              //   recommendation,
-              //   textAlign: TextAlign.center,
-              //   style: const TextStyle(color: Colors.white),
-              // ),
-            
-              // const Text(
-              //   'Tu nivel de actividad física es:',
-              //   style: TextStyle(fontSize: 18, color: Colors.white),
-              // ),
-              // Text(
-              //   description,
-              //   textAlign: TextAlign.center,
-              //   style: const TextStyle(color: Colors.white),
-              // ),
-              // const SizedBox(height: 20),
-              Text(
-                recommendation,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.white),
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 20),
+            // Text(
+            //   recommendation,
+            //   textAlign: TextAlign.center,
+            //   style: const TextStyle(color: Colors.white),
+            // ),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -166,7 +146,8 @@ class _SelectTdeePageState extends State<SelectTdeePage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => DatosCorporalesPage(tdee: tdee, tipoMeta: widget.tipoMeta)),
+                builder: (context) =>
+                    DatosCorporalesPage(tdee: tdee, tipoMeta: widget.tipoMeta)),
           );
         },
         backgroundColor: const Color(0xff0C1C2E),
