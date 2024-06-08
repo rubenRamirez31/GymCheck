@@ -23,7 +23,7 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
     'Rutinas',
     'Datos corporales',
     'Fuerza',
-    'Consejos',
+   // 'Consejos',
   ]; // Lista de opciones
 
   List<Color> highlightColors = [

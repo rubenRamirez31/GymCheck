@@ -23,7 +23,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
   List<String> options = [
     'Fisico',
     'Nutricional',
-    'Bienestar diario',
+    //'Bienestar diario',
   ]; // Lista de opciones
 
   List<Color> highlightColors = [

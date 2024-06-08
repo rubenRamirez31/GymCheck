@@ -4,6 +4,7 @@ import 'package:gym_check/src/screens/crear/widgets/custom_button.dart';
 class DataNutritionalTracking extends StatelessWidget {
   final IconData icon;
   final String name;
+  final String ter;
   final double data;
   final double meta;
   final VoidCallback verMas;
@@ -13,6 +14,7 @@ class DataNutritionalTracking extends StatelessWidget {
   DataNutritionalTracking({
     required this.icon,
     required this.name,
+    required this.ter,
     required this.data,
     required this.meta,
     required this.verMas,
@@ -91,7 +93,7 @@ class DataNutritionalTracking extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            ' $data gr',
+                            ' $data $ter',
                             style: const TextStyle(
                               color: Colors.white,
                             ),
@@ -111,7 +113,7 @@ class DataNutritionalTracking extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            ' $meta gr',
+                            ' $meta  $ter',
                             style: const TextStyle(
                               color: Colors.white,
                             ),

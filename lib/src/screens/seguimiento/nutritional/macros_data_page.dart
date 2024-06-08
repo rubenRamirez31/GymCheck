@@ -20,17 +20,16 @@ class _MacrosDataPageState extends State<MacrosDataPage> {
   double carbData = 0.0; // Valor inicial para los carbohidratos
   double fatData = 0.0; // Valor inicial para las grasas
 
-    Map<String, dynamic>? trackingData;
+  Map<String, dynamic>? trackingData;
   String? errorMessage;
   List<dynamic>? macrosList;
 
   @override
   void initState() {
     super.initState();
-   
+
     fetchTrackingData();
-     _loadMacroData();
-    
+    _loadMacroData();
   }
 
   Future<void> _loadMacroData() async {
@@ -42,24 +41,19 @@ class _MacrosDataPageState extends State<MacrosDataPage> {
     });
   }
 
-    Future<void> fetchTrackingData() async {
-      try{
-            
-    final result = await NutritionalService.getTrackingData(context);
+  Future<void> fetchTrackingData() async {
+    try {
+      final result = await NutritionalService.getTrackingData(context);
       setState(() {
-      //  trackingData = result['trackingData'];
-        macrosList =  result['trackingData']['macros'];
+        //  trackingData = result['trackingData'];
+        macrosList = result['trackingData']['macros'];
       });
 
       print(macrosList);
-
-      } catch (error) {
+    } catch (error) {
       print('Error al cargar los datos de fuerza: $error');
       // Manejo de errores
     }
-  
-     
-   
   }
 
   @override
@@ -84,7 +78,9 @@ class _MacrosDataPageState extends State<MacrosDataPage> {
               IconButton(
                 icon: const Icon(Icons.info),
                 color: Colors.white,
-                onPressed: () {_settings(context);},
+                onPressed: () {
+                  _settings(context);
+                },
               ),
             ],
           ),
@@ -92,6 +88,7 @@ class _MacrosDataPageState extends State<MacrosDataPage> {
           DataNutritionalTracking(
             icon: Icons.emoji_food_beverage, // Icono para las proteínas
             name: 'Proteínas',
+            ter: 'gr',
             data: proteinData,
             meta: macrosList != null ? macrosList![0] : 0,
             verMas: () => _showViewData(context, 'Proteínas'),
@@ -101,6 +98,7 @@ class _MacrosDataPageState extends State<MacrosDataPage> {
           DataNutritionalTracking(
             icon: Icons.local_pizza, // Icono para los carbohidratos
             name: 'Carbohidratos',
+            ter: 'gr',
             data: carbData,
             meta: macrosList != null ? macrosList![1] : 0,
             verMas: () => _showViewData(context, 'Carbohidratos'),
@@ -110,6 +108,7 @@ class _MacrosDataPageState extends State<MacrosDataPage> {
           DataNutritionalTracking(
             icon: Icons.fastfood, // Icono para las grasas
             name: 'Grasas',
+            ter: 'gr',
             data: fatData,
 
             meta: macrosList != null ? macrosList![2] : 0,
@@ -121,19 +120,22 @@ class _MacrosDataPageState extends State<MacrosDataPage> {
           Column(
             children: [
               CustomButton(
-                icon: Icons.calculate,
+                  icon: Icons.calculate,
                   text: "Calcular macros",
                   onPressed: () {
                     Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const SelectGoalPage()),
-                            );
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SelectGoalPage()),
+                    );
                   }),
               CustomButton(
                 icon: Icons.edit,
-                  text: "Agrear macros manualmente",
-                     onPressed: () {_settings(context);},)
+                text: "Agrear macros manualmente",
+                onPressed: () {
+                  _settings(context);
+                },
+              )
             ],
           )
         ],
@@ -180,13 +182,15 @@ class _MacrosDataPageState extends State<MacrosDataPage> {
           child: AddDataPage(
             macroName: data,
             add: addd,
+            macros: true,
+            agua: false,
           ),
         );
       },
     );
   }
 
-   void _settings(BuildContext context) {
+  void _settings(BuildContext context) {
     showModalBottomSheet(
       showDragHandle: true,
       backgroundColor: const Color.fromARGB(255, 18, 18, 18),
@@ -200,9 +204,7 @@ class _MacrosDataPageState extends State<MacrosDataPage> {
       builder: (context) {
         return FractionallySizedBox(
           heightFactor: 0.93,
-          child: MacroSettingsWidget(
-          
-          ),
+          child: MacroSettingsWidget(macro: true, agua: false,),
         );
       },
     );

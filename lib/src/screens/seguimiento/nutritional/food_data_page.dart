@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
+import 'package:gym_check/src/screens/crear/widgets/custom_button.dart';
 
 import 'package:gym_check/src/screens/seguimiento/remiders/add_remider_page.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/view_remider_page.dart';
@@ -103,7 +104,7 @@ class _FoodDataPageState extends State<FoodDataPage> {
             Container(
               padding: const EdgeInsets.all(16),
               child: const Text(
-                'Mis Alimentos',
+                'Mi dieta',
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -162,10 +163,9 @@ class _FoodDataPageState extends State<FoodDataPage> {
         _selectedMenuOption == 4 ? _view() : const SizedBox(),
         _selectedMenuOption == 5 ? _view() : const SizedBox(),
         _selectedMenuOption == 6 ? _view() : const SizedBox(),
-        CreateButton(
+        CustomButton(
           text: 'Agregar',
-          textColor: Colors.white,
-          buttonColor: Colors.green,
+        
           onPressed: () {
             Navigator.push(
               context,
@@ -175,8 +175,7 @@ class _FoodDataPageState extends State<FoodDataPage> {
                       )),
             );
           },
-          iconData: Icons.add,
-          iconColor: Colors.white,
+        icon: Icons.timer_outlined,
         ),
       ],
     );

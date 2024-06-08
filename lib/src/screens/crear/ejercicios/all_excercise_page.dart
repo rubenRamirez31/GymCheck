@@ -216,9 +216,13 @@ class _AllExercisePageState extends State<AllExercisePage> {
                 }
               },
             ),
+
+            SizedBox(height: 30,)
           ],
         ),
+        
       ),
+      
     );
   }
 

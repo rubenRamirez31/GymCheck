@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:gym_check/src/screens/seguimiento/nutritional/food_data_page.dart';
 import 'package:gym_check/src/screens/seguimiento/nutritional/macros_data_page.dart';
+import 'package:gym_check/src/screens/seguimiento/nutritional/water_data_page.dart';
 import 'package:gym_check/src/screens/seguimiento/physical/corporal_data_page.dart';
 import 'package:gym_check/src/widgets/menu_button_option_widget.dart';
 import 'package:provider/provider.dart';
@@ -21,8 +22,8 @@ class _NutritionalTrackingPageState extends State<NutritionalTrackingPage> {
     'Alimentacion',
     'Macros',
     'Agua',
-    'Suplementos',
-    'Consejos',
+    //'Suplementos',
+    //'Consejos',
   ]; // Lista de opciones
 
   List<Color> highlightColors = [
@@ -101,20 +102,10 @@ class _NutritionalTrackingPageState extends State<NutritionalTrackingPage> {
                 ? const MacrosDataPage()
                 : const SizedBox(),
             _selectedMenuOption == 2
-                ? Container(
-                    color:
-                        const Color.fromARGB(255, 0, 0, 255), // Contenedor azul
-                    height: 250,
-                    width: MediaQuery.of(context).size.width,
-                  )
+                ? WaterDataPage()
                 : const SizedBox(), // Si _selectedMenuOption no es 2, no mostrar el contenedor
             _selectedMenuOption == 4
-                ? Container(
-                    color: const Color.fromARGB(
-                        255, 255, 255, 0), // Contenedor amarillo
-                    height: 250,
-                    width: MediaQuery.of(context).size.width,
-                  )
+                ? WaterDataPage()
                 : const SizedBox(), // Si _selectedMenuOption no es 3, no mostrar el contenedor
             const SizedBox(height: 20),
           ],
