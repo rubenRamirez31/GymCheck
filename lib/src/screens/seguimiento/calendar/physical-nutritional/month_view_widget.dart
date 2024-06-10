@@ -2,7 +2,8 @@ import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 
 
-import 'package:gym_check/src/screens/seguimiento/remiders/add_remider_page.dart';
+import 'package:gym_check/src/screens/seguimiento/remiders/add_primary_remider_page.dart';
+import 'package:gym_check/src/screens/seguimiento/remiders/add_secundary_remider_page.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/view_remider_page.dart';
 
 import 'package:gym_check/src/services/reminder_service.dart';
@@ -154,7 +155,7 @@ class _MonthViewWidgetState extends State<MonthViewWidget> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => AddReminderPage( selectedDate:selectedDay ,
+                        builder: (context) => AddPrimaryReminderPage( selectedDate:selectedDay ,
                               tipo: "Recordatorio",
                             )),
                   );
@@ -168,7 +169,7 @@ class _MonthViewWidgetState extends State<MonthViewWidget> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AddReminderPage(selectedDate:selectedDay,
+                          builder: (context) => AddSecondaryReminderPage(selectedDate:selectedDay,
                                 tipo: "Rutina",
                               )),
                     );

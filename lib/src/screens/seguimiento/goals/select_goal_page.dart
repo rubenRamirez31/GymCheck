@@ -2,7 +2,7 @@ import 'dart:core';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:gym_check/src/screens/seguimiento/goals/select_tdee_page.dart';
+import 'package:gym_check/src/screens/seguimiento/goals/select_activity_level_page.dart';
 import 'package:gym_check/src/screens/seguimiento/widgets/custom_drop_dowm_wiget.dart';
 
 class SelectGoalPage extends StatefulWidget {
@@ -64,7 +64,7 @@ class _SelectGoalPageState extends State<SelectGoalPage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        SelectTdeePage(tipoMeta: _selectedGoal ?? ""),
+                        SelectActivityLevelPage(tipoMeta: _selectedGoal ?? ""),
                   ),
                 );
               },

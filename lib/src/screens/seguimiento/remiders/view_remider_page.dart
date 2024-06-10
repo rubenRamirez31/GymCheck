@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/screens/crear/rutinas/view_workout_page.dart';
-import 'package:gym_check/src/screens/seguimiento/remiders/add_remider_page.dart';
+import 'package:gym_check/src/screens/seguimiento/remiders/add_primary_remider_page.dart';
+import 'package:gym_check/src/screens/seguimiento/remiders/add_secundary_remider_page.dart';
 import 'package:gym_check/src/screens/seguimiento/tracking_funtions.dart';
 import 'package:gym_check/src/screens/seguimiento/widgets/custom_button.dart';
 import 'package:gym_check/src/services/reminder_service.dart';
@@ -17,6 +18,7 @@ class ViewReminder extends StatefulWidget {
 
 class _ViewReminderState extends State<ViewReminder> {
   Map<String, dynamic>? _reminderData;
+
   bool _isLoading = true;
 
   @override
@@ -173,8 +175,6 @@ class _ViewReminderState extends State<ViewReminder> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
     // Verificar si _reminderData es nulo antes de acceder a sus propiedades
     final String fechaInicio = _reminderData != null
         ? TrackingFunctions.formatDateTime(_reminderData!['startTime'])
@@ -272,10 +272,10 @@ class _ViewReminderState extends State<ViewReminder> {
                                 child: Container(
                                   height: 120,
                                   width: 120,
-                                   margin: EdgeInsets.symmetric(vertical: 5.0),
+                                  margin: EdgeInsets.symmetric(vertical: 5.0),
                                   padding: const EdgeInsets.all(10.0),
                                   decoration: BoxDecoration(
-                                   // height: 150,
+                                    // height: 150,
                                     color: Colors.grey[200], // Color gris claro
                                     borderRadius: BorderRadius.circular(
                                         10.0), // Bordes redondos
@@ -286,8 +286,8 @@ class _ViewReminderState extends State<ViewReminder> {
                                     //maxWidth: (screenWidth - 30) * 0.4 -2.0, // Resta 2 pixeles de cada lado
                                   ),
                                   child: SingleChildScrollView(
-                                    scrollDirection:
-                                        Axis.vertical, // Desplazamiento vertical
+                                    scrollDirection: Axis
+                                        .vertical, // Desplazamiento vertical
                                     child: Column(
                                       children: [
                                         Row(
@@ -295,8 +295,8 @@ class _ViewReminderState extends State<ViewReminder> {
                                             Text(
                                               'Descripción: ${_reminderData!['description'] ?? 'Sin descripción'}',
                                               style: const TextStyle(
-                                                color:
-                                                    Colors.black, // Color del texto
+                                                color: Colors
+                                                    .black, // Color del texto
                                               ),
                                               textAlign: TextAlign.left,
                                             ),
@@ -339,10 +339,15 @@ class _ViewReminderState extends State<ViewReminder> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => AddReminderPage(
+                                          builder: (context) =>
+                                              AddSecondaryReminderPage(
+                                                update: true,
                                                 tipo: _reminderData!['tipo'],
-                                                recordatorioId:
-                                                    _reminderData!['id'],
+                                              
+                                                objetoID:
+                                                    _reminderData!['objetoID'],
+                                                datosRecordatorio:
+                                                    _reminderData,
                                               )),
                                     );
                                   },

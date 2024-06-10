@@ -41,6 +41,18 @@ class TrackingFunctions {
     return 'Fecha no válida';
   }
 
+   static DateTime? convertToDateTime(String? dateTimeString) {
+    if (dateTimeString != null && dateTimeString.isNotEmpty) {
+      try {
+        DateTime dateTime = DateTime.parse(dateTimeString);
+        return dateTime;
+      } catch (error) {
+        print('Error al convertir la fecha: $error');
+      }
+    }
+    return null;
+  }
+
 
 
   ///Funciones crud para los recordatorios

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/screens/seguimiento/calendar/physical-nutritional/month_view_widget.dart';
+import 'package:gym_check/src/screens/seguimiento/daily_routine/daily_routine_page.dart';
 import 'package:gym_check/src/screens/seguimiento/daily_wellness_tracking_page.dart';
 import 'package:gym_check/src/screens/seguimiento/goals/goals_page.dart';
+import 'package:gym_check/src/screens/seguimiento/nutritional/food_data_page.dart';
 import 'package:gym_check/src/screens/seguimiento/nutritional_tracking_page.dart';
 import 'package:gym_check/src/screens/seguimiento/physical_tracking_page.dart';
 import 'package:gym_check/src/widgets/menu_button_option_widget.dart';
@@ -23,6 +25,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
   List<String> options = [
     'Fisico',
     'Nutricional',
+    'Rutina diaria',//Todos los recordatorios que se repiten se ven aqui 
     //'Bienestar diario',
   ]; // Lista de opciones
 
@@ -202,7 +205,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
                     ? const NutritionalTrackingPage()
                     : const SizedBox(),
                 _selectedMenuOption == 2
-                    ? const DailyWellnessTrackingPage()
+                    ? const DailyRoutinePage()
                     : const SizedBox(),
               ],
             ),

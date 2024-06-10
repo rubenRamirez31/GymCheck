@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 class DatosCorporalesPage extends StatefulWidget {
   final String tipoMeta;
-  final double tdee;
+  final String tdee;
 
   const DatosCorporalesPage(
       {Key? key, required this.tipoMeta, required this.tdee})
@@ -161,15 +161,17 @@ class _DatosCorporalesPageState extends State<DatosCorporalesPage> {
 
             Navigator.of(context).pop();
 
-            Navigator.push(
+           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => CreateMatricesPage(
-                  datosCorporales: datosCorporales,
-                  tipoMeta: widget.tipoMeta,
+                builder: (context) => CreateMacrosPage(
+                  datosUsuario: datosCorporales,
+              
                 ),
               ),
             );
+
+            print(datosCorporales);
           }
         },
         backgroundColor: const Color(0xff0C1C2E),
@@ -230,16 +232,15 @@ class _DatosCorporalesPageState extends State<DatosCorporalesPage> {
   }
 
   Future<Map<String, dynamic>> obtenerDatosCorporales() async {
-    final double tmb = 10 * peso + 6.25 * altura - 5 * edad + 5;
-    final double tdee =
-        tmb * widget.tdee;
+    
 
     Map<String, dynamic> datosCorporalesCalculados = {
       'peso': peso,
       'altura': altura,
       'edad': edad,
       'sexo': sexo,
-      'tdee': tdee,
+      'nivelActividad': widget.tdee,
+      'objetivo': widget.tipoMeta
     };
 
     return datosCorporalesCalculados;

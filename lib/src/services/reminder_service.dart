@@ -176,45 +176,77 @@ static Future<List<Map<String, dynamic>>> getAllRemindersClon(BuildContext conte
       return {'error': 'Error en la solicitud'};
     }
   }
- static Future<List<Map<String, dynamic>?>> getFilteredPrimeReminders(BuildContext context, String tipo, int selectedDay) async {
-    try {
-      Globales globales = Provider.of<Globales>(context, listen: false);
-      String nick = globales.nick;
-      final userCollectionRef = FirebaseFirestore.instance.collection('Seguimiento').doc(nick).collection('Recordatorios');
-      
-      final querySnapshot = await userCollectionRef
-  .where('modelo', isEqualTo: 'Prime')
-  .where('tipo', isEqualTo: tipo)
-  .orderBy('startTime', descending: true) // Ordenar por startTime en orden descendente
-  .get();
+static Future<List<Map<String, dynamic>?>> getFilteredPrimeReminders(
+  BuildContext context,
+  String tipoPrincipal,
+  int selectedDay, {
+  String? tipoAdicional1,
+  String? tipoAdicional2,
+}) async {
+  try {
+    Globales globales = Provider.of<Globales>(context, listen: false);
+    String nick = globales.nick;
+    final userCollectionRef = FirebaseFirestore.instance
+        .collection('Seguimiento')
+        .doc(nick)
+        .collection('Recordatorios');
 
-      final reminders = querySnapshot.docs.map((doc) {
-        Map<String, dynamic> data = doc.data();
-        // Convertir las cadenas de texto de startTime y endTime a objetos DateTime
-        data['startTime'] = DateTime.parse(data['startTime']);
-        data['endTime'] = DateTime.parse(data['endTime']);
+    // Realiza la consulta principal por el tipo principal
+    final queryPrincipal = userCollectionRef
+        .where('modelo', isEqualTo: 'Prime')
+        .where('tipo', isEqualTo: tipoPrincipal)
+        .orderBy('startTime', descending: true);
 
-        // Verificar si el día seleccionado está en el arreglo repeatDays
-        List<int> repeatDays = List<int>.from(data['repeatDays']);
-        bool isValidDay = repeatDays.contains(selectedDay);
-        
-        // Si el día es válido, agregar el ID del documento al mapa de datos
-        if (isValidDay) {
-          data['id'] = doc.id;
-          return data;
-        } else {
-          return null; // No se incluirá este recordatorio en la lista final
-        }
-      }).toList();
+    // Ejecuta la consulta y obtiene los resultados
+    final querySnapshotPrincipal = await queryPrincipal.get();
 
-      // Eliminar los elementos nulos de la lista
-      return reminders.where((element) => element != null).toList();
-    } catch (error) {
-      print('Error al obtener los recordatorios prime filtrados: $error');
-      throw error;
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> combinedDocs = querySnapshotPrincipal.docs;
+
+    // Si tipoAdicional1 no es nulo, realiza una segunda consulta
+    if (tipoAdicional1 != null && tipoAdicional1.isNotEmpty) {
+      final queryAdicional1 = userCollectionRef
+          .where('modelo', isEqualTo: 'Prime')
+          .where('tipo', isEqualTo: tipoAdicional1)
+          .orderBy('startTime', descending: true);
+      final querySnapshotAdicional1 = await queryAdicional1.get();
+      combinedDocs.addAll(querySnapshotAdicional1.docs);
     }
+
+    // Si tipoAdicional2 no es nulo, realiza una tercera consulta
+    if (tipoAdicional2 != null && tipoAdicional2.isNotEmpty) {
+      final queryAdicional2 = userCollectionRef
+          .where('modelo', isEqualTo: 'Prime')
+          .where('tipo', isEqualTo: tipoAdicional2)
+          .orderBy('startTime', descending: true);
+      final querySnapshotAdicional2 = await queryAdicional2.get();
+      combinedDocs.addAll(querySnapshotAdicional2.docs);
+    }
+
+    final reminders = combinedDocs.map((doc) {
+      Map<String, dynamic> data = doc.data();
+      data['startTime'] = DateTime.parse(data['startTime']);
+      data['endTime'] = DateTime.parse(data['endTime']);
+
+      List<int> repeatDays = List<int>.from(data['repeatDays']);
+      bool isValidDay = repeatDays.contains(selectedDay);
+
+      if (isValidDay) {
+        data['id'] = doc.id;
+        return data;
+      } else {
+        return null;
+      }
+    }).toList();
+
+    return reminders.where((element) => element != null).toList();
+  } catch (error) {
+    print('Error al obtener los recordatorios prime filtrados: $error');
+    throw error;
   }
-  
+}
+
+
+
   static Future<Map<String, dynamic>> updateReminderIdrecordar(BuildContext context,
       int reminderId, Map<String, dynamic> updatedReminder) async {
     try {
@@ -231,7 +263,74 @@ static Future<List<Map<String, dynamic>>> getAllRemindersClon(BuildContext conte
 
       // Actualiza cada documento encontrado con los nuevos datos
       for (final doc in querySnapshot.docs) {
-        await doc.reference.update(updatedReminder);
+        // Obtener los datos actuales del documento
+        final currentData = doc.data();
+
+        // Obtener las nuevas horas de updatedReminder
+        final String? newStartTimeStr = updatedReminder['startTime'];
+        final String? newEndTimeStr = updatedReminder['endTime'];
+
+        DateTime? newStartTime;
+        DateTime? newEndTime;
+
+        // Parsear las nuevas horas solo si no son nulas y válidas
+        if (newStartTimeStr != null && newStartTimeStr.isNotEmpty) {
+          newStartTime = DateTime.parse(newStartTimeStr);
+        }
+        if (newEndTimeStr != null && newEndTimeStr.isNotEmpty) {
+          newEndTime = DateTime.parse(newEndTimeStr);
+        }
+
+        // Obtener los DateTime actuales del documento y parsearlos desde String
+        final DateTime currentStartTime = DateTime.parse(currentData['startTime']);
+        final DateTime currentEndTime = DateTime.parse(currentData['endTime']);
+
+        // Combinar las fechas actuales con las nuevas horas
+        final DateTime updatedStartTime = newStartTime != null ? DateTime(
+          currentStartTime.year,
+          currentStartTime.month,
+          currentStartTime.day,
+          newStartTime.hour,
+          newStartTime.minute,
+        ) : currentStartTime;
+
+        final DateTime updatedEndTime = newEndTime != null ? DateTime(
+          currentEndTime.year,
+          currentEndTime.month,
+          currentEndTime.day,
+          newEndTime.hour,
+          newEndTime.minute,
+        ) : currentEndTime;
+
+        // Crear el mapa de datos combinados
+        final Map<String, dynamic> mergedData = {...currentData};
+
+        if (newStartTime != null) {
+          mergedData['startTime'] = updatedStartTime.toIso8601String();
+        }
+
+        if (newEndTime != null) {
+          mergedData['endTime'] = updatedEndTime.toIso8601String();
+        }
+
+        // Asegurar que los campos 'repeatDays' y 'modelo' no sean nulos si están presentes en el documento
+        if (currentData.containsKey('repeatDays') && currentData['repeatDays'] != null) {
+          mergedData['repeatDays'] = currentData['repeatDays'];
+        }
+        
+        if (currentData.containsKey('modelo') && currentData['modelo'] != null) {
+          mergedData['modelo'] = currentData['modelo'];
+        }
+
+        // Agregar otros datos que lleguen en updatedReminder, sin sobrescribir con nulos
+        updatedReminder.forEach((key, value) {
+          if (value != null) {
+            mergedData[key] = value;
+          }
+        });
+
+        // Actualizar el documento con los datos combinados
+        await doc.reference.update(mergedData);
       }
 
       return {'message': 'Recordatorios actualizados correctamente'};

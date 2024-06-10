@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:gym_check/src/screens/crear/widgets/custom_button.dart';
-import 'package:gym_check/src/screens/seguimiento/remiders/add_primary_remider_page.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/add_secundary_remider_page.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/view_remider_page.dart';
-import 'package:gym_check/src/screens/seguimiento/tracking_funtions.dart';
 import 'package:gym_check/src/screens/seguimiento/widgets/tracking_widgets.dart';
 import 'package:gym_check/src/services/reminder_service.dart';
 import 'package:gym_check/src/widgets/menu_button_option_widget.dart';
@@ -13,16 +10,16 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class FoodDataPage extends StatefulWidget {
-  const FoodDataPage({Key? key}) : super(key: key);
+class DailyRoutinePage extends StatefulWidget {
+  const DailyRoutinePage({Key? key}) : super(key: key);
 
   @override
-  State<FoodDataPage> createState() => _FoodDataPageState();
+  State<DailyRoutinePage> createState() => _DailyRoutinePageState();
 }
 
-class _FoodDataPageState extends State<FoodDataPage> {
+class _DailyRoutinePageState extends State<DailyRoutinePage> {
   int _selectedMenuOption = 0;
-  List<Map<String, dynamic>?> _foods = [];
+  List<Map<String, dynamic>?> _routines = [];
   List<String> options = [
     'L',
     'M',
@@ -42,54 +39,54 @@ class _FoodDataPageState extends State<FoodDataPage> {
     Colors.white,
   ];
   bool _isLoading =
-      false; // Variable para indicar si se están cargando los alimentos
+      false; // Variable para indicar si se están cargando las rutinas
   @override
   void initState() {
     super.initState();
     _loadSelectedMenuOption(); // Cargar el estado guardado de _selectedMenuOption
-    _loadFoods();
+    _loadRoutines();
   }
 
   Future<void> _loadSelectedMenuOption() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (mounted) {
       setState(() {
-        _selectedMenuOption = prefs.getInt('diaSeleccionado') ?? 0;
+        _selectedMenuOption = prefs.getInt('selectedDay') ?? 0;
       });
-      _loadFoods();
+      _loadRoutines();
     }
   }
 
-  Future<void> _loadFoods() async {
+  Future<void> _loadRoutines() async {
     setState(() {
       _isLoading =
           true; // Se inicia la carga, por lo que el indicador de carga será visible
     });
 
     try {
-      final foods = await ReminderService.getFilteredPrimeReminders(
-          context, "Alimento", _selectedMenuOption + 1,);
+      final routines = await ReminderService.getFilteredPrimeReminders(
+          context, "Rutina", _selectedMenuOption + 1, tipoAdicional1: "Alimento");
       setState(() {
-        _foods = foods;
+        _routines = routines;
         _isLoading =
             false; // Se ha completado la carga, por lo que se desactiva el indicador de carga
       });
     } catch (error) {
-      print('Error al cargar los alimentos: $error');
+      print('Error al cargar las rutinas: $error');
     }
   }
 
-  String formatDateTimeNouuuuuuuuuuuu(String? dateTimeString) {
+  String formatDateTime(String? dateTimeString) {
     if (dateTimeString != null && dateTimeString.isNotEmpty) {
       try {
         DateTime dateTime = DateTime.parse(dateTimeString);
-        String formattedDate = DateFormat('hh:mm a', 'es').format(dateTime);
+        String formattedDate = DateFormat('hh:mm a', 'en_US').format(dateTime);
         return formattedDate;
       } catch (error) {
         print('Error al formatear la fecha: $error');
       }
     }
-    return 'Fecha no válida';
+    return 'Invalid Date';
   }
 
   @override
@@ -105,7 +102,7 @@ class _FoodDataPageState extends State<FoodDataPage> {
             Container(
               padding: const EdgeInsets.all(16),
               child: const Text(
-                'Mi dieta',
+                'My Daily Routine',
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -132,7 +129,6 @@ class _FoodDataPageState extends State<FoodDataPage> {
                     MenuButtonOption(
                         options: options,
                         highlightColors: highlightColors,
-                        //highlightColor: Colors.green,
                         onItemSelected: (index) async {
                           SharedPreferences prefs =
                               await SharedPreferences.getInstance();
@@ -141,13 +137,11 @@ class _FoodDataPageState extends State<FoodDataPage> {
                             globalVariable.selectedMenuOptionDias =
                                 _selectedMenuOption;
                           });
-                          await prefs.setInt('diaSeleccionado', index);
-                          // print(index);
-                          _loadFoods();
+                          await prefs.setInt('selectedDay', index);
+                          _loadRoutines();
                         },
                         selectedMenuOptionGlobal:
                             globalVariable.selectedMenuOptionDias),
-                    // Aquí puedes agregar más elementos MenuButtonOption según sea necesario
                   ],
                 ),
               ),
@@ -165,11 +159,9 @@ class _FoodDataPageState extends State<FoodDataPage> {
         _selectedMenuOption == 5 ? _view() : const SizedBox(),
         _selectedMenuOption == 6 ? _view() : const SizedBox(),
         CustomButton(
-          text: 'Agregar',
+          text: 'Add',
           onPressed: () {
-
             _showOptionsBottomSheet(context, DateTime.now());
-          
           },
           icon: Icons.timer_outlined,
         ),
@@ -178,9 +170,8 @@ class _FoodDataPageState extends State<FoodDataPage> {
   }
 
   Widget _view() {
- 
     return SingleChildScrollView(
-      child: _foods.isEmpty
+      child: _routines.isEmpty
           ? _isLoading
               ? Center(
                   child: CircularProgressIndicator(), // Indicador de carga
@@ -197,43 +188,34 @@ class _FoodDataPageState extends State<FoodDataPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TrackingWidgets.buildLabelDetailsRowOnly(
-                          "No hay alimentos", MainAxisAlignment.center),
+                          "No routines", MainAxisAlignment.center),
                       SizedBox(height: 10, width: 10),
-                      // _buildRoutineDetailsRow("Agrega rutinas:", "primaryFocus"),
-                      // _buildRoutineDetailsRow("Enfoque Secundario:", "secondaryFocus"),
                     ],
                   ),
                 )
           : Container(
-              // width: screenSize.width,
               child: Column(
-                children: _foods.map((food) {
-                  return _buildFoodContainer(
-                      food!['startTime'],
-                      food['endTime'],
-                      food['title'],
-                      food['description'],
-                      food['color'],
-                      food['id'],
-                     food['datosObjeto']
-                      );
+                children: _routines.map((routine) {
+                  return _buildRoutineContainer(
+                      routine!['startTime'],
+                      routine['endTime'],
+                      routine['title'],
+                      routine['description'],
+                      routine['color'],
+                      routine['id']);
                 }).toList(),
               ),
             ),
     );
   }
 
-  Widget _buildFoodContainer(
+  Widget _buildRoutineContainer(
       DateTime startTime,
       DateTime endTime,
       String title,
       String description,
       int color,
-      String idRecordar,
-      Map<String, dynamic> datosAliemnto
-      
-      ) 
-      {
+      String idRecordar) {
     return GestureDetector(
       onTap: () {
         showModalBottomSheet(
@@ -268,16 +250,10 @@ class _FoodDataPageState extends State<FoodDataPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TrackingWidgets.buildLabelDetailsRowOnly(
-                datosAliemnto['Tipo'], MainAxisAlignment.center),
+                title, MainAxisAlignment.center),
             SizedBox(height: 10, width: 10),
             TrackingWidgets.buildLabelDetailsRow(
-                "Proteinas:", datosAliemnto['Proteínas'].toString()),
-            TrackingWidgets.buildLabelDetailsRow(
-                "Grasas:", datosAliemnto['Grasas'].toString()),
-            TrackingWidgets.buildLabelDetailsRow(
-                "Carbos:", datosAliemnto['Carbos'].toString()),
-            TrackingWidgets.buildLabelDetailsRow(
-                "Hora de inicio:", TrackingFunctions.formatDateTime(startTime.toIso8601String())),
+                "Start Time:", formatDateTime(startTime.toIso8601String())),
           ],
         ),
       ),
@@ -295,31 +271,18 @@ class _FoodDataPageState extends State<FoodDataPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: Icon(Icons.fastfood, color: Colors.white),
-                title: Text('Agregar Comida',
-                    style: TextStyle(color: Colors.white)),
-                onTap: () {
-                   Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => AddSecondaryReminderPage(
-                        tipo: "Alimento",
-                      )),
-            );
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.abc, color: Colors.white),
-                title: Text('Agregar Suplemento',
+                leading: Icon(Icons.schedule, color: Colors.white),
+                title: Text('Add Routine',
                     style: TextStyle(color: Colors.white)),
                 onTap: () {
                   Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => AddSecondaryReminderPage(
-                        tipo: "Suplemento",
-                      )),
-            );
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddSecondaryReminderPage(
+                        tipo: "Rutina",
+                      ),
+                    ),
+                  );
                 },
               ),
             ],

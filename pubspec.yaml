@@ -67,6 +67,7 @@ dependencies:
   scroll_date_picker: ^3.8.0
   tflite_v2: ^1.0.0
   syncfusion_flutter_charts: ^25.2.6
+  flutter_vector_icons: ^2.0.0
 
 dev_dependencies:
   flutter_test:

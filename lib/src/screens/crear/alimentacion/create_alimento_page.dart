@@ -380,7 +380,7 @@ class _CreateFoodPageState extends State<CreateFoodPage> {
         type: _type,
         preparation: _preparation,
         nutrients: {
-          'Proteínas ': _proteins,
+          'Proteínas': _proteins,
           'Carbos': _carbs,
           'Grasas': _fats,
         },

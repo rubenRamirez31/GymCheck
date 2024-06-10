@@ -6,19 +6,19 @@ import 'package:gym_check/src/screens/principal.dart';
 import 'package:gym_check/src/screens/seguimiento/goals/select_daily_goals.dart';
 import 'package:gym_check/src/services/nutritional_tracking_service.dart';
 
-class CreateMatricesPage extends StatefulWidget {
-  final String tipoMeta;
-  final Map<String, dynamic> datosCorporales;
+class CreateMacrosPage extends StatefulWidget {
+  final Map<String, dynamic> datosUsuario;
 
-  const CreateMatricesPage(
-      {Key? key, required this.tipoMeta, required this.datosCorporales})
+  const CreateMacrosPage(
+      {Key? key, required this.datosUsuario})
       : super(key: key);
 
   @override
-  _CreateMatricesPageState createState() => _CreateMatricesPageState();
+  _CreateMacrosPageState createState() => _CreateMacrosPageState();
 }
 
-class _CreateMatricesPageState extends State<CreateMatricesPage> {
+
+class _CreateMacrosPageState extends State<CreateMacrosPage> {
   late Map<String, double> macros; // Hold calculated macros
   double proteinas = 0;
   double grasas = 0;
@@ -27,7 +27,8 @@ class _CreateMatricesPageState extends State<CreateMatricesPage> {
   @override
   void initState() {
     super.initState();
-    macros = calcularMacros(widget.tipoMeta, widget.datosCorporales);
+    macros = calcularMacros(widget.datosUsuario);
+    print(macros);
     //proteinas = macros['proteinas'];
   }
 
@@ -58,6 +59,7 @@ class _CreateMatricesPageState extends State<CreateMatricesPage> {
             const SizedBox(height: 20),
             _buildMacroRow('Proteínas', '${macros['proteinas']} g'),
             _buildMacroRow('Carbohidratos', '${macros['carbohidratos']} g'),
+            _buildMacroRow('Grasas', '${macros['grasas']} g'),
             _buildMacroRow('Grasas', '${macros['grasas']} g'),
             CustomButton(
                 text: "Guardar Macros",
@@ -164,55 +166,82 @@ class _CreateMatricesPageState extends State<CreateMatricesPage> {
 
     // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result['message'] ?? 'Error al guardar')),);
   }
+Map<String, double> calcularMacros(Map<String, dynamic> datosUsuario) {
+  double peso = datosUsuario['peso'];
+  double altura = datosUsuario['altura'];
+  int edad = datosUsuario['edad'];
+  String sexo = datosUsuario['sexo'];
+  String nivelActividad = datosUsuario['nivelActividad'];
+  String objetivo = datosUsuario['objetivo'];
 
-  Map<String, double> calcularMacros(
-      String tipoMeta, Map<String, dynamic> datosCorporales) {
-    final rangosValores = {
-      'Pérdida de peso': {
-        'proteinas': {'min': 1.2, 'max': 2.0},
-        'carbohidratos': {'min': 40, 'max': 55},
-        'grasas': {'min': 20, 'max': 30}
-      },
-      'Aumento de masa muscular': {
-        'proteinas': {'min': 1.6, 'max': 2.2},
-        'carbohidratos': {'min': 45, 'max': 60},
-        'grasas': {'min': 25, 'max': 35}
-      },
-      'Definición muscular': {
-        'proteinas': {'min': 1.8, 'max': 2.4},
-        'carbohidratos': {'min': 35, 'max': 50},
-        'grasas': {'min': 20, 'max': 30}
-      },
-      'Mantener peso': {
-        'proteinas': {'min': 1.0, 'max': 1.5},
-        'carbohidratos': {'min': 45, 'max': 60},
-        'grasas': {'min': 20, 'max': 35}
-      },
-    };
-
-    final tdee = datosCorporales['tdee'];
-
-    final rangoValoresMeta = rangosValores[tipoMeta];
-    final proteinaMin = rangoValoresMeta!['proteinas']!['min'];
-    final carbohidratosMin = rangoValoresMeta['carbohidratos']!['min'];
-    final grasasMin = rangoValoresMeta['grasas']!['min'];
-
-    final macros = {
-      'proteinas': (proteinaMin! * datosCorporales['peso']) as double,
-      'carbohidratos': (((carbohidratosMin! / 100) * tdee / 4)),
-      'grasas': (((grasasMin! / 100) * tdee / 9)),
-    };
-
-    // Código existente
-
-    // Redondear los valores a 2 decimales
-    final roundedMacros = {
-      'proteinas': double.parse((macros['proteinas']!).toStringAsFixed(2)),
-      'carbohidratos':
-          double.parse((macros['carbohidratos']!).toStringAsFixed(2)),
-      'grasas': double.parse((macros['grasas']!).toStringAsFixed(2)),
-    };
-
-    return roundedMacros;
+  // Calculamos el TMB
+  double tmb;
+  if (sexo.toLowerCase() == 'masculino') {
+    tmb = 10 * peso + 6.25 * altura - 5 * edad + 5;
+  } else {
+    tmb = 10 * peso + 6.25 * altura - 5 * edad - 161;
   }
+
+  // Ajuste por nivel de actividad
+  double factorActividad;
+  switch (nivelActividad.toLowerCase()) {
+    case 'sedentario':
+      factorActividad = 1.2;
+      break;
+    case 'ligero':
+      factorActividad = 1.375;
+      break;
+    case 'moderado':
+      factorActividad = 1.55;
+      break;
+    case 'activo':
+      factorActividad = 1.725;
+      break;
+    case 'muy activo':
+      factorActividad = 1.9;
+      break;
+    default:
+      factorActividad = 1.2; // valor por defecto
+  }
+
+  double tdee = tmb * factorActividad;
+
+  // Ajuste por objetivo
+  switch (objetivo.toLowerCase()) {
+    case 'pérdida de peso':
+      tdee -= 500;
+      break;
+    case 'aumento de masa muscular':
+      tdee += 500;
+      break;
+    case 'definición muscular':
+      tdee -= 200; // Pequeño déficit calórico para quemar grasa y mantener músculo
+      break;
+    case 'mantener peso':
+      // No hay ajuste necesario para mantener el peso
+      break;
+  }
+
+  // Distribución de macros
+  double caloriasProteinas = tdee * 0.25;
+  double caloriasCarbohidratos = tdee * 0.55;
+  double caloriasGrasas = tdee * 0.20;
+
+  double gramosProteinas = caloriasProteinas / 4;
+  double gramosCarbohidratos = caloriasCarbohidratos / 4;
+  double gramosGrasas = caloriasGrasas / 9;
+
+  // Redondear los valores a 2 decimales
+  final roundedMacros = {
+    'proteinas': double.parse(gramosProteinas.toStringAsFixed(2)),
+    'carbohidratos': double.parse(gramosCarbohidratos.toStringAsFixed(2)),
+    'grasas': double.parse(gramosGrasas.toStringAsFixed(2)),
+  };
+
+  return roundedMacros;
 }
+
+}
+
+
+

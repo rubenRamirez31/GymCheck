@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 
-import 'package:gym_check/src/screens/seguimiento/remiders/add_remider_page.dart';
+import 'package:gym_check/src/screens/seguimiento/remiders/add_primary_remider_page.dart';
+import 'package:gym_check/src/screens/seguimiento/remiders/add_secundary_remider_page.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/view_remider_page.dart';
+import 'package:gym_check/src/screens/seguimiento/tracking_funtions.dart';
 import 'package:gym_check/src/screens/seguimiento/widgets/custom_button.dart';
 import 'package:gym_check/src/screens/seguimiento/widgets/tracking_widgets.dart';
 import 'package:gym_check/src/services/reminder_service.dart';
@@ -78,7 +80,7 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
     }
   }
 
-  String formatDateTime(String? dateTimeString) {
+  String formatDateTimeNouuuu(String? dateTimeString) {
     if (dateTimeString != null && dateTimeString.isNotEmpty) {
       try {
         DateTime dateTime = DateTime.parse(dateTimeString);
@@ -171,7 +173,7 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => AddReminderPage(
+                  builder: (context) => AddSecondaryReminderPage(
                         tipo: "Rutina",
                       )),
             );
@@ -215,15 +217,14 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
               child: Column(
                 children: _routines.map((routine) {
                   return _buildRoutineContainer(
-                    routine!['routineName'],
-                    routine['primaryFocus'],
-                    routine['secondaryFocus'],
-                    routine['startTime'],
+
+                    routine!['startTime'],
                     routine['endTime'],
                     routine['title'],
                     routine['description'],
                     routine['color'],
                     routine['id'],
+                      routine['datosObjeto']
                   );
                 }).toList(),
               ),
@@ -232,15 +233,14 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
   }
 
   Widget _buildRoutineContainer(
-    String routineName,
-    String primaryFocus,
-    String secondaryFocus,
+
     DateTime startTime,
     DateTime endTime,
     String title,
     String description,
     int color,
     String idRecordar,
+      Map<String, dynamic> datosRutina
   ) {
     return GestureDetector(
       onTap: () {
@@ -279,11 +279,11 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
                 title, MainAxisAlignment.center),
             SizedBox(height: 10, width: 10),
             TrackingWidgets.buildLabelDetailsRow(
-                "Enfoque Principal:", primaryFocus),
+                "Enfoque Principal:",datosRutina['primaryFocus']),
             TrackingWidgets.buildLabelDetailsRow(
-                "Enfoque Secundario:", secondaryFocus),
+                "Enfoque Secundario:", datosRutina['secondaryFocus']),
             TrackingWidgets.buildLabelDetailsRow(
-                "Hora de inicio:", formatDateTime(startTime.toIso8601String())),
+                "Hora de inicio:", TrackingFunctions.formatDateTime(startTime.toIso8601String())),
           ],
         ),
       ),

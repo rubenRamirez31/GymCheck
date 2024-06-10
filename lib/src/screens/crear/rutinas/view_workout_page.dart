@@ -7,7 +7,8 @@ import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/screens/crear/series/view_serie_page.dart';
 import 'package:gym_check/src/screens/crear/widgets/create_widgets.dart';
 import 'package:gym_check/src/screens/crear/widgets/custom_button.dart';
-import 'package:gym_check/src/screens/seguimiento/remiders/add_remider_page.dart';
+import 'package:gym_check/src/screens/seguimiento/remiders/add_primary_remider_page.dart';
+import 'package:gym_check/src/screens/seguimiento/remiders/add_secundary_remider_page.dart';
 import 'package:gym_check/src/services/serie_service.dart';
 import 'package:gym_check/src/services/workout_service.dart';
 import 'package:provider/provider.dart';
@@ -169,9 +170,9 @@ class _ViewWorkoutPageState extends State<ViewWorkoutPage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                AddReminderPage(
+                                                AddSecondaryReminderPage(
                                                     tipo: "Rutina",
-                                                    rutinaId: widget.id)),
+                                                    objetoID: widget.id)),
                                       );
 
                                       //AddReminderPage(tipo: "Rutina",rutinaId: widget.id);

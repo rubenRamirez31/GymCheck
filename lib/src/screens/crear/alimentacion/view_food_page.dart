@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/alimento.dart';
 import 'package:gym_check/src/screens/crear/widgets/create_widgets.dart';
-import 'package:gym_check/src/screens/seguimiento/remiders/add_remider_page.dart';
+import 'package:gym_check/src/screens/seguimiento/remiders/add_secundary_remider_page.dart';
 import 'package:gym_check/src/services/food_service.dart';
 import 'package:gym_check/src/providers/globales.dart';
 import 'package:provider/provider.dart';
@@ -125,9 +125,9 @@ class _ViewFoodPageState extends State<ViewFoodPage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                AddReminderPage(
+                                                AddSecondaryReminderPage(
                                                     tipo: "Alimento",
-                                                    alimentoId: widget.id)),
+                                                    objetoID: widget.id)),
                                       );
                                     }),
                               ],
