@@ -99,7 +99,15 @@ class _HomeCreatePageState extends State<HomeCreatePage>
             IconButton(
               icon: const Icon(Icons.info),
               onPressed: () {
-                SmartDialog.showToast("Información de la sección");
+                Navigator.push(
+            context,
+            MaterialPageRoute(
+              //aqui deberia de viajar a la parte de seguimiento nutricional apra registrar macros
+              builder: (context) => PrincipalPage(initialPageIndex: 2,initialSubPageIndex: 0, initialSubPageMenuIndex: 1,
+             
+              ),
+            ),
+          );
               },
               color: Colors.white,
             ),
@@ -121,7 +129,7 @@ class _HomeCreatePageState extends State<HomeCreatePage>
                       children: <Widget>[
                         MenuButtonOption(
                           options: options,
-                          highlightColors: highlightColors,
+                         // highlightColors: highlightColors,
                           onItemSelected: (index) async {
                             SharedPreferences prefs =
                                 await SharedPreferences.getInstance();

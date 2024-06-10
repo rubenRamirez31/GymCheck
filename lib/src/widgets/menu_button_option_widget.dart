@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 class MenuButtonOption extends StatefulWidget {
   final List<String> options;
   final Function(int) onItemSelected;
-  final List<Color> highlightColors; // Lista de colores de resaltado
+  final List<Color>? highlightColors; // Lista de colores de resaltado
   final int selectedMenuOptionGlobal;
   final List<IconData?>? icons; // Lista de iconos opcionales
 
   MenuButtonOption({
     required this.options,
     required this.onItemSelected,
-    required this.highlightColors, // Recibe una lista de colores de resaltado
+     this.highlightColors, // Recibe una lista de colores de resaltado
     required this.selectedMenuOptionGlobal,
     this.icons, // Lista de iconos opcionales
   });
@@ -20,14 +20,20 @@ class MenuButtonOption extends StatefulWidget {
 }
 
 class _MenuButtonOptionState extends State<MenuButtonOption> {
-  late String selectedOption;
   late int _selectedMenuOption;
+    List<Color> highlightColors2 = [
+    Colors.white, // Color de resaltado para 'Fisico'
+    Colors.white, // Color de resaltado para 'Emocional'
+    Colors.white, // Color de resaltado para 'Emocional'
+    Colors.white, // Color de resaltado para 'Emocional'
+    Colors.white, // Color de resaltado para 'Emocional'
+    Colors.white, // Color de resaltado para 'Nutricional'
+  ];
 
   @override
   void initState() {
     super.initState();
     _selectedMenuOption = widget.selectedMenuOptionGlobal;
-    selectedOption = widget.options[_selectedMenuOption];
   }
 
   @override
@@ -47,9 +53,8 @@ class _MenuButtonOptionState extends State<MenuButtonOption> {
           return GestureDetector(
             onTap: () {
               setState(() {
-                selectedOption = option;
                 _selectedMenuOption = index;
-                widget.onItemSelected(index);
+                widget.onItemSelected(_selectedMenuOption);
               });
             },
             child: Padding(
@@ -58,8 +63,8 @@ class _MenuButtonOptionState extends State<MenuButtonOption> {
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
-                  color: option == selectedOption
-                      ? widget.highlightColors[index] // Usa el color de resaltado correspondiente
+                  color: _selectedMenuOption == index
+                      ? Colors.white // Usa el color de resaltado correspondiente
                       : const Color.fromARGB(255, 83, 83, 83),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -67,14 +72,14 @@ class _MenuButtonOptionState extends State<MenuButtonOption> {
                       if (icon != null) ...[
                         Icon(
                           icon,
-                          color: option == selectedOption ? Colors.black : Colors.white,
+                          color: _selectedMenuOption == index ? Colors.black : Colors.white,
                         ),
                         SizedBox(width: 8), // Espacio entre el icono y el texto
                       ],
                       Text(
                         option,
                         style: TextStyle(
-                          color: option == selectedOption ? Colors.black : Colors.white,
+                          color: _selectedMenuOption == index ? Colors.black : Colors.white,
                         ),
                       ),
                     ],

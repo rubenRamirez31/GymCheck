@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:gym_check/src/providers/globales.dart';
+import 'package:gym_check/src/screens/principal.dart';
 import 'package:gym_check/src/screens/seguimiento/calendar/physical-nutritional/month_view_widget.dart';
 import 'package:gym_check/src/screens/seguimiento/daily_routine/daily_routine_page.dart';
-import 'package:gym_check/src/screens/seguimiento/daily_wellness_tracking_page.dart';
 import 'package:gym_check/src/screens/seguimiento/goals/goals_page.dart';
-import 'package:gym_check/src/screens/seguimiento/nutritional/food_data_page.dart';
 import 'package:gym_check/src/screens/seguimiento/nutritional_tracking_page.dart';
 import 'package:gym_check/src/screens/seguimiento/physical_tracking_page.dart';
 import 'package:gym_check/src/widgets/menu_button_option_widget.dart';
@@ -14,14 +13,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeTrackingPage extends StatefulWidget {
   final Function? openDrawer;
-  const HomeTrackingPage({Key? key, this.openDrawer}) : super(key: key);
+  final int? initialPageIndex;
+  final int? initialSubPageMenuIndex;
+  const HomeTrackingPage({Key? key, this.initialPageIndex,this.initialSubPageMenuIndex,this.openDrawer}) : super(key: key);
 
   @override
   State<HomeTrackingPage> createState() => _HomeTrackingPageState();
 }
 
 class _HomeTrackingPageState extends State<HomeTrackingPage> {
-  int currentPageIndex = 0;
+ // int currentPageIndex = 0;
   List<String> options = [
     'Fisico',
     'Nutricional',
@@ -51,7 +52,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
     super.initState();
     _loadSelectedMenuOption();
     _loadCalendarHeight();
-    currentPageIndex = 0;
+   // currentPageIndex = 0;
   }
 
   Future<void> _loadCalendarHeight() async {
@@ -125,7 +126,19 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
                 Icons.info,
                 color: Colors.white,
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+            context,
+            MaterialPageRoute(
+              //aqui deberia de viajar a la parte de seguimiento fisico apra registrar fuerza
+              builder: (context) => PrincipalPage(initialPageIndex: 2,initialSubPageIndex: 0, initialSubPageMenuIndex: 2,
+             
+              ),
+            ),
+          );
+
+
+              },
             ),
           ],
         ),
@@ -148,7 +161,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
                           MenuButtonOption(
                             options: options,
                             icons: myIcons,
-                            highlightColors: highlightColors,
+                        //    highlightColors: highlightColors,
                             onItemSelected: (index) async {
                               SharedPreferences prefs =
                                   await SharedPreferences.getInstance();
@@ -199,7 +212,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
                   },
                 ),
                 _selectedMenuOption == 0
-                    ? const PhysicalTrackingPage()
+                    ?  PhysicalTrackingPage(initialSubPageMenuIndex: widget.initialSubPageMenuIndex,)
                     : const SizedBox(),
                 _selectedMenuOption == 1
                     ? const NutritionalTrackingPage()
@@ -218,7 +231,13 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
   Future<void> _loadSelectedMenuOption() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _selectedMenuOption = prefs.getInt('selectedSubPageTracking') ?? 0;
+    //  if(widget.initialPageIndex != null){
+
+        _selectedMenuOption = widget.initialPageIndex??  prefs.getInt('selectedSubPageTracking') ?? 0;
+            print(_selectedMenuOption);
+
+    //  }
+    //  _selectedMenuOption = prefs.getInt('selectedSubPageTracking') ?? 0;
     });
   }
 

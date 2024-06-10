@@ -9,12 +9,15 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PhysicalTrackingPage extends StatefulWidget {
-  const PhysicalTrackingPage({super.key});
+  final int? initialSubPageMenuIndex;
+
+  const PhysicalTrackingPage({super.key, this.initialSubPageMenuIndex});
 
   @override
   // ignore: library_private_types_in_public_api
   _PhysicalTrackingPageState createState() => _PhysicalTrackingPageState();
 }
+
 
 class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
   int _selectedMenuOption = 0;
@@ -73,7 +76,7 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
                     MenuButtonOption(
                       options: options,
                       icons: myIcons,
-                      highlightColors: highlightColors,
+                     // highlightColors: highlightColors,
                       onItemSelected: (index) async {
                         SharedPreferences prefs =
                             await SharedPreferences.getInstance();
@@ -116,7 +119,7 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
   Future<void> _loadSelectedMenuOption() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _selectedMenuOption =
+      _selectedMenuOption = widget.initialSubPageMenuIndex ??
           prefs.getInt('selectedMenuOptionTrackingPhysical') ?? 0;
     });
   }

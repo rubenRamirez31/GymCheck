@@ -131,7 +131,7 @@ class _FoodDataPageState extends State<FoodDataPage> {
                   children: <Widget>[
                     MenuButtonOption(
                         options: options,
-                        highlightColors: highlightColors,
+                      //  highlightColors: highlightColors,
                         //highlightColor: Colors.green,
                         onItemSelected: (index) async {
                           SharedPreferences prefs =

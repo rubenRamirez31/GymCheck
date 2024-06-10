@@ -75,7 +75,7 @@ class _NutritionalTrackingPageState extends State<NutritionalTrackingPage> {
                     MenuButtonOption(
                       icons: myIcons,
                       options: options,
-                      highlightColors: highlightColors,
+                   //   highlightColors: highlightColors,
                       onItemSelected: (index) async {
                         SharedPreferences prefs =
                             await SharedPreferences.getInstance();

@@ -57,7 +57,7 @@ class _AllWorkoutPageState extends State<AllWorkoutPage> {
                   children: <Widget>[
                     MenuButtonOption(
                       options: options,
-                      highlightColors: highlightColors,
+                    //  highlightColors: highlightColors,
                       onItemSelected: (index) async {
                         setState(() {
                           _selectedMenuOption = index;

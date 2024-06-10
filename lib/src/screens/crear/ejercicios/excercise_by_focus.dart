@@ -66,7 +66,7 @@ class _ExerciseByFocusPageState extends State<ExerciseByFocusPage> {
                   children: <Widget>[
                     MenuButtonOption(
                       options: options,
-                      highlightColors: highlightColors,
+                     // highlightColors: highlightColors,
                       onItemSelected: (index) async {
                         SharedPreferences prefs =
                             await SharedPreferences.getInstance();

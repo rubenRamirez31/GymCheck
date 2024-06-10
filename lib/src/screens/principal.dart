@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/globales.dart';
-
 import 'package:gym_check/src/screens/crear/home_create_page.dart';
 import 'package:gym_check/src/screens/seguimiento/home_tracking_page.dart';
 import 'package:gym_check/src/screens/social/feed_page.dart';
@@ -10,9 +9,11 @@ import 'package:provider/provider.dart';
 
 class PrincipalPage extends StatefulWidget {
   final String? uid;
-  final int initialPageIndex;
+  final int initialPageIndex; // Feed= 0 //Creacion=1 //Seguimiento =2
+  final int? initialSubPageIndex; // Por ejemplo seguimiento //Fisico = 0//Nutricional = 1// 
+  final int? initialSubPageMenuIndex; // Por ejemplo en seguimiento/fisico //Rutinas = 0 //Registro corporal =1;
 
-  const PrincipalPage({Key? key, this.initialPageIndex = 0, this.uid})
+  const PrincipalPage({Key? key, this.initialPageIndex = 0, this.initialSubPageIndex, this.initialSubPageMenuIndex, this.uid})
       : super(key: key);
 
   @override
@@ -22,13 +23,18 @@ class PrincipalPage extends StatefulWidget {
 class _PrincipalPageState extends State<PrincipalPage> {
   late int currentPageIndex;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  int? initialSubPageIndex;
+  int? initialSubPageMenuIndex;
 
   @override
   void initState() {
     super.initState();
+    // Aquí carga la parte de seguimiento o la que se le pase por defecto
     currentPageIndex = widget.initialPageIndex;
+    initialSubPageIndex = widget.initialSubPageIndex;
+    initialSubPageMenuIndex = widget.initialSubPageMenuIndex;
     Provider.of<Globales>(context, listen: false)
-        .cargarDatosUsuario(widget!.uid.toString());
+        .cargarDatosUsuario(widget.uid.toString());
   }
 
   void openDrawer() {
@@ -37,6 +43,12 @@ class _PrincipalPageState extends State<PrincipalPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Resetea las variables iniciales después de acceder a ellas
+    final int? subPageIndex = initialSubPageIndex;
+    final int? subPageMenuIndex = initialSubPageMenuIndex;
+    initialSubPageIndex = null;
+    initialSubPageMenuIndex = null;
+
     return Scaffold(
       key: _scaffoldKey,
       drawer: const MenuDrawer(),
@@ -67,7 +79,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
       body: <Widget>[
         FeedPage(openDrawer: openDrawer),
         HomeCreatePage(openDrawer: openDrawer),
-        HomeTrackingPage(openDrawer: openDrawer),
+        HomeTrackingPage(openDrawer: openDrawer, initialPageIndex: subPageIndex, initialSubPageMenuIndex: subPageMenuIndex),
       ][currentPageIndex],
     );
   }
