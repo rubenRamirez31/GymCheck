@@ -9,7 +9,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NutritionalTrackingPage extends StatefulWidget {
-  const NutritionalTrackingPage({Key? key}) : super(key: key);
+   final int? initialSubPageMenuIndex;
+  const NutritionalTrackingPage({Key? key, this.initialSubPageMenuIndex}) : super(key: key);
 
   @override
   _NutritionalTrackingPageState createState() => _NutritionalTrackingPageState();
