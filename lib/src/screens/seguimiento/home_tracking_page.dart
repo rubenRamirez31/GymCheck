@@ -15,18 +15,23 @@ class HomeTrackingPage extends StatefulWidget {
   final Function? openDrawer;
   final int? initialPageIndex;
   final int? initialSubPageMenuIndex;
-  const HomeTrackingPage({Key? key, this.initialPageIndex,this.initialSubPageMenuIndex,this.openDrawer}) : super(key: key);
+  const HomeTrackingPage(
+      {Key? key,
+      this.initialPageIndex,
+      this.initialSubPageMenuIndex,
+      this.openDrawer})
+      : super(key: key);
 
   @override
   State<HomeTrackingPage> createState() => _HomeTrackingPageState();
 }
 
 class _HomeTrackingPageState extends State<HomeTrackingPage> {
- // int currentPageIndex = 0;
+  // int currentPageIndex = 0;
   List<String> options = [
     'Fisico',
     'Nutricional',
-    'Rutina diaria',//Todos los recordatorios que se repiten se ven aqui 
+    'Rutina diaria', //Todos los recordatorios que se repiten se ven aqui
     //'Bienestar diario',
   ]; // Lista de opciones
 
@@ -47,12 +52,16 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
   double _cellAspectRatio = 1;
   bool _isExpanded = false;
 
+  int sisi = 0;
+
   @override
   void initState() {
     super.initState();
     _loadSelectedMenuOption();
     _loadCalendarHeight();
-   // currentPageIndex = 0;
+    print('_selectedMenuOption');
+    print(_selectedMenuOption);
+    // currentPageIndex = 0;
   }
 
   Future<void> _loadCalendarHeight() async {
@@ -69,6 +78,13 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
     var globalVariable = Provider.of<GlobalVariablesProvider>(
         context); // Obtiene la instancia de GlobalVariable
     final globales = context.watch<Globales>();
+
+    print("globalVariable.selectedSubPageTracking");
+    print(globalVariable.selectedSubPageTracking);
+    print(_selectedMenuOption);
+    print(_selectedMenuOption);
+    print(_selectedMenuOption);
+    print('_selectedMenuOptiondesdebuil');
 
     return GestureDetector(
       onTap: () {
@@ -128,16 +144,16 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
               ),
               onPressed: () {
                 Navigator.push(
-            context,
-            MaterialPageRoute(
-              //aqui deberia de viajar a la parte de seguimiento fisico apra registrar fuerza
-              builder: (context) => PrincipalPage(initialPageIndex: 2,initialSubPageIndex: 0, initialSubPageMenuIndex: 2,
-             
-              ),
-            ),
-          );
-
-
+                  context,
+                  MaterialPageRoute(
+                    //aqui deberia de viajar a la parte de seguimiento fisico apra registrar fuerza
+                    builder: (context) => PrincipalPage(
+                      initialPageIndex: 2,
+                      initialSubPageIndex: 0,
+                      initialSubPageMenuIndex: 2,
+                    ),
+                  ),
+                );
               },
             ),
           ],
@@ -161,7 +177,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
                           MenuButtonOption(
                             options: options,
                             icons: myIcons,
-                        //    highlightColors: highlightColors,
+                            //    highlightColors: highlightColors,
                             onItemSelected: (index) async {
                               SharedPreferences prefs =
                                   await SharedPreferences.getInstance();
@@ -173,7 +189,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
                               await prefs.setInt(
                                   'selectedSubPageTracking', index);
                             },
-                            selectedMenuOptionGlobal:
+                            selectedMenuOptionGlobal: widget.initialPageIndex ??
                                 globalVariable.selectedSubPageTracking,
                           ),
                         ],
@@ -212,7 +228,9 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
                   },
                 ),
                 _selectedMenuOption == 0
-                    ?  PhysicalTrackingPage(initialSubPageMenuIndex: widget.initialSubPageMenuIndex,)
+                    ? PhysicalTrackingPage(
+                        initialSubPageMenuIndex: widget.initialSubPageMenuIndex,
+                      )
                     : const SizedBox(),
                 _selectedMenuOption == 1
                     ? const NutritionalTrackingPage()
@@ -231,13 +249,16 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
   Future<void> _loadSelectedMenuOption() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-    //  if(widget.initialPageIndex != null){
+      //  if(widget.initialPageIndex != null){
 
-        _selectedMenuOption = widget.initialPageIndex??  prefs.getInt('selectedSubPageTracking') ?? 0;
-            print(_selectedMenuOption);
+      _selectedMenuOption = widget.initialPageIndex ??
+          prefs.getInt('selectedSubPageTracking') ??
+          0;
+      print("holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+      print(_selectedMenuOption);
 
-    //  }
-    //  _selectedMenuOption = prefs.getInt('selectedSubPageTracking') ?? 0;
+      //  }
+      //  _selectedMenuOption = prefs.getInt('selectedSubPageTracking') ?? 0;
     });
   }
 

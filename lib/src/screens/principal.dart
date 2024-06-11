@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/screens/crear/home_create_page.dart';
 import 'package:gym_check/src/screens/seguimiento/home_tracking_page.dart';
 import 'package:gym_check/src/screens/social/feed_page.dart';
-import 'package:gym_check/src/values/app_colors.dart';
 import 'package:gym_check/src/widgets/global/menudrawer.dart';
 import 'package:provider/provider.dart';
 
@@ -31,8 +31,8 @@ class _PrincipalPageState extends State<PrincipalPage> {
     super.initState();
     // Aquí carga la parte de seguimiento o la que se le pase por defecto
     currentPageIndex = widget.initialPageIndex;
-    initialSubPageIndex = widget.initialSubPageIndex;
-    initialSubPageMenuIndex = widget.initialSubPageMenuIndex;
+    initialSubPageIndex = widget.initialSubPageIndex ?? Provider.of<GlobalVariablesProvider>(context, listen: false).selectedSubPageTracking;
+    initialSubPageMenuIndex = widget.initialSubPageMenuIndex ?? Provider.of<GlobalVariablesProvider>(context, listen: false).selectedMenuOptionTrackingPhysical;
     Provider.of<Globales>(context, listen: false)
         .cargarDatosUsuario(widget.uid.toString());
   }
@@ -66,6 +66,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
             icon: Icon(Icons.home_outlined),
             label: 'Feed',
           ),
+          
           NavigationDestination(
             icon: Icon(Icons.add),
             label: 'Crear',
@@ -79,7 +80,11 @@ class _PrincipalPageState extends State<PrincipalPage> {
       body: <Widget>[
         FeedPage(openDrawer: openDrawer),
         HomeCreatePage(openDrawer: openDrawer),
-        HomeTrackingPage(openDrawer: openDrawer, initialPageIndex: subPageIndex, initialSubPageMenuIndex: subPageMenuIndex),
+        HomeTrackingPage(
+          openDrawer: openDrawer,
+          initialPageIndex: subPageIndex,
+          initialSubPageMenuIndex: subPageMenuIndex,
+        ),
       ][currentPageIndex],
     );
   }

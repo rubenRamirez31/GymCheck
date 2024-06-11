@@ -47,12 +47,17 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
   void initState() {
     super.initState();
     _loadSelectedMenuOption(); // Cargar el estado guardado de _selectedMenuOption
+
+    
   }
 
   @override
   Widget build(BuildContext context) {
     var globalVariable = Provider.of<GlobalVariablesProvider>(
         context); // Obtiene la instancia de GlobalVariable
+        
+
+        
 
     return SingleChildScrollView(
       clipBehavior: Clip.hardEdge,
@@ -88,8 +93,9 @@ class _PhysicalTrackingPageState extends State<PhysicalTrackingPage> {
                         await prefs.setInt(
                             'selectedMenuOptionTrackingPhysical', index);
                       },
-                      selectedMenuOptionGlobal:
-                          globalVariable.selectedMenuOptionTrackingPhysical,
+                      
+                      selectedMenuOptionGlobal: widget.initialSubPageMenuIndex ??
+                         globalVariable.selectedMenuOptionTrackingPhysical,
                     ),
                   ],
                 ),

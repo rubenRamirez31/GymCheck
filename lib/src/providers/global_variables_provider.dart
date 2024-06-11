@@ -1,76 +1,91 @@
 import 'package:flutter/material.dart';
-
-// Este archivo define una clase llamada GlobalVariablesProvider que extiende ChangeNotifier,
-// que se utiliza para manejar variables globales en la aplicación y notificar a los widgets
-// cuando cambian estas variables.
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GlobalVariablesProvider extends ChangeNotifier {
-  // Variables, getters y setters para la subpágina de seguimiento
+  late SharedPreferences _prefs;
+  
+  GlobalVariablesProvider() {
+    _initSharedPreferences();
+  }
+
+  // Inicializa SharedPreferences
+  void _initSharedPreferences() async {
+    _prefs = await SharedPreferences.getInstance();
+    // Carga los valores guardados de SharedPreferences si existen
+    _selectedSubPageTracking = _prefs.getInt('selectedSubPageTracking') ?? 0;
+    _selectedMenuOptionTrackingPhysical = _prefs.getInt('selectedMenuOptionTrackingPhysical') ?? 0;
+    _selectedMenuOptionNutritional = _prefs.getInt('selectedMenuOptionNutritional') ?? 0;
+    _selectedMenuOptionWellness = _prefs.getInt('selectedMenuOptionWellness') ?? 0;
+    _selectedMenuOptionDias = _prefs.getInt('selectedMenuOptionDias') ?? 0;
+    _selectedSubPageCreate = _prefs.getInt('selectedSubPageCreate') ?? 0;
+    _selectedMenuOptionHomeExercise = _prefs.getInt('selectedMenuOptionHomeExercise') ?? 0;
+    _selectedMenuOptionAllExercise = _prefs.getInt('selectedMenuOptionAllExercise') ?? 0;
+    _selectedMenuOptionExerciseByFocus = _prefs.getInt('selectedMenuOptionExerciseByFocus') ?? 0;
+  }
+
   int _selectedSubPageTracking = 0;
   int get selectedSubPageTracking => _selectedSubPageTracking;
   set selectedSubPageTracking(int newValue) {
     _selectedSubPageTracking = newValue;
-    notifyListeners(); // Notifica a los widgets que están escuchando los cambios
+    _prefs.setInt('selectedSubPageTracking', newValue); // Guarda en SharedPreferences
+    notifyListeners();
   }
 
-  // Variables, getters y setters para la subpágina de seguimiento físico
   int _selectedMenuOptionTrackingPhysical = 0;
   int get selectedMenuOptionTrackingPhysical =>
       _selectedMenuOptionTrackingPhysical;
   set selectedMenuOptionTrackingPhysical(int newValue) {
     _selectedMenuOptionTrackingPhysical = newValue;
-    notifyListeners(); // Notifica a los widgets que están escuchando los cambios
+    _prefs.setInt('selectedMenuOptionTrackingPhysical', newValue);
+    notifyListeners();
   }
 
-  // Variables, getters y setters para la subpágina de seguimiento nutricional
   int _selectedMenuOptionNutritional = 0;
   int get selectedMenuOptionNutritional => _selectedMenuOptionNutritional;
   set selectedMenuOptionNutritional(int newValue) {
     _selectedMenuOptionNutritional = newValue;
-    notifyListeners(); // Notifica a los widgets que están escuchando los cambios
+    _prefs.setInt('selectedMenuOptionNutritional', newValue);
+    notifyListeners();
   }
 
-  // Variable, getter y setter para la opción de bienestar diario
   int _selectedMenuOptionWellness = 0;
   int get selectedMenuOptionWellness => _selectedMenuOptionWellness;
   set selectedMenuOptionWellness(int newValue) {
     _selectedMenuOptionWellness = newValue;
-    notifyListeners(); // Notifica a los widgets que están escuchando los cambios
+    _prefs.setInt('selectedMenuOptionWellness', newValue);
+    notifyListeners();
   }
 
-  // Variable, getter y setter para la opción de días
   int _selectedMenuOptionDias = 0;
   int get selectedMenuOptionDias => _selectedMenuOptionDias;
   set selectedMenuOptionDias(int newValue) {
     _selectedMenuOptionDias = newValue;
-    notifyListeners(); // Notifica a los widgets que están escuchando los cambios
+    _prefs.setInt('selectedMenuOptionDias', newValue);
+    notifyListeners();
   }
 
-
-
-
-  ///modulo de creacion
-
-  // Variables, getters y setters para la subpágina de creación
   int _selectedSubPageCreate = 0;
   int get selectedSubPageCreate => _selectedSubPageCreate;
   set selectedSubPageCreate(int newValue) {
     _selectedSubPageCreate = newValue;
-    notifyListeners(); // Notifica a los widgets que están escuchando los cambios
+    _prefs.setInt('selectedSubPageCreate', newValue);
+    notifyListeners();
   }
 
   int _selectedMenuOptionHomeExercise = 0;
   int get selectedMenuOptionHomeExercise => _selectedMenuOptionHomeExercise;
   set selectedMenuOptionHomeExercise(int newValue) {
     _selectedMenuOptionHomeExercise = newValue;
-    notifyListeners(); // Notifica a los widgets que están escuchando los cambios
+    _prefs.setInt('selectedMenuOptionHomeExercise', newValue);
+    notifyListeners();
   }
 
   int _selectedMenuOptionAllExercise = 0;
   int get selectedMenuOptionAllExercise => _selectedMenuOptionAllExercise;
   set selectedMenuOptionAllExercise(int newValue) {
     _selectedMenuOptionAllExercise = newValue;
-    notifyListeners(); // Notifica a los widgets que están escuchando los cambios
+    _prefs.setInt('selectedMenuOptionAllExercise', newValue);
+    notifyListeners();
   }
 
   int _selectedMenuOptionExerciseByFocus = 0;
@@ -78,6 +93,7 @@ class GlobalVariablesProvider extends ChangeNotifier {
       _selectedMenuOptionExerciseByFocus;
   set selectedMenuOptionExerciseByFocus(int newValue) {
     _selectedMenuOptionExerciseByFocus = newValue;
-    notifyListeners(); // Notifica a los widgets que están escuchando los cambios
+    _prefs.setInt('selectedMenuOptionExerciseByFocus', newValue);
+    notifyListeners();
   }
 }
