@@ -75,6 +75,7 @@ class _MyAppState extends State<MyApp> {
           builder: FlutterSmartDialog.init(),
           debugShowCheckedModeBanner: false,
           theme: AppTheme.themeData,
+        ///  themeMode:  ThemeMode.system,
           home: user != null
               ? PrincipalPage(
                   uid: user?.uid,

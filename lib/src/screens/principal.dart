@@ -13,8 +13,13 @@ class PrincipalPage extends StatefulWidget {
   final int? initialSubPageIndex; // Por ejemplo seguimiento //Fisico = 0//Nutricional = 1// 
   final int? initialSubPageMenuIndex; // Por ejemplo en seguimiento/fisico //Rutinas = 0 //Registro corporal =1;
 
-  const PrincipalPage({Key? key, this.initialPageIndex = 0, this.initialSubPageIndex, this.initialSubPageMenuIndex, this.uid})
-      : super(key: key);
+  const PrincipalPage({
+    Key? key,
+    this.initialPageIndex = 0,
+    this.initialSubPageIndex,
+    this.initialSubPageMenuIndex,
+    this.uid
+  }) : super(key: key);
 
   @override
   State<PrincipalPage> createState() => _PrincipalPageState();
@@ -52,7 +57,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
     return Scaffold(
       key: _scaffoldKey,
       drawer: const MenuDrawer(),
-      backgroundColor: Colors.grey,
+      backgroundColor: Color.fromARGB(255, 130, 25, 25), // Color de fondo de la aplicación
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
           setState(() {
@@ -60,20 +65,23 @@ class _PrincipalPageState extends State<PrincipalPage> {
           });
         },
         selectedIndex: currentPageIndex,
+        backgroundColor:Color(0xff0C1C2E), // Color de fondo del NavigationBar
         destinations: const <Widget>[
           NavigationDestination(
-            selectedIcon: Icon(Icons.home),
-            icon: Icon(Icons.home_outlined),
-            label: 'Feed',
-          ),
-          
-          NavigationDestination(
-            icon: Icon(Icons.add),
-            label: 'Crear',
+            selectedIcon: Icon(Icons.home, color: Color.fromARGB(255, 0, 0, 0)),
+            icon: Icon(Icons.home_outlined, color: Colors.white),
+            label: '',
+            
           ),
           NavigationDestination(
-            icon: Icon(Icons.radar),
-            label: 'Seguimiento',
+            selectedIcon: Icon(Icons.add, color: Color.fromARGB(255, 0, 0, 0)),
+            icon: Icon(Icons.add, color: Colors.white),
+            label: '',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.radar, color: Color.fromARGB(255, 0, 0, 0)),
+            icon: Icon(Icons.radar, color: Colors.white),
+            label: '',
           ),
         ],
       ),
