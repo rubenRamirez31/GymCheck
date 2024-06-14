@@ -65,7 +65,7 @@ class _DailyRoutinePageState extends State<DailyRoutinePage> {
 
     try {
       final routines = await ReminderService.getFilteredPrimeReminders(
-          context, "Rutina", _selectedMenuOption + 1, tipoAdicional1: "Alimento");
+          context, "Rutina", _selectedMenuOption + 1, tipoAdicional1: "Alimento", tipoAdicional2: "Recordatorio");
       setState(() {
         _routines = routines;
         _isLoading =

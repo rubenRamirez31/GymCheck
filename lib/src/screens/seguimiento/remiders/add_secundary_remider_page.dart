@@ -236,7 +236,7 @@ class _AddSecondaryReminderPageState extends State<AddSecondaryReminderPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 30.0),
+            
               _builObject(),
               const SizedBox(height: 20.0),
               Row(
@@ -302,7 +302,7 @@ class _AddSecondaryReminderPageState extends State<AddSecondaryReminderPage> {
               if (widget.update == true)
                 CustomButton(
                   onPressed: () {
-                    if (_objeto.isEmpty) {
+                    if (_objeto.isEmpty && widget.tipo != "Recordatorio") {
                       TrackingWidgets.showInfo(
                         context,
                         'Error al crear recordatorio',
@@ -325,93 +325,98 @@ class _AddSecondaryReminderPageState extends State<AddSecondaryReminderPage> {
 
   Widget _builObject() {
     return _objeto.isNotEmpty
-        ? Container(
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 18, 18, 18),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.white, width: 0.5),
-            ),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxHeight: 75, // Altura máxima de 300 píxeles
-              ),
-              child: ReorderableListView(
-                padding: EdgeInsets.zero,
-                physics: const BouncingScrollPhysics(),
-                children: _objeto
-                    .where((item) => item.containsKey('objeto'))
-                    .map((item) {
-                  String idObjeto = item['objeto']['id'];
-                  String nombre = item['objeto']['nombre'];
-                  return GestureDetector(
-                    onTap: () {
-                      if (widget.tipo == "Rutina") {
-                        showModalBottomSheet(
-                          backgroundColor:
-                              const Color.fromARGB(255, 18, 18, 18),
-                          scrollControlDisabledMaxHeightRatio: 0.9,
-                          enableDrag: false,
-                          showDragHandle: true,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(15),
-                            ),
-                          ),
-                          context: context,
-                          isScrollControlled: true,
-                          builder: (context) {
-                            return FractionallySizedBox(
-                              heightFactor: 0.96,
-                              child: ViewWorkoutPage(
-                                id: idObjeto,
-                                buttons: false,
+        ? Column(
+          children: [
+              const SizedBox(height: 30.0),
+            Container(
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 18, 18, 18),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.white, width: 0.5),
+                ),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxHeight: 75, // Altura máxima de 300 píxeles
+                  ),
+                  child: ReorderableListView(
+                    padding: EdgeInsets.zero,
+                    physics: const BouncingScrollPhysics(),
+                    children: _objeto
+                        .where((item) => item.containsKey('objeto'))
+                        .map((item) {
+                      String idObjeto = item['objeto']['id'];
+                      String nombre = item['objeto']['nombre'];
+                      return GestureDetector(
+                        onTap: () {
+                          if (widget.tipo == "Rutina") {
+                            showModalBottomSheet(
+                              backgroundColor:
+                                  const Color.fromARGB(255, 18, 18, 18),
+                              scrollControlDisabledMaxHeightRatio: 0.9,
+                              enableDrag: false,
+                              showDragHandle: true,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(15),
+                                ),
                               ),
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (context) {
+                                return FractionallySizedBox(
+                                  heightFactor: 0.96,
+                                  child: ViewWorkoutPage(
+                                    id: idObjeto,
+                                    buttons: false,
+                                  ),
+                                );
+                              },
                             );
-                          },
-                        );
-                      }
+                          }
+                        },
+                        key: ValueKey(idObjeto),
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(vertical: 5),
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 83, 83, 83),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '${widget.tipo}: $nombre',
+                                style: const TextStyle(
+                                    fontSize: 16, color: Colors.white),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  _eliminar(item);
+                                },
+                                icon: const Icon(Icons.delete),
+                                color: Colors.white,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                    onReorder: (oldIndex, newIndex) {
+                      setState(() {
+                        if (newIndex > oldIndex) {
+                          newIndex -= 1;
+                        }
+                        final item = _objeto.removeAt(oldIndex);
+                        _objeto.insert(newIndex, item);
+                      });
                     },
-                    key: ValueKey(idObjeto),
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 5),
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 83, 83, 83),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '${widget.tipo}: $nombre',
-                            style: const TextStyle(
-                                fontSize: 16, color: Colors.white),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              _eliminar(item);
-                            },
-                            icon: const Icon(Icons.delete),
-                            color: Colors.white,
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList(),
-                onReorder: (oldIndex, newIndex) {
-                  setState(() {
-                    if (newIndex > oldIndex) {
-                      newIndex -= 1;
-                    }
-                    final item = _objeto.removeAt(oldIndex);
-                    _objeto.insert(newIndex, item);
-                  });
-                },
+                  ),
+                ),
               ),
-            ),
-          )
+          ],
+        )
         : GestureDetector(
             onTap: () {
               _mostrarSeleccionarObjeto();
@@ -778,8 +783,6 @@ void _showSuccessDialog() {
     },
   );
 }
-
-
 
 void _showErrorSnackBar(String message) {
   ScaffoldMessenger.of(context).showSnackBar(

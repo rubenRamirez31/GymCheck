@@ -336,20 +336,57 @@ class _ViewReminderState extends State<ViewReminder> {
                                   onPressed: () {
                                     Navigator.of(context).pop();
 
-                                    Navigator.push(
+                                    if (_reminderData!['tipo'] ==
+                                        "Recordatorio") {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                AddPrimaryReminderPage(
+                                                  update: true,
+                                                  tipo: _reminderData!['tipo'],
+                                                  datosRecordatorio:
+                                                      _reminderData,
+                                                )),
+                                      );
+                                    }else if(_reminderData!['tipo'] ==
+                                        "Rutina"){
+
+                                       Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               AddSecondaryReminderPage(
                                                 update: true,
                                                 tipo: _reminderData!['tipo'],
-                                              
                                                 objetoID:
                                                     _reminderData!['objetoID'],
                                                 datosRecordatorio:
                                                     _reminderData,
                                               )),
                                     );
+
+                                    
+                                    }else if(_reminderData!['tipo'] ==
+                                        "Alimento"){
+
+                                       Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              AddSecondaryReminderPage(
+                                                update: true,
+                                                tipo: _reminderData!['tipo'],
+                                                objetoID:
+                                                    _reminderData!['objetoID'],
+                                                datosRecordatorio:
+                                                    _reminderData,
+                                              )),
+                                    );
+
+                                    }
+
+                                   
                                   },
                                   text: 'Modificar Recordatorio',
                                   icon: Icons.edit),

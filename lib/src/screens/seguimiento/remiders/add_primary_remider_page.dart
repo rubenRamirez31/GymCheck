@@ -15,11 +15,17 @@ import 'package:intl/intl.dart';
 class AddPrimaryReminderPage extends StatefulWidget {
   final DateTime? selectedDate;
   final String tipo;
-  final String? recordatorioId;
 
-  const AddPrimaryReminderPage(
-      {Key? key, this.selectedDate, required this.tipo, this.recordatorioId})
-      : super(key: key);
+  final Map<String, dynamic>? datosRecordatorio;
+  final bool? update;
+
+  const AddPrimaryReminderPage({
+    Key? key,
+    this.selectedDate,
+    required this.tipo,
+    this.update,
+    this.datosRecordatorio,
+  }) : super(key: key);
 
   @override
   _AddPrimaryReminderPageState createState() => _AddPrimaryReminderPageState();
@@ -40,6 +46,7 @@ class _AddPrimaryReminderPageState extends State<AddPrimaryReminderPage> {
   String dayOfWeek = "";
   String formattedDate = "";
   String tipo = "";
+  String nombreApp = "";
 
   @override
   void initState() {
@@ -50,10 +57,24 @@ class _AddPrimaryReminderPageState extends State<AddPrimaryReminderPage> {
     formattedDate =
         DateFormat('dd-MM-yyyy').format(widget.selectedDate ?? DateTime.now());
     tipo = widget.tipo;
+    nombreApp = "Crear Recordatorio";
 
-    if (widget.recordatorioId != null) {
-      _loadReminderData();
-      print(_reminderData!['idRecordar']);
+    if (widget.update == true) {
+      _nombreController.text = widget.datosRecordatorio!['title'] ?? "";
+      _descripcionController.text =
+          widget.datosRecordatorio!['description'] ?? "";
+      _startTime = DateTime.parse(widget.datosRecordatorio!['startTime'] ?? "");
+      _endTime = DateTime.parse(widget.datosRecordatorio!['endTime'] ?? "");
+      _selectedColor = Color(widget.datosRecordatorio!['color'] ?? 2);
+      nombreApp = "Modificar Recordatorio";
+      print(widget.datosRecordatorio!['repeatDays']);
+      _selectedRepeatDays =
+          widget.datosRecordatorio!['repeatDays']?.cast<int>() ?? [];
+      print(_selectedRepeatDays);
+
+      if (_selectedRepeatDays.isNotEmpty) {
+        repeatReminder = true;
+      }
     }
   }
 
@@ -63,8 +84,8 @@ class _AddPrimaryReminderPageState extends State<AddPrimaryReminderPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xff0C1C2E),
-        title: const Text(
-          'Crear Recordatorio',
+        title: Text(
+          nombreApp,
           style: TextStyle(
             color: Colors.white,
             fontSize: 25,
@@ -229,6 +250,8 @@ class _AddPrimaryReminderPageState extends State<AddPrimaryReminderPage> {
               if (repeatReminder) ...[
                 SizedBox(height: 15),
                 DaysDropdown(
+                  initialDaysNumber: 10,
+                  initialSelectedDays: _selectedRepeatDays,
                   onDaysNumberSelected: (daysNumber) {
                     setState(() {
                       dropdownValue = daysNumber!;
@@ -242,15 +265,26 @@ class _AddPrimaryReminderPageState extends State<AddPrimaryReminderPage> {
                 ),
               ],
               const SizedBox(height: 20.0),
-              CustomButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _addReminder();
-                  }
-                },
-                text: 'Agregar',
-                icon: Icons.add_alarm,
-              ),
+              if (widget.update != true)
+                CustomButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      _addReminder();
+                    }
+                  },
+                  text: 'Agregar',
+                  icon: Icons.add_alarm,
+                ),
+              if (widget.update == true)
+                CustomButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      _addReminder();
+                    }
+                  },
+                  text: 'Actualizar',
+                  icon: Icons.edit,
+                ),
             ],
           ),
         ),
@@ -258,7 +292,7 @@ class _AddPrimaryReminderPageState extends State<AddPrimaryReminderPage> {
     );
   }
 
-  Future<void> _addReminder() async {
+  Future<void> _addReminderep() async {
     if (_startTime == null || _endTime == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -436,15 +470,6 @@ class _AddPrimaryReminderPageState extends State<AddPrimaryReminderPage> {
     return randomNumber;
   }
 
-  Future<void> _loadReminderData() async {
-    final reminderData = await ReminderService.getReminderById(
-        context, widget.recordatorioId ?? "");
-    setState(() {
-      _reminderData = reminderData['reminder'];
-      //_isLoading = false;
-    });
-  }
-
   String _getDayOfWeek(DateTime date) {
     // Función para obtener el nombre del día de la semana a partir de un DateTime
     switch (date.weekday) {
@@ -465,5 +490,170 @@ class _AddPrimaryReminderPageState extends State<AddPrimaryReminderPage> {
       default:
         return '';
     }
+  }
+
+//Todo esto es a la hora de pulsar el boton xd
+  Future<void> _addReminder() async {
+    if (_startTime == null || _endTime == null) {
+      _showErrorSnackBar('Por favor ingrese la hora de inicio y fin');
+      return;
+    }
+
+    if (_startTime!.isAfter(_endTime!)) {
+      _showErrorSnackBar(
+          'La hora de finalización debe ser después de la hora de inicio');
+      return;
+    }
+
+    _showCreatingDialog();
+
+    String tipoModelo = repeatReminder ? 'Prime' : 'clon';
+    DateTime currentDate = widget.selectedDate ?? DateTime.now();
+    DateTime nextSelectedDay = currentDate;
+
+    if (_selectedRepeatDays.isEmpty && widget.selectedDate == null) {
+      currentDate = DateTime.now();
+    }
+
+    if (widget.selectedDate != null) {
+      nextSelectedDay = widget.selectedDate!;
+    } else if (_selectedRepeatDays.isNotEmpty) {
+      int currentWeekday = nextSelectedDay.weekday;
+      int selectedDayIndex = _selectedRepeatDays.firstWhere(
+        (dayIndex) => dayIndex >= currentWeekday,
+        orElse: () => _selectedRepeatDays.first,
+      );
+
+      if (selectedDayIndex != currentWeekday) {
+        nextSelectedDay = nextSelectedDay
+            .add(Duration(days: (selectedDayIndex - currentWeekday)));
+      }
+    }
+
+    DateTime combinedStartTime =
+        _combineDateAndTime(nextSelectedDay, _startTime!);
+    DateTime combinedEndTime = _combineDateAndTime(nextSelectedDay, _endTime!);
+
+    await _createOrUpdateReminder(
+      tipoModelo: tipoModelo,
+      combinedStartTime: combinedStartTime,
+      combinedEndTime: combinedEndTime,
+    );
+
+    _showSuccessDialog();
+  }
+
+  DateTime _combineDateAndTime(DateTime date, DateTime time) {
+    return DateTime(date.year, date.month, date.day, time.hour, time.minute);
+  }
+
+  Future<void> _createOrUpdateReminder({
+    required String tipoModelo,
+    required DateTime combinedStartTime,
+    required DateTime combinedEndTime,
+  }) async {
+    bool isUpdating = widget.update ?? false;
+
+    if (isUpdating) {
+      await ReminderService.deleteReminderIdRecordar(
+          context, widget.datosRecordatorio!['idRecordar']);
+    }
+
+    Reminder reminder = Reminder(
+      modelo: tipoModelo,
+      idRecordar: generateRandomNumber(),
+      terminado: false,
+      tipo: widget.tipo,
+      title: _nombreController.text,
+      description: _descripcionController.text,
+      color: _selectedColor,
+      startTime: combinedStartTime,
+      endTime: combinedEndTime,
+      repeatDays: _selectedRepeatDays,
+    );
+
+    final response =
+        await ReminderService.createReminder(context, reminder.toJson());
+    ReminderScheduler.scheduleReminders(context, reminder, dropdownValue,
+        widget.selectedDate ?? DateTime.now());
+
+    if (response.containsKey('message')) {
+      // _showSuccessSnackBar(response['message']!);
+    } else if (response.containsKey('error')) {
+      _showErrorSnackBar(response['error']!);
+    }
+
+    if (!isUpdating && tipoModelo == 'Prime') {
+      Reminder clonedReminder = reminder.clone();
+      clonedReminder.modelo = 'clon';
+    }
+  }
+
+  void _showCreatingDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.black,
+          title: Text(
+            widget.update == true ? 'Actualizando...' : 'Creando...',
+            style: TextStyle(color: Colors.white),
+          ),
+          content: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.black,
+          title: Text(
+            widget.update == true ? 'Actualizado' : 'Recordatorio creado',
+            style: TextStyle(color: Colors.white),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                widget.update == true
+                    ? 'El recordatorio ha sido actualizado correctamente.'
+                    : 'El recordatorio ha sido almacenado correctamente, y puede encontrarlos en tu calendario.',
+                style: TextStyle(color: Colors.white),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) => const PrincipalPage(
+                        initialPageIndex: 2,
+                      ),
+                    ),
+                  );
+                },
+                child: const Text('Aceptar',
+                    style: TextStyle(color: Colors.black)),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:gym_check/src/providers/globales.dart';
-import 'package:gym_check/src/screens/principal.dart';
 import 'package:gym_check/src/screens/seguimiento/calendar/physical-nutritional/month_view_widget.dart';
 import 'package:gym_check/src/screens/seguimiento/daily_routine/daily_routine_page.dart';
 import 'package:gym_check/src/screens/seguimiento/goals/goals_page.dart';
@@ -143,17 +142,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage> {
                 color: Colors.white,
               ),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    //aqui deberia de viajar a la parte de seguimiento fisico apra registrar fuerza
-                    builder: (context) => PrincipalPage(
-                      initialPageIndex: 2,
-                      initialSubPageIndex: 0,
-                      initialSubPageMenuIndex: 2,
-                    ),
-                  ),
-                );
+                
               },
             ),
           ],
