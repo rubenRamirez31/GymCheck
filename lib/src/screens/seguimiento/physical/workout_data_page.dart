@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 
-import 'package:gym_check/src/screens/seguimiento/remiders/add_primary_remider_page.dart';
-import 'package:gym_check/src/screens/seguimiento/remiders/add_secundary_remider_page.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/view_remider_page.dart';
 import 'package:gym_check/src/screens/seguimiento/tracking_funtions.dart';
-import 'package:gym_check/src/screens/seguimiento/widgets/custom_button.dart';
 import 'package:gym_check/src/screens/seguimiento/widgets/tracking_widgets.dart';
 import 'package:gym_check/src/services/reminder_service.dart';
-import 'package:gym_check/src/widgets/create_button_widget.dart';
 import 'package:gym_check/src/widgets/menu_button_option_widget.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -80,18 +75,29 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
     }
   }
 
-  String formatDateTimeNouuuu(String? dateTimeString) {
-    if (dateTimeString != null && dateTimeString.isNotEmpty) {
-      try {
-        DateTime dateTime = DateTime.parse(dateTimeString);
-        String formattedDate = DateFormat('hh:mm a', 'es').format(dateTime);
-        return formattedDate;
-      } catch (error) {
-        print('Error al formatear la fecha: $error');
-      }
-    }
-    return 'Fecha no válida';
+
+String getDayByMenuOption() {
+  switch (_selectedMenuOption) {
+    case 0:
+    case 0:
+      return "Lunes";
+    case 1:
+      return "Martes";
+    case 2:
+      return "Miércoles";
+    case 3:
+      return "Jueves";
+    case 4:
+      return "Viernes";
+    case 5:
+      return "Sábado";
+    case 6:
+      return "Domingo";
+    default:
+      return "No";
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -118,8 +124,6 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
               color: Colors.white,
               onPressed: () {},
             ),
-
-            
           ],
         ),
         Row(
@@ -134,7 +138,7 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
                   children: <Widget>[
                     MenuButtonOption(
                         options: options,
-                       // highlightColors: highlightColors,
+                        // highlightColors: highlightColors,
                         //highlightColor: Colors.green,
                         onItemSelected: (index) async {
                           SharedPreferences prefs =
@@ -167,7 +171,8 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
         _selectedMenuOption == 4 ? _view() : const SizedBox(),
         _selectedMenuOption == 5 ? _view() : const SizedBox(),
         _selectedMenuOption == 6 ? _view() : const SizedBox(),
-        CustomButton(
+         SizedBox(height: 50,)
+       /* CustomButton(
           text: 'Agregar',
           onPressed: () {
             Navigator.push(
@@ -177,75 +182,84 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
                         tipo: "Rutina",
                       )),
             );
-          
           },
           icon: Icons.add,
-        ),
+        ),*/
       ],
     );
   }
 
   Widget _view() {
-    print("hola $_selectedMenuOption");
-    return SingleChildScrollView(
-      child: _routines.isEmpty
-          ? _isLoading
-              ? Center(
-                  child: CircularProgressIndicator(), // Indicador de carga
-                )
-              : Container(
-                  margin: const EdgeInsets.symmetric(vertical: 8),
-                  width: MediaQuery.of(context).size.width - 30,
-                  decoration: BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 50),
+          child: TrackingWidgets.buildLabelDetailsRowOnly(
+              getDayByMenuOption(), MainAxisAlignment.center,  backColor: const Color.fromARGB(255, 53, 53, 53),
+          textColor: Colors.white,),
+        ),
+        SingleChildScrollView(
+          child: _routines.isEmpty
+              ? _isLoading
+                  ? Center(
+                      child: CircularProgressIndicator(), // Indicador de carga
+                    )
+                  : Column(
                     children: [
-                      TrackingWidgets.buildLabelDetailsRowOnly(
-                          "No hay rutinas", MainAxisAlignment.center),
-                      SizedBox(height: 10, width: 10),
-                      // _buildRoutineDetailsRow("Agrega rutinas:", "primaryFocus"),
-                      // _buildRoutineDetailsRow("Enfoque Secundario:", "secondaryFocus"),
+                      Container(
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          width: MediaQuery.of(context).size.width - 30,
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              TrackingWidgets.buildLabelDetailsRowOnly(
+                                  "No hay rutinas", MainAxisAlignment.center),
+                              SizedBox(height: 10, width: 10),
+                               
+                           
+                            ],
+                          ),
+                        ),
+                          SizedBox(height: 50,)
                     ],
+                  )
+              : Container(
+                  // width: screenSize.width,
+                  child: Column(
+                    children: _routines.map((routine) {
+                      return _buildRoutineContainer(
+                          routine!['startTime'],
+                          routine['endTime'],
+                          routine['title'],
+                          routine['description'],
+                          routine['color'],
+                          routine['id'],
+                          routine['datosObjeto']);
+                    }).toList(),
                   ),
-                )
-          : Container(
-              // width: screenSize.width,
-              child: Column(
-                children: _routines.map((routine) {
-                  return _buildRoutineContainer(
-
-                    routine!['startTime'],
-                    routine['endTime'],
-                    routine['title'],
-                    routine['description'],
-                    routine['color'],
-                    routine['id'],
-                      routine['datosObjeto']
-                  );
-                }).toList(),
-              ),
-            ),
+                ),
+        ),
+      ],
     );
   }
 
   Widget _buildRoutineContainer(
-
-    DateTime startTime,
-    DateTime endTime,
-    String title,
-    String description,
-    int color,
-    String idRecordar,
-      Map<String, dynamic> datosRutina
-  ) {
+      DateTime startTime,
+      DateTime endTime,
+      String title,
+      String description,
+      int color,
+      String idRecordar,
+      Map<String, dynamic> datosRutina) {
     return GestureDetector(
       onTap: () {
         showModalBottomSheet(
-           backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+          backgroundColor: const Color.fromARGB(255, 18, 18, 18),
           showDragHandle: true,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -279,11 +293,11 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
                 title, MainAxisAlignment.center),
             SizedBox(height: 10, width: 10),
             TrackingWidgets.buildLabelDetailsRow(
-                "Enfoque Principal:",datosRutina['primaryFocus']),
+                "Enfoque Principal:", datosRutina['primaryFocus']),
             TrackingWidgets.buildLabelDetailsRow(
                 "Enfoque Secundario:", datosRutina['secondaryFocus']),
-            TrackingWidgets.buildLabelDetailsRow(
-                "Hora de inicio:", TrackingFunctions.formatDateTime(startTime.toIso8601String())),
+            TrackingWidgets.buildLabelDetailsRow("Hora de inicio:",
+                TrackingFunctions.formatDateTime(startTime.toIso8601String())),
           ],
         ),
       ),

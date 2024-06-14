@@ -47,6 +47,17 @@ class _ViewWorkoutSeriesPageState extends State<ViewWorkoutSeriesPage> {
   Widget build(BuildContext context) {
     Globales globales = Provider.of<Globales>(context, listen: false);
     return Scaffold(
+       appBar: AppBar(
+        backgroundColor: const Color(0xff0C1C2E),
+        title: const Text(
+          'Serie',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 26,
+          ),
+        ),
+        iconTheme: IconThemeData(color: Colors.white),
+      ),
       backgroundColor: const Color.fromARGB(255, 50, 50, 50),
       body: _workoutSeries != null
           ? Stack(

@@ -43,32 +43,35 @@ static Widget buildLabelDetailsRow(String label, String value) {
   );
 }
 
-
-
-  static Widget buildLabelDetailsRowOnly(
-      String label, MainAxisAlignment alineacion,
-      {MainAxisSize ajustar = MainAxisSize.max}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 0),
-      child: Container(
-        padding: const EdgeInsets.all(10.0),
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 18, 18, 18),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisAlignment: alineacion,
-          mainAxisSize: ajustar,
-          children: [
-            Text(
-              label,
-              style: const TextStyle(fontSize: 16, color: Colors.white),
-            ),
-          ],
-        ),
+static Widget buildLabelDetailsRowOnly(
+  String label,
+  MainAxisAlignment alineacion, {
+  MainAxisSize ajustar = MainAxisSize.max,
+  Color backColor = const Color.fromARGB(255, 18, 18, 18),
+  Color textColor = Colors.white,
+}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 0),
+    child: Container(
+      padding: const EdgeInsets.all(10.0),
+      decoration: BoxDecoration(
+        color: backColor,
+        borderRadius: BorderRadius.circular(10),
       ),
-    );
-  }
+      child: Row(
+        mainAxisAlignment: alineacion,
+        mainAxisSize: ajustar,
+        children: [
+          Text(
+            label,
+            style: TextStyle(fontSize: 16, color: textColor),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
 
   static Widget buildLabelGeneral(String label, double fontSize) {
     return Padding(

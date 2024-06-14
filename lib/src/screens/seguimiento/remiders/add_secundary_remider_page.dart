@@ -236,6 +236,7 @@ class _AddSecondaryReminderPageState extends State<AddSecondaryReminderPage> {
                   ),
                 ],
               ),
+               const SizedBox(height: 20.0),
             
               _builObject(),
               const SizedBox(height: 20.0),

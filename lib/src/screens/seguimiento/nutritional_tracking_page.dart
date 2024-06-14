@@ -87,8 +87,8 @@ class _NutritionalTrackingPageState extends State<NutritionalTrackingPage> {
                         });
                         await prefs.setInt('selectedMenuOptionNutritional', index);
                       },
-                      selectedMenuOptionGlobal:
-                          globalVariable.selectedMenuOptionNutritional,
+                     selectedMenuOptionGlobal: widget.initialSubPageMenuIndex ??
+                         globalVariable.selectedMenuOptionTrackingPhysical,
                     ),
                   ],
                 ),
@@ -118,7 +118,8 @@ class _NutritionalTrackingPageState extends State<NutritionalTrackingPage> {
   Future<void> _loadSelectedMenuOption() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _selectedMenuOption = prefs.getInt('selectedMenuOptionNutritional') ?? 0;
+      _selectedMenuOption = widget.initialSubPageMenuIndex ??
+          prefs.getInt('selectedMenuOptionTrackingPhysical') ?? 0;
     });
   }
 }

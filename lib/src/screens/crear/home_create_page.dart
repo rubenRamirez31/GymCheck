@@ -28,8 +28,7 @@ class HomeCreatePage extends StatefulWidget {
 
 class _HomeCreatePageState extends State<HomeCreatePage>
     with TickerProviderStateMixin {
-  final GlobalKey<LiquidPullToRefreshState> _refreshIndicatorKey =
-      GlobalKey<LiquidPullToRefreshState>();
+  
   int currentPageIndex = 0;
   List<String> options = [
     'Ejercicios',

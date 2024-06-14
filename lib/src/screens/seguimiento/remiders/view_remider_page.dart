@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gym_check/src/screens/crear/alimentacion/view_food_page.dart';
 import 'package:gym_check/src/screens/crear/rutinas/view_workout_page.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/add_primary_remider_page.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/add_secundary_remider_page.dart';
@@ -228,7 +229,7 @@ class _ViewReminderState extends State<ViewReminder> {
                                       ),
                                     ),
                                     const SizedBox(height: 8.0),
-                                    if (_reminderData!['workoutID'] != null)
+                                    if (_reminderData!['tipo'] == "Rutina")
                                       CustomButton(
                                         onPressed: () {
                                           Navigator.push(
@@ -236,7 +237,7 @@ class _ViewReminderState extends State<ViewReminder> {
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   ViewWorkoutPage(
-                                                id: _reminderData!['workoutID'],
+                                                id: _reminderData!['objetoID'],
                                                 buttons: true,
                                               ),
                                             ),
@@ -245,9 +246,20 @@ class _ViewReminderState extends State<ViewReminder> {
                                         text: 'Ir a Rutina',
                                         icon: Icons.sports_gymnastics,
                                       ),
-                                    if (_reminderData!['dietID'] != null)
+                                    if (_reminderData!['tipo'] == "Alimento")
                                       CustomButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ViewFoodPage(
+                                                id: _reminderData!['objetoID'],
+                                                buttons: true,
+                                              ),
+                                            ),
+                                          );
+                                        },
                                         text: 'Ir a Alimento',
                                         icon: Icons.restaurant_menu,
                                       ),
@@ -275,7 +287,6 @@ class _ViewReminderState extends State<ViewReminder> {
                                   margin: EdgeInsets.symmetric(vertical: 5.0),
                                   padding: const EdgeInsets.all(10.0),
                                   decoration: BoxDecoration(
-                                    // height: 150,
                                     color: Colors.grey[200], // Color gris claro
                                     borderRadius: BorderRadius.circular(
                                         10.0), // Bordes redondos
@@ -283,24 +294,30 @@ class _ViewReminderState extends State<ViewReminder> {
                                   constraints: const BoxConstraints(
                                     maxHeight: 150,
                                     maxWidth: 150,
-                                    //maxWidth: (screenWidth - 30) * 0.4 -2.0, // Resta 2 pixeles de cada lado
                                   ),
                                   child: SingleChildScrollView(
                                     scrollDirection: Axis
                                         .vertical, // Desplazamiento vertical
                                     child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Row(
-                                          children: [
-                                            Text(
-                                              'Descripción: ${_reminderData!['description'] ?? 'Sin descripción'}',
-                                              style: const TextStyle(
-                                                color: Colors
-                                                    .black, // Color del texto
-                                              ),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                          ],
+                                        Text(
+                                          'Descripción:',
+                                          style: const TextStyle(
+                                            color:
+                                                Colors.black, // Color del texto
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        SizedBox(height: 5),
+                                        Text(
+                                          '${_reminderData!['description'] ?? 'Sin descripción'}',
+                                          style: const TextStyle(
+                                            color:
+                                                Colors.black, // Color del texto
+                                          ),
+                                          textAlign: TextAlign.left,
                                         ),
                                       ],
                                     ),
@@ -349,44 +366,37 @@ class _ViewReminderState extends State<ViewReminder> {
                                                       _reminderData,
                                                 )),
                                       );
-                                    }else if(_reminderData!['tipo'] ==
-                                        "Rutina"){
-
-                                       Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              AddSecondaryReminderPage(
-                                                update: true,
-                                                tipo: _reminderData!['tipo'],
-                                                objetoID:
-                                                    _reminderData!['objetoID'],
-                                                datosRecordatorio:
-                                                    _reminderData,
-                                              )),
-                                    );
-
-                                    
-                                    }else if(_reminderData!['tipo'] ==
-                                        "Alimento"){
-
-                                       Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              AddSecondaryReminderPage(
-                                                update: true,
-                                                tipo: _reminderData!['tipo'],
-                                                objetoID:
-                                                    _reminderData!['objetoID'],
-                                                datosRecordatorio:
-                                                    _reminderData,
-                                              )),
-                                    );
-
+                                    } else if (_reminderData!['tipo'] ==
+                                        "Rutina") {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                AddSecondaryReminderPage(
+                                                  update: true,
+                                                  tipo: _reminderData!['tipo'],
+                                                  objetoID: _reminderData![
+                                                      'objetoID'],
+                                                  datosRecordatorio:
+                                                      _reminderData,
+                                                )),
+                                      );
+                                    } else if (_reminderData!['tipo'] ==
+                                        "Alimento") {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                AddSecondaryReminderPage(
+                                                  update: true,
+                                                  tipo: _reminderData!['tipo'],
+                                                  objetoID: _reminderData![
+                                                      'objetoID'],
+                                                  datosRecordatorio:
+                                                      _reminderData,
+                                                )),
+                                      );
                                     }
-
-                                   
                                   },
                                   text: 'Modificar Recordatorio',
                                   icon: Icons.edit),
