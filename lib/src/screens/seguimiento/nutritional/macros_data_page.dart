@@ -135,6 +135,13 @@ class _MacrosDataPageState extends State<MacrosDataPage> {
                 onPressed: () {
                   _settings(context);
                 },
+              ),
+              CustomButton(
+                icon: Icons.edit,
+                text: "Guardar registro",
+                onPressed: () {
+                 _saveNutritionalData(context,proteinData,carbData, fatData );
+                },
               )
             ],
           )

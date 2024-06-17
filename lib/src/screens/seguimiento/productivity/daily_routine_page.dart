@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:gym_check/src/screens/crear/widgets/custom_button.dart';
-import 'package:gym_check/src/screens/seguimiento/calendar/physical-nutritional/select_day_view_page.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/add_primary_remider_page.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/add_secundary_remider_page.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/view_remider_page.dart';
@@ -9,7 +8,6 @@ import 'package:gym_check/src/screens/seguimiento/tracking_funtions.dart';
 import 'package:gym_check/src/screens/seguimiento/widgets/tracking_widgets.dart';
 import 'package:gym_check/src/services/reminder_service.dart';
 import 'package:gym_check/src/widgets/menu_button_option_widget.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -171,14 +169,15 @@ String getDayByMenuOption() {
         _selectedMenuOption == 4 ? _view() : const SizedBox(),
         _selectedMenuOption == 5 ? _view() : const SizedBox(),
         _selectedMenuOption == 6 ? _view() : const SizedBox(),
-         SizedBox(height: 50,)
-        /* CustomButton(
+        
+      CustomButton(
           text: 'Add',
           onPressed: () {
             _showOptionsBottomSheet(context, DateTime.now());
           },
           icon: Icons.timer_outlined,
-        ),*/
+        ),
+
       ],
     );
   }
@@ -187,7 +186,7 @@ String getDayByMenuOption() {
     return Column(
       children: [
           Container(
-          padding: EdgeInsets.symmetric(horizontal: 8),
+          padding: EdgeInsets.symmetric(horizontal: 50),
           child: TrackingWidgets.buildLabelDetailsRowOnly(
               getDayByMenuOption(), MainAxisAlignment.center,  backColor: const Color.fromARGB(255, 53, 53, 53),
           textColor: Colors.white,),

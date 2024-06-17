@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
+import 'package:gym_check/src/screens/crear/widgets/custom_button.dart';
+import 'package:gym_check/src/screens/seguimiento/remiders/add_secundary_remider_page.dart';
 
 import 'package:gym_check/src/screens/seguimiento/remiders/view_remider_page.dart';
 import 'package:gym_check/src/screens/seguimiento/tracking_funtions.dart';
@@ -75,29 +77,27 @@ class _WorkOutDataPageState extends State<WorkOutDataPage> {
     }
   }
 
-
-String getDayByMenuOption() {
-  switch (_selectedMenuOption) {
-    case 0:
-    case 0:
-      return "Lunes";
-    case 1:
-      return "Martes";
-    case 2:
-      return "Miércoles";
-    case 3:
-      return "Jueves";
-    case 4:
-      return "Viernes";
-    case 5:
-      return "Sábado";
-    case 6:
-      return "Domingo";
-    default:
-      return "No";
+  String getDayByMenuOption() {
+    switch (_selectedMenuOption) {
+      case 0:
+      case 0:
+        return "Lunes";
+      case 1:
+        return "Martes";
+      case 2:
+        return "Miércoles";
+      case 3:
+        return "Jueves";
+      case 4:
+        return "Viernes";
+      case 5:
+        return "Sábado";
+      case 6:
+        return "Domingo";
+      default:
+        return "No";
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -171,8 +171,7 @@ String getDayByMenuOption() {
         _selectedMenuOption == 4 ? _view() : const SizedBox(),
         _selectedMenuOption == 5 ? _view() : const SizedBox(),
         _selectedMenuOption == 6 ? _view() : const SizedBox(),
-         SizedBox(height: 50,)
-       /* CustomButton(
+        CustomButton(
           text: 'Agregar',
           onPressed: () {
             Navigator.push(
@@ -184,7 +183,8 @@ String getDayByMenuOption() {
             );
           },
           icon: Icons.add,
-        ),*/
+        ),
+       
       ],
     );
   }
@@ -195,8 +195,11 @@ String getDayByMenuOption() {
         Container(
           padding: EdgeInsets.symmetric(horizontal: 50),
           child: TrackingWidgets.buildLabelDetailsRowOnly(
-              getDayByMenuOption(), MainAxisAlignment.center,  backColor: const Color.fromARGB(255, 53, 53, 53),
-          textColor: Colors.white,),
+            getDayByMenuOption(),
+            MainAxisAlignment.center,
+            backColor: const Color.fromARGB(255, 53, 53, 53),
+            textColor: Colors.white,
+          ),
         ),
         SingleChildScrollView(
           child: _routines.isEmpty
@@ -205,8 +208,8 @@ String getDayByMenuOption() {
                       child: CircularProgressIndicator(), // Indicador de carga
                     )
                   : Column(
-                    children: [
-                      Container(
+                      children: [
+                        Container(
                           margin: const EdgeInsets.symmetric(vertical: 8),
                           width: MediaQuery.of(context).size.width - 30,
                           decoration: BoxDecoration(
@@ -220,14 +223,14 @@ String getDayByMenuOption() {
                               TrackingWidgets.buildLabelDetailsRowOnly(
                                   "No hay rutinas", MainAxisAlignment.center),
                               SizedBox(height: 10, width: 10),
-                               
-                           
                             ],
                           ),
                         ),
-                          SizedBox(height: 50,)
-                    ],
-                  )
+                        SizedBox(
+                          height: 50,
+                        )
+                      ],
+                    )
               : Container(
                   // width: screenSize.width,
                   child: Column(

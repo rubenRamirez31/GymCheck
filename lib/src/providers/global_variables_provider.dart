@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class GlobalVariablesProvider extends ChangeNotifier {
   late SharedPreferences _prefs;
-  
+
   GlobalVariablesProvider() {
     _initSharedPreferences();
   }
@@ -13,21 +13,27 @@ class GlobalVariablesProvider extends ChangeNotifier {
     _prefs = await SharedPreferences.getInstance();
     // Carga los valores guardados de SharedPreferences si existen
     _selectedSubPageTracking = _prefs.getInt('selectedSubPageTracking') ?? 0;
+
     _selectedMenuOptionTrackingPhysical = _prefs.getInt('selectedMenuOptionTrackingPhysical') ?? 0;
-    _selectedMenuOptionNutritional = _prefs.getInt('selectedMenuOptionNutritional') ?? 0;
-    _selectedMenuOptionWellness = _prefs.getInt('selectedMenuOptionWellness') ?? 0;
+    _selectedMenuOptionTrackingNutritional = _prefs.getInt('selectedMenuOptionTrackingNutritional') ?? 0;
+    _selectedMenuOptionTrackingProductivity = _prefs.getInt('selectedMenuOptionTrackingProductivity') ?? 0;
+
     _selectedMenuOptionDias = _prefs.getInt('selectedMenuOptionDias') ?? 0;
     _selectedSubPageCreate = _prefs.getInt('selectedSubPageCreate') ?? 0;
-    _selectedMenuOptionHomeExercise = _prefs.getInt('selectedMenuOptionHomeExercise') ?? 0;
-    _selectedMenuOptionAllExercise = _prefs.getInt('selectedMenuOptionAllExercise') ?? 0;
-    _selectedMenuOptionExerciseByFocus = _prefs.getInt('selectedMenuOptionExerciseByFocus') ?? 0;
+    _selectedMenuOptionHomeExercise =
+        _prefs.getInt('selectedMenuOptionHomeExercise') ?? 0;
+    _selectedMenuOptionAllExercise =
+        _prefs.getInt('selectedMenuOptionAllExercise') ?? 0;
+    _selectedMenuOptionExerciseByFocus =
+        _prefs.getInt('selectedMenuOptionExerciseByFocus') ?? 0;
   }
 
   int _selectedSubPageTracking = 0;
   int get selectedSubPageTracking => _selectedSubPageTracking;
   set selectedSubPageTracking(int newValue) {
     _selectedSubPageTracking = newValue;
-    _prefs.setInt('selectedSubPageTracking', newValue); // Guarda en SharedPreferences
+    _prefs.setInt(
+        'selectedSubPageTracking', newValue); // Guarda en SharedPreferences
     notifyListeners();
   }
 
@@ -40,19 +46,22 @@ class GlobalVariablesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  int _selectedMenuOptionNutritional = 0;
-  int get selectedMenuOptionNutritional => _selectedMenuOptionNutritional;
-  set selectedMenuOptionNutritional(int newValue) {
-    _selectedMenuOptionNutritional = newValue;
-    _prefs.setInt('selectedMenuOptionNutritional', newValue);
-    notifyListeners();
-  }
+int _selectedMenuOptionTrackingNutritional = 0;
+int get selectedMenuOptionTrackingNutritional => _selectedMenuOptionTrackingNutritional;
+set selectedMenuOptionTrackingNutritional(int newValue) {
+  _selectedMenuOptionTrackingNutritional = newValue;
+  _prefs.setInt('selectedMenuOptionTrackingNutritional', newValue);
+  notifyListeners();
+}
 
-  int _selectedMenuOptionWellness = 0;
-  int get selectedMenuOptionWellness => _selectedMenuOptionWellness;
-  set selectedMenuOptionWellness(int newValue) {
-    _selectedMenuOptionWellness = newValue;
-    _prefs.setInt('selectedMenuOptionWellness', newValue);
+
+  int _selectedMenuOptionTrackingProductivity = 0;
+  int get selectedMenuOptionTrackingProductivity =>
+      _selectedMenuOptionTrackingProductivity;
+
+  set selectedMenuOptionTrackingProductivity(int newValue) {
+    _selectedMenuOptionTrackingProductivity = newValue;
+    _prefs.setInt('selectedMenuOptionTrackingProductivity', newValue);
     notifyListeners();
   }
 

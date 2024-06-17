@@ -57,7 +57,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
     return Scaffold(
       key: _scaffoldKey,
       drawer: const MenuDrawer(),
-      backgroundColor: Color.fromARGB(255, 130, 25, 25), // Color de fondo de la aplicación
+      backgroundColor: Color.fromARGB(255, 255, 255, 255), // Color de fondo de la aplicación
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
           setState(() {

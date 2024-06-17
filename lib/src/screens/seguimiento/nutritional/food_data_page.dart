@@ -176,14 +176,15 @@ class _FoodDataPageState extends State<FoodDataPage> {
         _selectedMenuOption == 4 ? _view() : const SizedBox(),
         _selectedMenuOption == 5 ? _view() : const SizedBox(),
         _selectedMenuOption == 6 ? _view() : const SizedBox(),
-        SizedBox(height: 50,)
-        /* CustomButton(
+         CustomButton(
           text: 'Agregar',
           onPressed: () {
             _showOptionsBottomSheet(context, DateTime.now());
           },
           icon: Icons.timer_outlined,
-        ),*/
+        ),
+
+         
       ],
     );
   }

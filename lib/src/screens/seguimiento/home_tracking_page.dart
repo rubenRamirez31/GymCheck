@@ -7,10 +7,11 @@ import 'package:gym_check/src/screens/crear/rutinas/create_workout_page.dart';
 import 'package:gym_check/src/screens/crear/series/create_serie_page.dart';
 import 'package:gym_check/src/screens/principal.dart';
 import 'package:gym_check/src/screens/seguimiento/calendar/physical-nutritional/month_view_widget.dart';
-import 'package:gym_check/src/screens/seguimiento/daily_routine/daily_routine_page.dart';
+import 'package:gym_check/src/screens/seguimiento/productivity/daily_routine_page.dart';
 import 'package:gym_check/src/screens/seguimiento/goals/goals_page.dart';
 import 'package:gym_check/src/screens/seguimiento/nutritional_tracking_page.dart';
 import 'package:gym_check/src/screens/seguimiento/physical_tracking_page.dart';
+import 'package:gym_check/src/screens/seguimiento/productivity_tracking_page.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/add_primary_remider_page.dart';
 import 'package:gym_check/src/screens/seguimiento/remiders/add_secundary_remider_page.dart';
 import 'package:gym_check/src/widgets/menu_button_option_widget.dart';
@@ -38,7 +39,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage>
   List<String> options = [
     'Fisico',
     'Nutricional',
-    'Rutina diaria', //Todos los recordatorios que se repiten se ven aqui
+    'Productividad', //Todos los recordatorios que se repiten se ven aqui
     //'Bienestar diario',
   ]; // Lista de opciones
 
@@ -221,7 +222,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage>
                       initialSubPageMenuIndex: widget.initialSubPageMenuIndex)
                   : const SizedBox(),
               _selectedMenuOption == 2
-                  ? const DailyRoutinePage()
+                  ?  ProductivityTrackingPage(initialSubPageMenuIndex: widget.initialSubPageMenuIndex)
                   : const SizedBox(),
             ],
           ),

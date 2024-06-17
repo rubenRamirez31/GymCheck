@@ -1,48 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:gym_check/src/screens/seguimiento/nutritional/food_data_page.dart';
-import 'package:gym_check/src/screens/seguimiento/nutritional/macros_data_page.dart';
-import 'package:gym_check/src/screens/seguimiento/nutritional/water_data_page.dart';
 import 'package:gym_check/src/screens/seguimiento/physical/corporal_data_page.dart';
+import 'package:gym_check/src/screens/seguimiento/physical/force_data_page.dart';
+import 'package:gym_check/src/screens/seguimiento/physical/workout_data_page.dart';
+import 'package:gym_check/src/screens/seguimiento/productivity/daily_routine_page.dart';
 import 'package:gym_check/src/widgets/menu_button_option_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class NutritionalTrackingPage extends StatefulWidget {
-   final int? initialSubPageMenuIndex;
-  const NutritionalTrackingPage({Key? key, this.initialSubPageMenuIndex}) : super(key: key);
+class ProductivityTrackingPage extends StatefulWidget {
+  final int? initialSubPageMenuIndex;
+
+  const ProductivityTrackingPage({super.key, this.initialSubPageMenuIndex});
 
   @override
-  _NutritionalTrackingPageState createState() => _NutritionalTrackingPageState();
+  // ignore: library_private_types_in_public_api
+  _ProductivityTrackingPageState createState() => _ProductivityTrackingPageState();
 }
 
-class _NutritionalTrackingPageState extends State<NutritionalTrackingPage> {
+class _ProductivityTrackingPageState extends State<ProductivityTrackingPage> {
   int _selectedMenuOption = 0;
 
   List<String> options = [
-    'Alimentacion',
-    'Macros',
-    'Agua',
-    //'Suplementos',
+    'Rutina Semanal',
+    'Pomodoro',
     //'Consejos',
   ]; // Lista de opciones
 
-  List<Color> highlightColors = [
-    Colors.white,
-    Colors.white,
-    Colors.white,
-    Colors.white,
-
-  ];
-
-     List<IconData> myIcons = [
-    Icons.local_dining,
-    Icons.grain,
-    Icons.local_drink,
-    Icons.local_pharmacy,
+  List<IconData> myIcons = [
+    Icons.calendar_view_week,
     Icons.lightbulb_outline,
   ];
-
 
   @override
   void initState() {
@@ -56,15 +45,15 @@ class _NutritionalTrackingPageState extends State<NutritionalTrackingPage> {
         context); // Obtiene la instancia de GlobalVariable
 
     return SingleChildScrollView(
+      clipBehavior: Clip.hardEdge,
       child: Container(
         color: const Color.fromARGB(255, 18, 18, 18),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-           
             const SizedBox(height: 5),
             Container(
-               padding: EdgeInsets.symmetric(horizontal: 3),
+              padding: EdgeInsets.symmetric(horizontal: 1),
               color: const Color.fromARGB(255, 18, 18, 18),
               width: MediaQuery.of(context).size.width,
               child: SingleChildScrollView(
@@ -74,40 +63,35 @@ class _NutritionalTrackingPageState extends State<NutritionalTrackingPage> {
                       .center, // Alinea los botones en el centro horizontal
                   children: <Widget>[
                     MenuButtonOption(
-                      icons: myIcons,
                       options: options,
-                   //   highlightColors: highlightColors,
+                      icons: myIcons,
+                      // highlightColors: highlightColors,
                       onItemSelected: (index) async {
                         SharedPreferences prefs =
                             await SharedPreferences.getInstance();
                         setState(() {
                           _selectedMenuOption = index;
-                          globalVariable.selectedMenuOptionTrackingNutritional=
+                          globalVariable.selectedMenuOptionTrackingProductivity =
                               _selectedMenuOption;
                         });
-                        await prefs.setInt('selectedMenuOptionTrackingNutritional', index);
+                        await prefs.setInt(
+                            'selectedMenuOptionTrackingProductivity', index);
                       },
-                     selectedMenuOptionGlobal: widget.initialSubPageMenuIndex ??
-                         globalVariable.selectedMenuOptionTrackingNutritional,
+                      selectedMenuOptionGlobal: widget.initialSubPageMenuIndex ??
+                          globalVariable.selectedMenuOptionTrackingProductivity,
                     ),
                   ],
                 ),
               ),
             ),
-
             const SizedBox(height: 20),
             _selectedMenuOption == 0
-                ? const FoodDataPage()
+                ? const DailyRoutinePage()
                 : const SizedBox(),
             _selectedMenuOption == 1
-                ? const MacrosDataPage()
+                ? const SizedBox()
                 : const SizedBox(),
-            _selectedMenuOption == 2
-                ? WaterDataPage()
-                : const SizedBox(), // Si _selectedMenuOption no es 2, no mostrar el contenedor
-            _selectedMenuOption == 4
-                ? WaterDataPage()
-                : const SizedBox(), // Si _selectedMenuOption no es 3, no mostrar el contenedor
+      
             const SizedBox(height: 20),
           ],
         ),
@@ -119,7 +103,7 @@ class _NutritionalTrackingPageState extends State<NutritionalTrackingPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _selectedMenuOption = widget.initialSubPageMenuIndex ??
-          prefs.getInt('selectedMenuOptionTrackingNutritional') ?? 0;
+          prefs.getInt('selectedMenuOptionTrackingProductivity') ?? 0;
     });
   }
 }
