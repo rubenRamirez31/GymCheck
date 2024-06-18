@@ -47,7 +47,6 @@ class _AddCorporalDataPageState extends State<AddCorporalDataPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              //if (widget.tipoDeRegistro == "corporales")
               if (widget.selectedFieldType == null)
                 CustomDropdown(
                   hint: 'Seleccionar',
@@ -69,8 +68,6 @@ class _AddCorporalDataPageState extends State<AddCorporalDataPage> {
                   _getDescription(widget.selectedFieldType!.toLowerCase()),
                   style: const TextStyle(color: Colors.white),
                 ),
-
-              // if (widget.tipoDeRegistro == "fuerza") _builExercie(),
               const SizedBox(height: 20),
               if (_selectedField != null) ...[
                 Text(
@@ -122,8 +119,6 @@ class _AddCorporalDataPageState extends State<AddCorporalDataPage> {
                     _guardarDatos(context, _getTipoPorCampo(_selectedField!));
                   },
                   text: 'Agregar',
-               
-               
                 ),
               ],
               const SizedBox(height: 20),
@@ -167,8 +162,6 @@ class _AddCorporalDataPageState extends State<AddCorporalDataPage> {
 
       RegistroFisico bodyData = RegistroFisico(tipo: tipo, valor: valor);
 
-      // String coleccion = _getColeccion();
-
       PhysicalDataService.addData(
           context, "Registro-Corporal", bodyData.toJson());
 
@@ -194,26 +187,19 @@ class _AddCorporalDataPageState extends State<AddCorporalDataPage> {
                 ElevatedButton(
                   onPressed: () {
                     if (widget.goal == true) {
-                      //setState(() {});
                       Navigator.of(context).pop();
                       Navigator.of(context).pop();
                       Navigator.of(context).pop();
                       Navigator.of(context).pop();
-                      //Navigator.of(context).pop();
-                      // Navigator.of(context).pop();
-                    }else{
-
-                      // Reinicia la página
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute<void>(
-                        builder: (BuildContext context) => const PrincipalPage(
-                          initialPageIndex: 2,
+                    } else {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute<void>(
+                          builder: (BuildContext context) => const PrincipalPage(
+                            initialPageIndex: 2,
+                          ),
                         ),
-                      ),
-                    );
-
+                      );
                     }
-                    
                   },
                   child: const Text('Aceptar',
                       style: TextStyle(color: Colors.black)),
@@ -223,8 +209,6 @@ class _AddCorporalDataPageState extends State<AddCorporalDataPage> {
           );
         },
       );
-
-      
     } catch (error) {
       print('Error al guardar datos: $error');
     }
@@ -234,8 +218,12 @@ class _AddCorporalDataPageState extends State<AddCorporalDataPage> {
     return [
       'Peso (kg)',
       'Altura (cm)',
+      'Circunferencia de Cintura (cm)',
+      'Circunferencia de Cadera (cm)',
+      'Circunferencia de Muslos (cm)',
+      'Circunferencia de Brazos (cm)',
+      'Circunferencia de Pecho (cm)',
       'Grasa Corporal (%)',
-      'Circunferencia de Cintura (cm)'
     ];
   }
 
@@ -245,16 +233,18 @@ class _AddCorporalDataPageState extends State<AddCorporalDataPage> {
         return 'Por favor, ingrese su peso actual en kilogramos.';
       case 'Altura (cm)':
         return 'Por favor, ingrese su altura actual en centímetros.';
-      case 'Grasa Corporal (%)':
-        return 'Por favor, ingrese su porcentaje de grasa corporal actual.';
       case 'Circunferencia de Cintura (cm)':
         return 'Por favor, ingrese su circunferencia de cintura actual en centímetros.';
-      case 'Circunferencia de Cuello (cm)':
-        return 'Por favor, ingrese su circunferencia de cuello actual en centímetros.';
       case 'Circunferencia de Cadera (cm)':
         return 'Por favor, ingrese su circunferencia de cadera actual en centímetros.';
-      case 'Índice de Masa Corporal (IMC)':
-        return 'Por favor, ingrese su Índice de Masa Corporal (IMC) actual.';
+      case 'Circunferencia de Muslos (cm)':
+        return 'Por favor, ingrese su circunferencia de muslos actual en centímetros.';
+      case 'Circunferencia de Brazos (cm)':
+        return 'Por favor, ingrese su circunferencia de brazos actual en centímetros.';
+      case 'Circunferencia de Pecho (cm)':
+        return 'Por favor, ingrese su circunferencia de pecho actual en centímetros.';
+      case 'Grasa Corporal (%)':
+        return 'Por favor, ingrese su porcentaje de grasa corporal actual.';
       default:
         return '';
     }
@@ -266,16 +256,18 @@ class _AddCorporalDataPageState extends State<AddCorporalDataPage> {
         return 'peso';
       case 'Altura (cm)':
         return 'altura';
-      case 'Grasa Corporal (%)':
-        return 'grasaCorporal';
       case 'Circunferencia de Cintura (cm)':
         return 'circunferenciaCintura';
-      case 'Circunferencia de Cuello (cm)':
-        return 'circunferenciaCuello';
       case 'Circunferencia de Cadera (cm)':
         return 'circunferenciaCadera';
-      case 'Índice de Masa Corporal (IMC)':
-        return 'imc';
+      case 'Circunferencia de Muslos (cm)':
+        return 'circunferenciaMuslos';
+      case 'Circunferencia de Brazos (cm)':
+        return 'circunferenciaBrazos';
+      case 'Circunferencia de Pecho (cm)':
+        return 'circunferenciaPecho';
+      case 'Grasa Corporal (%)':
+        return 'grasaCorporal';
       default:
         return '';
     }
@@ -287,16 +279,18 @@ class _AddCorporalDataPageState extends State<AddCorporalDataPage> {
         return 'Peso (kg)';
       case 'Altura':
         return 'Altura (cm)';
-      case 'Grasa Corporal':
-        return 'Grasa Corporal';
       case 'Circunferencia de Cintura':
-        return 'Circunferencia de Cintura';
-      case 'Circunferencia de Cuello':
-        return 'Circunferencia de Cuello';
+        return 'Circunferencia de Cintura (cm)';
       case 'Circunferencia de Cadera':
-        return 'Circunferencia de Cadera';
-      case 'Índice de Masa Corporal (IMC)':
-        return 'imc';
+        return 'Circunferencia de Cadera (cm)';
+      case 'Circunferencia de Muslos':
+        return 'Circunferencia de Muslos (cm)';
+      case 'Circunferencia de Brazos':
+        return 'Circunferencia de Brazos (cm)';
+      case 'Circunferencia de Pecho':
+        return 'Circunferencia de Pecho (cm)';
+      case 'Grasa Corporal':
+        return 'Grasa Corporal (%)';
       default:
         return '';
     }
@@ -308,16 +302,14 @@ class _AddCorporalDataPageState extends State<AddCorporalDataPage> {
         return 'Kg';
       case 'Altura (cm)':
         return 'Cm';
+      case 'Circunferencia de Cintura (cm)':
+      case 'Circunferencia de Cadera (cm)':
+      case 'Circunferencia de Muslos (cm)':
+      case 'Circunferencia de Brazos (cm)':
+      case 'Circunferencia de Pecho (cm)':
+        return 'cm';
       case 'Grasa Corporal (%)':
         return '%';
-      case 'Circunferencia de Cintura (cm)':
-        return 'cm';
-      case 'Circunferencia de Cuello (cm)':
-        return 'cm';
-      case 'Circunferencia de Cadera (cm)':
-        return 'cm';
-      case 'Índice de Masa Corporal (IMC)':
-        return 'imc';
       default:
         return '';
     }

@@ -9,6 +9,7 @@ class DataPhysicalTracking extends StatelessWidget {
   final String data;
   final String lastRecordDate;
   final String coleccion;
+  final String tipo;
  final VoidCallback agregar;
   DataPhysicalTracking({
     required this.icon,
@@ -17,7 +18,8 @@ class DataPhysicalTracking extends StatelessWidget {
     required this.data,
     required this.lastRecordDate,
     required this.coleccion,
-    required this.agregar
+    required this.agregar,
+    required this.tipo
   });
 
   @override
@@ -103,7 +105,7 @@ class DataPhysicalTracking extends StatelessWidget {
                   children: [
                     CustomButton(
                       onPressed: () {
-                        _showViweData(context, name);
+                        _showViweData(context, name,tipo);
                         // Aquí podrías navegar a la pestaña correspondiente
                         // dependiendo del dataType
                         print('Se presionó el botón de Ver más para $name');
@@ -126,7 +128,7 @@ class DataPhysicalTracking extends StatelessWidget {
     );
   }
 
-  void _showViweData(BuildContext context, String data) {
+  void _showViweData(BuildContext context, String data, String tipo) {
     showModalBottomSheet(
       backgroundColor: const Color.fromARGB(255, 18, 18, 18),
       showDragHandle: true,
@@ -143,6 +145,7 @@ class DataPhysicalTracking extends StatelessWidget {
           child: ViewCorporalDataPage(
             data: data,
             coleccion: coleccion,
+            tipo: tipo,
           ),
         );
       },

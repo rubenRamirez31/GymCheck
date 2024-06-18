@@ -7,6 +7,7 @@ class Globales extends ChangeNotifier {
   String segundoNombre = "";
   String apellidos = "";
   String genero = "";
+  int edad = 0;
   String nick = "";
   String correo = "";
   String fotoPerfil = "";
@@ -45,6 +46,7 @@ class Globales extends ChangeNotifier {
         segundoNombre = userData['segundo_nombre'] ?? "";
         apellidos = userData['apellidos'] ?? "";
         genero = userData['genero'] ?? "";
+        edad = userData['edad'];
         nick = userData['nick'] ?? "";
         correo = userData['email'] ?? "";
         fotoPerfil = userData['urlImagen'] ?? "";

@@ -71,6 +71,7 @@ class _ForceDataPageState extends State<ForceDataPage> {
 
               final String fecha = data['fecha'] ?? '';
               final double valor = data['valor'] ?? 0.0; // Suponiendo que el valor se almacena en kilogramos
+              final String tipo = data['tipo'] ?? ''; // Suponiendo que el valor se almacena en kilogramos
               // Construir y devolver el contenedor de seguimiento de datos
               return Container(
                 //width: MediaQuery.of(context).size.width - 30,
@@ -87,13 +88,14 @@ class _ForceDataPageState extends State<ForceDataPage> {
                   data: '$valor', // Valor en kilogramos
                   lastRecordDate: fecha,
                   coleccion: 'Registro-Fuerza',
+                  tipo: tipo,
                 ),
               );
             }).toList(),
           ),
           const SizedBox(height: 20),
           CustomButton(
-            text: 'Agregar',
+            text: 'Agregar nuevo ejercicio',
             onPressed: () {
               _showAddData(context);
             },

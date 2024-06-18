@@ -7,8 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart'; // Importa DateForm
 class ViewCorporalDataPage extends StatefulWidget {
   final String data;
   final String coleccion;
+  final String tipo;
 
-  ViewCorporalDataPage({required this.data, required this.coleccion});
+  ViewCorporalDataPage({required this.data, required this.coleccion, required this.tipo});
 
   @override
   _ViewCorporalDataPageState createState() => _ViewCorporalDataPageState();
@@ -47,7 +48,7 @@ class _ViewCorporalDataPageState extends State<ViewCorporalDataPage> {
             ? 'Fecha más reciente'
             : 'Fecha más antigua';
       } else {
-        _orderBy = widget.data;
+        _orderBy = 'valor';
         _typeData = widget.data;
         _orderByMensaje = _orderByDirection == 'desc'
             ? 'Mayor $_typeData'
@@ -75,7 +76,7 @@ class _ViewCorporalDataPageState extends State<ViewCorporalDataPage> {
 Widget build(BuildContext context) {
   for (var entry in weightRecords) {
     // Añade el valor del tipo de dato al gráfico (puedes ajustar el campo dependiendo de tu estructura de datos)
-    graphData.add(entry[_typeData]);
+    graphData.add(entry[widget.tipo]);
   }
 return Scaffold(
     backgroundColor: const Color.fromARGB(255, 18, 18, 18),
@@ -173,7 +174,7 @@ Widget buildDataTable() {
               rows: weightRecords.map((entry) {
                 return DataRow(cells: [
                   DataCell(Text(entry['fecha'] ?? '', style: const TextStyle(color: Colors.white))),
-                  DataCell(Text(entry[_typeData].toString(), style: const TextStyle(color: Colors.white))),
+                  DataCell(Text(entry['valor'].toString(), style: const TextStyle(color: Colors.white))),
                 ]);
               }).toList(),
             ),
@@ -188,7 +189,7 @@ Widget buildDataTable() {
 
 
   Widget buildChartFecha() {
-     if(widget.coleccion == "Registro-Corporal") _typeData = _typeData.toLowerCase();
+     //if(widget.coleccion == "Registro-Corporal") _typeData = _typeData.toLowerCase();
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: SfCartesianChart(
@@ -203,7 +204,7 @@ Widget buildDataTable() {
           LineSeries<Map<String, dynamic>, String>(
             dataSource: weightRecords,
             xValueMapper: (entry, _) => entry['fecha'] as String,
-            yValueMapper: (entry, _) => entry[_typeData] as double,
+            yValueMapper: (entry, _) => entry['valor'] as double,
           )
         ],
       
@@ -237,9 +238,9 @@ Widget buildDataTable() {
             buildSortListTile('Fecha más reciente', 'fecha', 'desc'),
             buildSortListTile('Fecha más antigua', 'fecha', 'asc'),
             buildSortListTile(
-                'Mayor $_typeData', widget.data.toLowerCase(), 'desc'),
+                'Mayor $_typeData', 'valor', 'desc'),
             buildSortListTile(
-                'Menor $_typeData', widget.data.toLowerCase(), 'asc'),
+                'Menor $_typeData', 'valor', 'asc'),
           ],
         ),
       ),
@@ -267,12 +268,19 @@ Widget buildDataTable() {
   void fetchData() async {
     try {
       if(widget.coleccion == "Registro-Corporal") _typeData = _typeData.toLowerCase();
+      print('widget.tipo');
+      print(widget.tipo);
+       print('widget.tipo');
+       print('_orderBy');
+       print(_orderBy);
+       print('_orderBy');
+    
       final response = await PhysicalDataService.getDataWithDynamicSorting(
         context,
         _coleccion,
         _orderBy,
         _orderByDirection,
-        _typeData,
+        widget.tipo,
       );
 
       setState(() {
