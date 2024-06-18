@@ -56,10 +56,10 @@ class _MacroSettingsWidgetState extends State<MacroSettingsWidget> {
         };
 
         await NutritionalService.updateTrackingData(context, newMacros);
-      }
+      }else
 
       if (widget.agua == true) {
-        final newWater = {'agua': agua};
+        final newWater = {'agua': double.parse(_waterController.text)};
 
         await NutritionalService.updateTrackingData(context, newWater);
       }
@@ -120,7 +120,7 @@ class _MacroSettingsWidgetState extends State<MacroSettingsWidget> {
           _fatsController.text = macrosList![2].toString();
         }
         // Verificar si agua no es nulo y tiene la longitud correcta
-        if (agua != null) {
+        if (widget.agua != null) {
           // Asignar los valores de las macros a los controladores
           _waterController.text = agua.toString();
         }

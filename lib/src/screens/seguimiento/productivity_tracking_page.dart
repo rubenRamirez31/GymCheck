@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
-import 'package:gym_check/src/screens/seguimiento/nutritional/food_data_page.dart';
-import 'package:gym_check/src/screens/seguimiento/physical/corporal_data_page.dart';
-import 'package:gym_check/src/screens/seguimiento/physical/force_data_page.dart';
-import 'package:gym_check/src/screens/seguimiento/physical/workout_data_page.dart';
 import 'package:gym_check/src/screens/seguimiento/productivity/daily_routine_page.dart';
 import 'package:gym_check/src/widgets/menu_button_option_widget.dart';
 import 'package:provider/provider.dart';

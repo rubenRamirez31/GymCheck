@@ -57,33 +57,40 @@ class _PrincipalPageState extends State<PrincipalPage> {
     return Scaffold(
       key: _scaffoldKey,
       drawer: const MenuDrawer(),
-      backgroundColor: Color.fromARGB(255, 255, 255, 255), // Color de fondo de la aplicación
-      bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPageIndex = index;
-          });
-        },
-        selectedIndex: currentPageIndex,
-        backgroundColor:Color(0xff0C1C2E), // Color de fondo del NavigationBar
-        destinations: const <Widget>[
-          NavigationDestination(
-            selectedIcon: Icon(Icons.home, color: Color.fromARGB(255, 0, 0, 0)),
-            icon: Icon(Icons.home_outlined, color: Colors.white),
-            label: '',
-            
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.add, color: Color.fromARGB(255, 0, 0, 0)),
-            icon: Icon(Icons.add, color: Colors.white),
-            label: '',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.radar, color: Color.fromARGB(255, 0, 0, 0)),
-            icon: Icon(Icons.radar, color: Colors.white),
-            label: '',
-          ),
-        ],
+    backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+      bottomNavigationBar: ClipRRect(
+        
+        borderRadius: BorderRadius.only(
+          
+          topLeft: Radius.circular(10),
+          topRight: Radius.circular(10),
+        ),
+        child: NavigationBar(
+          onDestinationSelected: (int index) {
+            setState(() {
+              currentPageIndex = index;
+            });
+          },
+          selectedIndex: currentPageIndex,
+          backgroundColor: const Color(0xff0C1C2E), // Color de fondo del NavigationBar
+          destinations: const <Widget>[
+            NavigationDestination(
+              selectedIcon: Icon(Icons.home, color: Color.fromARGB(255, 0, 0, 0)),
+              icon: Icon(Icons.home_outlined, color: Colors.white),
+              label: '',
+            ),
+            NavigationDestination(
+              selectedIcon: Icon(Icons.add, color: Color.fromARGB(255, 0, 0, 0)),
+              icon: Icon(Icons.add, color: Colors.white),
+              label: '',
+            ),
+            NavigationDestination(
+              selectedIcon: Icon(Icons.radar, color: Color.fromARGB(255, 0, 0, 0)),
+              icon: Icon(Icons.radar, color: Colors.white),
+              label: '',
+            ),
+          ],
+        ),
       ),
       body: <Widget>[
         FeedPage(openDrawer: openDrawer),
