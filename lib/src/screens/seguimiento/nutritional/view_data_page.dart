@@ -46,11 +46,11 @@ class _ViewDataPageState extends State<ViewDataPage> {
             ? 'Fecha más reciente'
             : 'Fecha más antigua';
       } else {
-        _orderBy = widget.data;
+        _orderBy ='valor';
         _typeData = widget.data;
         _orderByMensaje = _orderByDirection == 'desc'
-            ? 'Mayor $_typeData'
-            : 'Menor $_typeData';
+            ? 'Mayor valor'
+            : 'Menor valor';
       }
     });
     fetchData();
@@ -233,9 +233,9 @@ Widget buildDataTable() {
             buildSortListTile('Fecha más reciente', 'fecha', 'desc'),
             buildSortListTile('Fecha más antigua', 'fecha', 'asc'),
             buildSortListTile(
-                'Mayor $_typeData', widget.data.toLowerCase(), 'desc'),
+                'Mayor valor', 'valor', 'desc'),
             buildSortListTile(
-                'Menor $_typeData', widget.data.toLowerCase(), 'asc'),
+                'Menor valor', 'valor', 'asc'),
           ],
         ),
       ),

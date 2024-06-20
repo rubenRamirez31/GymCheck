@@ -179,7 +179,15 @@ class _FoodDataPageState extends State<FoodDataPage> {
          CustomButton(
           text: 'Agregar',
           onPressed: () {
-            _showOptionsBottomSheet(context, DateTime.now());
+           // _showOptionsBottomSheet(context, DateTime.now());
+             Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddSecondaryReminderPage(
+                              tipo: "Alimento",
+                            )),
+                  );
+           
           },
           icon: Icons.timer_outlined,
         ),

@@ -39,7 +39,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage>
   List<String> options = [
     'Fisico',
     'Nutricional',
-    'Productividad', //Todos los recordatorios que se repiten se ven aqui
+    //'Productividad', //Todos los recordatorios que se repiten se ven aqui
     //'Bienestar diario',
   ]; // Lista de opciones
 
@@ -85,7 +85,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage>
     setState(() {
       _containerHeight = prefs.getDouble('calendarHeight') ?? 300.0;
       _cellAspectRatio = _containerHeight == 300.0 ? 1 : 0.5;
-      _isExpanded = _containerHeight == 600.0;
+      _isExpanded = _containerHeight == 450.0;
     });
   }
 
@@ -254,7 +254,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage>
         _containerHeight = 300.0;
         _cellAspectRatio = 1;
       } else {
-        _containerHeight = 600.0;
+        _containerHeight = 450.0;
         _cellAspectRatio = 0.5;
       }
       _isExpanded = !_isExpanded;
@@ -324,12 +324,19 @@ class _HomeTrackingPageState extends State<HomeTrackingPage>
                   }),
               ListTile(
                 leading: Icon(Icons.fastfood, color: Colors.white),
-                title: Text('Comida / Suplemento',
+                title: Text('Comida',
                     style: TextStyle(color: Colors.white)),
                 onTap: () {
                   // Acción cuando se selecciona "Agregar Comida"
                   //Navigator.pop(context);
-                  _showOptionsBottomSheetRemiderNutricional(context);
+                  //_showOptionsBottomSheetRemiderNutricional(context);
+                   Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddSecondaryReminderPage(
+                              tipo: "Alimento",
+                            )),
+                  );
                 },
               ),
             ],

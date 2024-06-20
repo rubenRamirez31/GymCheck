@@ -116,12 +116,12 @@ class _MonthViewWidgetState extends State<MonthViewWidget> {
           );
         }
       },
-      onCellTap: (events, date) {
+     /* onCellTap: (events, date) {
         Navigator.of(context).push(
           MaterialPageRoute(
               builder: (_) => SelectDayViewPage(selectedDate: date)),
         );
-      },
+      },*/
       onDateLongPress: (date) => _showOptionsBottomSheet(context, date),
     );
   }
@@ -136,7 +136,7 @@ class _MonthViewWidgetState extends State<MonthViewWidget> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ListTile(
+            /*  ListTile(
                 leading: Icon(Icons.calendar_today, color: Colors.white),
                 title: Text('Ver día', style: TextStyle(color: Colors.white)),
                 onTap: () {
@@ -146,7 +146,7 @@ class _MonthViewWidgetState extends State<MonthViewWidget> {
                             SelectDayViewPage(selectedDate: selectedDay)),
                   );
                 },
-              ),
+              ),*/
               ListTile(
                 leading: Icon(Icons.add_alert, color: Colors.white),
                 title: Text('Agregar Recordatorio',

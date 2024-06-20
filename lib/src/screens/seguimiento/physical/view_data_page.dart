@@ -51,8 +51,8 @@ class _ViewCorporalDataPageState extends State<ViewCorporalDataPage> {
         _orderBy = 'valor';
         _typeData = widget.data;
         _orderByMensaje = _orderByDirection == 'desc'
-            ? 'Mayor $_typeData'
-            : 'Menor $_typeData';
+            ? 'Mayor valor'
+            : 'Menor valor';
       }
     });
     fetchData();
@@ -238,9 +238,9 @@ Widget buildDataTable() {
             buildSortListTile('Fecha más reciente', 'fecha', 'desc'),
             buildSortListTile('Fecha más antigua', 'fecha', 'asc'),
             buildSortListTile(
-                'Mayor $_typeData', 'valor', 'desc'),
+                'Mayor valor', 'valor', 'desc'),
             buildSortListTile(
-                'Menor $_typeData', 'valor', 'asc'),
+                'Menor valor', 'valor', 'asc'),
           ],
         ),
       ),

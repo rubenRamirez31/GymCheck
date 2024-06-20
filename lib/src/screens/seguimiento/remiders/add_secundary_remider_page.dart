@@ -478,7 +478,7 @@ class _AddSecondaryReminderPageState extends State<AddSecondaryReminderPage> {
     switch (widget.tipo) {
       case "Rutina":
         pagina = const FractionallySizedBox(
-          heightFactor: 0.96,
+          heightFactor: 0.90,
           child: AllWorkoutPage(
             agregar: true,
           ),
@@ -486,7 +486,7 @@ class _AddSecondaryReminderPageState extends State<AddSecondaryReminderPage> {
         break;
       case "Alimento":
         pagina = const FractionallySizedBox(
-          heightFactor: 0.96,
+          heightFactor: 0.90,
           child: AllAlimentosPage(
             agregar: true,
           ),
