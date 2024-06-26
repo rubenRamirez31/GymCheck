@@ -188,7 +188,7 @@ class _OtherProfilePageState extends State<OtherProfilePage> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                  FollowersPage(),
+                                                  FollowersPage(iddocuser: usuario!.docId!,),
                                             ),
                                           );
                                         },
@@ -218,7 +218,7 @@ class _OtherProfilePageState extends State<OtherProfilePage> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                  FollowingPage(),
+                                                  FollowingPage(iddocuser: usuario!.docId!),
                                             ),
                                           );
                                         },

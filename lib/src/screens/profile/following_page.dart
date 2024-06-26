@@ -6,6 +6,11 @@ import 'package:gym_check/src/services/user_service.dart';
 import 'package:provider/provider.dart';
 
 class FollowingPage extends StatefulWidget {
+
+   final String? iddocuser;
+
+  FollowingPage({this.iddocuser});
+
   @override
   _FollowingPageState createState() => _FollowingPageState();
 }
@@ -26,7 +31,7 @@ class _FollowingPageState extends State<FollowingPage> {
       ),
       backgroundColor: const Color.fromARGB(255, 18, 18, 18),
       body: StreamBuilder<List<String>>(
-        stream: UserService.getFollowing(globales.idDocumento),
+        stream: UserService.getFollowing(widget.iddocuser??globales.idDocumento),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<String> followingIds = snapshot.data!;
@@ -95,7 +100,7 @@ class _FollowingPageState extends State<FollowingPage> {
                   style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
                 Text(
-                  '${user.followers?.length ?? 0} followers',
+                  '${user.followers?.length ?? 0} siguiendo',
                   style: TextStyle(color: Colors.white),
                 ),
               ],
