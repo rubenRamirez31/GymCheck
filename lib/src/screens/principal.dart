@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/screens/crear/home_create_page.dart';
+import 'package:gym_check/src/screens/profile/profile_page.dart';
 import 'package:gym_check/src/screens/seguimiento/home_tracking_page.dart';
 import 'package:gym_check/src/screens/social/feed_page.dart';
 import 'package:gym_check/src/widgets/global/menudrawer.dart';
@@ -75,8 +76,8 @@ class _PrincipalPageState extends State<PrincipalPage> {
           backgroundColor: const Color(0xff0C1C2E), // Color de fondo del NavigationBar
           destinations: const <Widget>[
             NavigationDestination(
-              selectedIcon: Icon(Icons.home, color: Color.fromARGB(255, 0, 0, 0)),
-              icon: Icon(Icons.home_outlined, color: Colors.white),
+              selectedIcon: Icon(Icons.person, color: Color.fromARGB(255, 0, 0, 0)),
+              icon: Icon(Icons.person, color: Colors.white),
               label: '',
             ),
             NavigationDestination(
@@ -93,7 +94,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
         ),
       ),
       body: <Widget>[
-        FeedPage(openDrawer: openDrawer),
+        ProfilePage(openDrawer: openDrawer),
         HomeCreatePage(openDrawer: openDrawer),
         HomeTrackingPage(
           openDrawer: openDrawer,

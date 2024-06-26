@@ -101,6 +101,7 @@ class _AllExercisePageState extends State<AllExercisePage> {
               controller: _searchController,
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
+
                 labelText: 'Buscar ejercicio',
                 suffixIcon: IconButton(
                   onPressed: () => _searchController.clear(),

@@ -1,201 +1,202 @@
-import 'dart:convert';
-import 'package:gym_check/src/environments/environment.dart';
-import 'package:gym_check/src/models/user_model.dart';
-import 'package:http/http.dart' as http;
+import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gym_check/src/models/usuario/usuario.dart';
 
 class UserService {
+  static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  
-  
+    // Obtener usuarios filtrados por nickname
+  static Stream<List<Usuario>> obtenerUsuariosFiltradosStream(String query) {
+    final StreamController<List<Usuario>> controller =
+        StreamController<List<Usuario>>();
 
-  static Future<Map<String, dynamic>> getUserData(String userId) async {
-    String apiUrl = '${Environment.API_URL}/api/users/obtener-by-id/$userId'; // Modifica la URL de la API según tu endpoint
+    final CollectionReference usuarioCollectionRef =
+        _firestore.collection('Usuarios');
 
+    // Convertir la consulta a minúsculas
+    String lowerCaseQuery = query.toLowerCase();
+
+    // Crear una consulta que filtre los usuarios por el término de búsqueda
+    Query filteredQuery = usuarioCollectionRef.where(
+      'nick',
+      isGreaterThanOrEqualTo: lowerCaseQuery,
+      isLessThanOrEqualTo: lowerCaseQuery + '\uf8ff',
+    );
+
+    // Escuchar los cambios en la consulta filtrada
+    final StreamSubscription<QuerySnapshot> subscription =
+        filteredQuery.snapshots().listen((QuerySnapshot snapshot) {
+      final List<Usuario> usuarios =
+          snapshot.docs.map((DocumentSnapshot doc) {
+        final usuario = Usuario.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+        return usuario;
+      }).toList();
+      controller.add(usuarios);
+    }, onError: (error) {
+      print('Error al obtener usuarios filtrados: $error');
+      controller.addError(error);
+    });
+
+    // Cancelar la suscripción cuando se cierre el StreamController
+    controller.onCancel = () {
+      subscription.cancel();
+    };
+
+    return controller.stream;
+  }
+
+  // Obtener usuario por nickname
+  static Future<Usuario?> getUserByNick(String userNick) async {
     try {
-    
-      final response = await http.get(Uri.parse(apiUrl));
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('Usuarios')
+          .where('nick', isEqualTo: userNick)
+          .get();
 
-      if (response.statusCode == 200) {
-        // Si la solicitud fue exitosa, decodifica la respuesta JSON
-        final userData = jsonDecode(response.body);
-        return userData;
+      if (querySnapshot.docs.isNotEmpty) {
+        var doc = querySnapshot.docs.first;
+        return Usuario.fromMap(doc.data() as Map<String, dynamic>, doc.id);
       } else {
-        // Si hay un error en la solicitud, lanza una excepción
-         print('Error en getUserdata: $userId');
-        throw Exception('Error al obtener los datos del usuario: ${response.statusCode}');
+        return null;
       }
-    } catch (error) {
-      // Si hay un error en la conexión o en la solicitud, lanza una excepción
-      throw Exception('Error en la solicitud: $error');
+    } catch (e) {
+      print('Error en getUserByNick: $e');
+      return null;
     }
   }
 
-  static Future<String?> createUser(User user) async {
-    String apiUrl = '${Environment.API_URL}/api/users/crear-usuario';
-
-    try {
-      String jsonData = jsonEncode(user.toJson());
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        body: jsonData,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-      );
-
-      if (response.statusCode == 201) {
-        return null; // No hay error
+  // Obtener el ID del documento del usuario actual por su ID de autenticación
+  static Future<String> getCurrentUserDocId() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      String userId = user.uid;
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('Usuarios')
+          .where('userIdAuth', isEqualTo: userId)
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        return querySnapshot.docs.first.id;
       } else {
-        String errorMessage = response.body;
-        return errorMessage;
+        throw Exception('Documento de usuario no encontrado en Firestore');
       }
-    } catch (error) {
-      print('Error en la solicitud: $error');
-      return 'Error en la solicitud';
-    }
-  }
-  
-static Future<Map<String, dynamic>> updateUser(String userId, User user) async {
-  String apiUrl = '${Environment.API_URL}/api/users/actualizar-usuario/$userId';
-
-  try {
-    var request = http.MultipartRequest('PUT', Uri.parse(apiUrl));
-
-    // Adjuntar los campos necesarios al formulario
-    if (user.verificado != null) {
-      request.fields['verificado'] = user.verificado.toString();
-    }
-    if (user.primerosPasos != null) {
-      request.fields['primeros_pasos'] = user.primerosPasos.toString();
-    }
-    if (user.fotoPerfil != null) {
-      var fileStream = http.ByteStream(user.fotoPerfil!.openRead());
-      var length = await user.fotoPerfil!.length();
-      var multipartFile = http.MultipartFile(
-        'fotoPerfil',
-        fileStream,
-        length,
-        filename: user.fotoPerfil!.path.split('/').last,
-      );
-      request.files.add(multipartFile);
-    }
-    if (user.email != null) {
-      request.fields['email'] = user.email.toString();
-    }
-    if (user.nick != null) {
-      request.fields['nick'] = user.nick.toString();
-    }
-    if (user.primerNombre != null) {
-      request.fields['primer_nombre'] = user.primerNombre.toString();
-    }
-    if (user.segundoNombre != null) {
-      request.fields['segundo_nombre'] = user.segundoNombre.toString();
-    }
-    if (user.apellidos != null) {
-      request.fields['apellidos'] = user.apellidos.toString();
-    }
-    if (user.genero != null) {
-    request.fields['genero'] = user.genero.toString();
-    }
-
-
-    var response = await request.send();
-
-    if (response.statusCode == 200) {
-      return {'message': 'Usuario actualizado correctamente'};
     } else {
-      String errorMessage = await response.stream.bytesToString();
-      return {'error': errorMessage};
+      throw Exception('Usuario no autenticado');
     }
-  } catch (error) {
-    print('Error en la solicitud: $error');
-    return {'error': 'Error en la solicitud'};
   }
-}
 
+  // Verificar si un usuario sigue a otro
+  static Future<bool> isFollowing(String currentUserId, String userIdToCheck) async {
+    DocumentSnapshot<Map<String, dynamic>> currentUserSnapshot =
+        await _firestore.collection('Usuarios').doc(currentUserId).get();
 
-  static Future<List<User>> getAllUsers() async {
-    String apiUrl = '${Environment.API_URL}/api/users/obtener-usuarios';
+    if (currentUserSnapshot.exists) {
+      var data = currentUserSnapshot.data()!;
+      List<String> following = List<String>.from(data['following'] ?? []);
+      return following.contains(userIdToCheck);
+    }
+    return false;
+  }
 
-    try {
-      final response = await http.get(Uri.parse(apiUrl));
-
-      if (response.statusCode == 200) {
-        final List<dynamic> responseData = jsonDecode(response.body);
-        final List<User> users = responseData.map((data) => User.fromJson(data)).toList();
-        return users;
-      } else {
-        throw Exception('Error al obtener todos los usuarios: ${response.statusCode}');
+  // Obtener seguidores de un usuario
+  static Stream<List<String>> getFollowers(String userIdDoc) {
+    return _firestore
+        .collection('Usuarios')
+        .doc(userIdDoc)
+        .snapshots()
+        .map((snapshot) {
+      if (snapshot.exists) {
+        var data = snapshot.data() as Map<String, dynamic>;
+        var followers = data['followers'] ?? [];
+        return List<String>.from(followers);
       }
-    } catch (error) {
-      throw Exception('Error en la solicitud: $error');
-    }
+      return [];
+    });
   }
 
-  static Future<User?> getUserById(String userId) async {
-    String apiUrl = '${Environment.API_URL}/api/users/obtener-by-id/$userId';
-
-    try {
-      final response = await http.get(Uri.parse(apiUrl));
-
-      if (response.statusCode == 200) {
-        final userData = jsonDecode(response.body);
-        return User.fromJson(userData);
-      } else {
-        throw Exception('Error al obtener datos del usuario: ${response.statusCode}');
+  // Obtener seguidos de un usuario
+  static Stream<List<String>> getFollowing(String userIdDoc) {
+    return _firestore
+        .collection('Usuarios')
+        .doc(userIdDoc)
+        .snapshots()
+        .map((snapshot) {
+      if (snapshot.exists) {
+        var data = snapshot.data() as Map<String, dynamic>;
+        var following = data['following'] ?? [];
+        return List<String>.from(following);
       }
-    } catch (error) {
-      throw Exception('Error en la solicitud: $error');
-    }
+      return [];
+    });
   }
 
-  static Future<User?> getUserByNick(String nick) async {
-    String apiUrl = '${Environment.API_URL}/api/users/obtener-by-nick/$nick';
+  // Obtener usuario por ID de documento
+  static Future<Usuario> getUserById(String docId) async {
+    DocumentSnapshot<Map<String, dynamic>> doc =
+        await _firestore.collection('Usuarios').doc(docId).get();
+    return Usuario.fromFirestore(doc);
+  }
 
-    try {
-      final response = await http.get(Uri.parse(apiUrl));
+  // Seguir a un usuario
+  static Future<void> followUser(String currentUserId, String userIdToFollow) async {
+    DocumentReference currentUserDoc =
+        _firestore.collection('Usuarios').doc(currentUserId);
+    DocumentReference userToFollowDoc =
+        _firestore.collection('Usuarios').doc(userIdToFollow);
 
-      if (response.statusCode == 200) {
-        final userData = jsonDecode(response.body)['user'];
-        return User.fromJson(userData);
-      } else {
-        throw Exception('Error al obtener el usuario por nick: ${response.statusCode}');
+    await _firestore.runTransaction((transaction) async {
+      DocumentSnapshot currentUserSnapshot = await transaction.get(currentUserDoc);
+      DocumentSnapshot userToFollowSnapshot = await transaction.get(userToFollowDoc);
+
+      if (currentUserSnapshot.exists && userToFollowSnapshot.exists) {
+        var currentUserData = currentUserSnapshot.data() as Map<String, dynamic>;
+        var userToFollowData = userToFollowSnapshot.data() as Map<String, dynamic>;
+
+        List<String> currentUserFollowing =
+            List<String>.from(currentUserData['following'] ?? []);
+        List<String> userToFollowFollowers =
+            List<String>.from(userToFollowData['followers'] ?? []);
+
+        if (!currentUserFollowing.contains(userIdToFollow)) {
+          currentUserFollowing.add(userIdToFollow);
+          userToFollowFollowers.add(currentUserId);
+
+          transaction.update(currentUserDoc, {'following': currentUserFollowing});
+          transaction.update(userToFollowDoc, {'followers': userToFollowFollowers});
+        }
       }
-    } catch (error) {
-      throw Exception('Error en la solicitud: $error');
-    }
+    });
   }
 
-  static Future<Map<String, dynamic>> loginUser(String email, String password) async {
-    String apiUrl = '${Environment.API_URL}/api/users/login';
+  // Dejar de seguir a un usuario
+  static Future<void> unfollowUser(String currentUserId, String userIdToUnfollow) async {
+    DocumentReference currentUserDoc =
+        _firestore.collection('Usuarios').doc(currentUserId);
+    DocumentReference userToUnfollowDoc =
+        _firestore.collection('Usuarios').doc(userIdToUnfollow);
 
-    try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        body: jsonEncode(<String, String>{
-          'email': email,
-          'password': password,
-        }),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-      );
+    await _firestore.runTransaction((transaction) async {
+      DocumentSnapshot currentUserSnapshot = await transaction.get(currentUserDoc);
+      DocumentSnapshot userToUnfollowSnapshot = await transaction.get(userToUnfollowDoc);
 
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        final userId = responseData['userId'];
-        final token = responseData['token'];
-        return {'userId': userId, 'token': token};
-      } else {
-        throw Exception('Inicio de sesión fallido: ${response.body}');
+      if (currentUserSnapshot.exists && userToUnfollowSnapshot.exists) {
+        var currentUserData = currentUserSnapshot.data() as Map<String, dynamic>;
+        var userToUnfollowData = userToUnfollowSnapshot.data() as Map<String, dynamic>;
+
+        List<String> currentUserFollowing =
+            List<String>.from(currentUserData['following'] ?? []);
+        List<String> userToUnfollowFollowers =
+            List<String>.from(userToUnfollowData['followers'] ?? []);
+
+        if (currentUserFollowing.contains(userIdToUnfollow)) {
+          currentUserFollowing.remove(userIdToUnfollow);
+          userToUnfollowFollowers.remove(currentUserId);
+
+          transaction.update(currentUserDoc, {'following': currentUserFollowing});
+          transaction.update(userToUnfollowDoc, {'followers': userToUnfollowFollowers});
+        }
       }
-    } catch (error) {
-      throw Exception('Error en la solicitud: $error');
-    }
-  }
-
-  static Future<void> logoutUser() async {
-    
+    });
   }
 }

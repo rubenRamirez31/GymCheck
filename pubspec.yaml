@@ -69,6 +69,7 @@ dependencies:
   syncfusion_flutter_charts: ^25.2.6
   flutter_vector_icons: ^2.0.0
   floating_bottom_navigation_bar: ^1.5.2
+  fluttertoast: ^8.2.5
 
 dev_dependencies:
   flutter_test:

@@ -1,14 +1,8 @@
-import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:gym_check/src/providers/globales.dart';
-import 'package:gym_check/src/screens/crear/alimentacion/create_alimento_page.dart';
-import 'package:gym_check/src/screens/crear/rutinas/create_workout_page.dart';
-import 'package:gym_check/src/screens/crear/series/create_serie_page.dart';
 import 'package:gym_check/src/screens/principal.dart';
 import 'package:gym_check/src/screens/seguimiento/calendar/physical-nutritional/month_view_widget.dart';
-import 'package:gym_check/src/screens/seguimiento/productivity/daily_routine_page.dart';
-import 'package:gym_check/src/screens/seguimiento/goals/goals_page.dart';
 import 'package:gym_check/src/screens/seguimiento/nutritional_tracking_page.dart';
 import 'package:gym_check/src/screens/seguimiento/physical_tracking_page.dart';
 import 'package:gym_check/src/screens/seguimiento/productivity_tracking_page.dart';
@@ -85,7 +79,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage>
     setState(() {
       _containerHeight = prefs.getDouble('calendarHeight') ?? 300.0;
       _cellAspectRatio = _containerHeight == 300.0 ? 1 : 0.5;
-      _isExpanded = _containerHeight == 450.0;
+      _isExpanded = _containerHeight == 300.0;
     });
   }
 
@@ -254,7 +248,7 @@ class _HomeTrackingPageState extends State<HomeTrackingPage>
         _containerHeight = 300.0;
         _cellAspectRatio = 1;
       } else {
-        _containerHeight = 450.0;
+        _containerHeight = 300.0;
         _cellAspectRatio = 0.5;
       }
       _isExpanded = !_isExpanded;

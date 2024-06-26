@@ -113,7 +113,7 @@ String getDayByMenuOption() {
             Container(
               padding: const EdgeInsets.all(16),
               child: const Text(
-                'My Daily Routine',
+                'Mi rutina diaria',
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -171,7 +171,7 @@ String getDayByMenuOption() {
         _selectedMenuOption == 6 ? _view() : const SizedBox(),
         
       CustomButton(
-          text: 'Add',
+          text: 'Agregar',
           onPressed: () {
             _showOptionsBottomSheet(context, DateTime.now());
           },

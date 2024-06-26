@@ -13,6 +13,7 @@ class GlobalVariablesProvider extends ChangeNotifier {
     _prefs = await SharedPreferences.getInstance();
     // Carga los valores guardados de SharedPreferences si existen
     _selectedSubPageTracking = _prefs.getInt('selectedSubPageTracking') ?? 0;
+    _selectedSubPageProfile = _prefs.getInt('selectedSubPageProfile') ?? 0;
 
     _selectedMenuOptionTrackingPhysical = _prefs.getInt('selectedMenuOptionTrackingPhysical') ?? 0;
     _selectedMenuOptionTrackingNutritional = _prefs.getInt('selectedMenuOptionTrackingNutritional') ?? 0;
@@ -27,6 +28,16 @@ class GlobalVariablesProvider extends ChangeNotifier {
     _selectedMenuOptionExerciseByFocus =
         _prefs.getInt('selectedMenuOptionExerciseByFocus') ?? 0;
   }
+
+
+  int _selectedSubPageProfile = 0;
+int get selectedSubPageProfile => _selectedSubPageProfile;
+set selectedSubPageProfile(int newValue) {
+  _selectedSubPageProfile = newValue;
+  _prefs.setInt('selectedSubPageProfile', newValue); // Guarda en SharedPreferences
+  notifyListeners();
+}
+
 
   int _selectedSubPageTracking = 0;
   int get selectedSubPageTracking => _selectedSubPageTracking;

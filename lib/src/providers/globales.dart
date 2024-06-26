@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/workout_model.dart';
+import 'package:gym_check/src/services/user_service.dart'; // Importa el servicio de usuario
 
 class Globales extends ChangeNotifier {
   String primerNombre = "";
@@ -12,6 +13,7 @@ class Globales extends ChangeNotifier {
   String correo = "";
   String fotoPerfil = "";
   String idAuth = "";
+  String idDocumento = ""; // Nuevo campo para el ID del documento del usuario
   int? primerosPasos;
   DateTime? fechaCreacion;
   bool? verificado;
@@ -29,19 +31,15 @@ class Globales extends ChangeNotifier {
 
   Future<void> cargarDatosUsuario(String userId) async {
     try {
-      // Realiza una consulta en la colección "Usuarios" buscando el documento con el campo 'userIdAuth' igual al ID de usuario
       QuerySnapshot userSnapshot = await FirebaseFirestore.instance
           .collection("Usuarios")
           .where("userIdAuth", isEqualTo: userId)
           .get();
 
-      // Verifica si se encontraron resultados
       if (userSnapshot.docs.isNotEmpty) {
-        // Como se espera que solo haya un documento que coincida con el UID, obtenemos el primer documento
         DocumentSnapshot userDoc = userSnapshot.docs.first;
-
-        // Obtén los datos del documento y asígnalos a las variables globales
         Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+        idDocumento = userDoc.id; // Guarda el ID del documento del usuario
         primerNombre = userData['primer_nombre'] ?? "";
         segundoNombre = userData['segundo_nombre'] ?? "";
         apellidos = userData['apellidos'] ?? "";
@@ -58,8 +56,7 @@ class Globales extends ChangeNotifier {
             : null;
         verificado = userData['verificado'] ?? null;
 
-        print("Usuario encontrado e informacion cargada correctamente");
-        // Notifica a los widgets que dependen de estos datos que necesitan actualizarse
+        print("Usuario encontrado e información cargada correctamente");
         notifyListeners();
       } else {
         print("No se encontró ningún documento con el UID proporcionado.");
@@ -67,5 +64,31 @@ class Globales extends ChangeNotifier {
     } catch (error) {
       print("Error al cargar los datos del usuario: $error");
     }
+  }
+
+  Future<void> followUser(String userIdToFollow) async {
+    try {
+      await UserService.followUser(idDocumento, userIdToFollow); // Usa idDocumento en lugar de idAuth
+      notifyListeners();
+    } catch (e) {
+      print('Error siguiendo al usuario: $e');
+    }
+  }
+
+  Future<void> unfollowUser(String userIdToUnfollow) async {
+    try {
+      await UserService.unfollowUser(idDocumento, userIdToUnfollow); // Usa idDocumento en lugar de idAuth
+      notifyListeners();
+    } catch (e) {
+      print('Error dejando de seguir al usuario: $e');
+    }
+  }
+
+  Stream<List<String>> getFollowers() {
+    return UserService.getFollowers(idDocumento); // Usa idDocumento en lugar de idAuth
+  }
+
+  Stream<List<String>> getFollowing() {
+    return UserService.getFollowing(idDocumento); // Usa idDocumento en lugar de idAuth
   }
 }
