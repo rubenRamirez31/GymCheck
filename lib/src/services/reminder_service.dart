@@ -13,7 +13,7 @@ class ReminderService {
       String nick = globales.nick;
       final userCollectionRef = FirebaseFirestore.instance
           .collection('Seguimiento')
-          .doc(nick)
+          .doc(globales.idAuth)
           .collection('Recordatorios');
       await userCollectionRef.add(reminder);
       return {'message': 'Recordatorio creado exitosamente'};
@@ -30,7 +30,7 @@ class ReminderService {
       String nick = globales.nick;
       final userCollectionRef = FirebaseFirestore.instance
           .collection('Seguimiento')
-          .doc(nick)
+          .doc(globales.idAuth)
           .collection('Recordatorios');
       await userCollectionRef.add(reminder);
       return {'message': 'Recordatorio creado exitosamente'};
@@ -47,7 +47,7 @@ class ReminderService {
       String nick = globales.nick;
       final userCollectionRef = FirebaseFirestore.instance
           .collection('Seguimiento')
-          .doc(nick)
+          .doc(globales.idAuth)
           .collection('Recordatorios');
       final querySnapshot = await userCollectionRef
           .where('modelo', isEqualTo: 'Prime')
@@ -79,7 +79,7 @@ class ReminderService {
       String nick = globales.nick;
       final userCollectionRef = FirebaseFirestore.instance
           .collection('Seguimiento')
-          .doc(nick)
+          .doc(globales.idAuth)
           .collection('Recordatorios');
       final querySnapshot = await userCollectionRef
           .where('idRecordar', isEqualTo: idRecordar)
@@ -99,7 +99,7 @@ static Future<List<Map<String, dynamic>>> getAllRemindersClon(BuildContext conte
     String nick = globales.nick;
     final userCollectionRef = FirebaseFirestore.instance
         .collection('Seguimiento')
-        .doc(nick)
+        .doc(globales.idAuth)
         .collection('Recordatorios');
     final querySnapshot = await userCollectionRef
         .where('modelo', isEqualTo: 'clon')
@@ -131,7 +131,7 @@ static Future<List<Map<String, dynamic>>> getAllRemindersClon(BuildContext conte
       String nick = globales.nick;
       final reminderRef = FirebaseFirestore.instance
           .collection('Seguimiento')
-          .doc(nick)
+          .doc(globales.idAuth)
           .collection('Recordatorios')
           .doc(reminderId);
       final docSnapshot = await reminderRef.get();
@@ -156,7 +156,7 @@ static Future<List<Map<String, dynamic>>> getAllRemindersClon(BuildContext conte
       // Consultar el último recordatorio con el idRecordar dado
       final querySnapshot = await FirebaseFirestore.instance
           .collection('Seguimiento')
-          .doc(nick)
+          .doc(globales.idAuth)
           .collection('Recordatorios')
           .where('idRecordar', isEqualTo: reminderId)
           .orderBy('createdAt', descending: true)
@@ -188,7 +188,7 @@ static Future<List<Map<String, dynamic>?>> getFilteredPrimeReminders(
     String nick = globales.nick;
     final userCollectionRef = FirebaseFirestore.instance
         .collection('Seguimiento')
-        .doc(nick)
+        .doc(globales.idAuth)
         .collection('Recordatorios');
 
     // Realiza la consulta principal por el tipo principal
@@ -256,7 +256,7 @@ static Future<List<Map<String, dynamic>?>> getFilteredPrimeReminders(
       // Consulta los documentos que coincidan con el campo idRecordar
       final querySnapshot = await FirebaseFirestore.instance
           .collection('Seguimiento')
-          .doc(nick)
+          .doc(globales.idAuth)
           .collection('Recordatorios')
           .where('idRecordar', isEqualTo: reminderId)
           .get();
@@ -349,7 +349,7 @@ static Future<List<Map<String, dynamic>?>> getFilteredPrimeReminders(
       // Consulta los documentos que coincidan con el campo idRecordar
       final querySnapshot = await FirebaseFirestore.instance
           .collection('Seguimiento')
-          .doc(nick)
+          .doc(globales.idAuth)
           .collection('Recordatorios')
           .where('idRecordar', isEqualTo: reminderId)
           .get();
@@ -372,7 +372,7 @@ static Future<List<Map<String, dynamic>?>> getFilteredPrimeReminders(
       String nick = globales.nick;
 
       // Referencia al documento del recordatorio
-      final reminderRef = FirebaseFirestore.instance.collection('Seguimiento').doc(nick).collection('Recordatorios').doc(reminderId);
+      final reminderRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.idAuth).collection('Recordatorios').doc(reminderId);
 
       // Eliminar el documento
       await reminderRef.delete();

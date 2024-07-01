@@ -5,6 +5,7 @@ import 'package:gym_check/src/models/registro_fisico_model.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/first_photo_page.dart';
 import 'package:gym_check/src/services/firebase_services.dart';
 import 'package:gym_check/src/services/physical_data_service.dart';
+import 'package:gym_check/src/services/user_service.dart';
 import 'package:gym_check/src/utils/common_widgets/gradient_background.dart';
 import 'package:gym_check/src/values/app_theme.dart';
 
@@ -95,7 +96,7 @@ class _AlturaPageState extends State<AlturaPage> {
         'primeros_pasos': 5,
       };
 
-      await updateUser(userData, context);
+      await UserService.updateUser(userData, context);
 
        Navigator.push(
          context,

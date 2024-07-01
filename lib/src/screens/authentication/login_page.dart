@@ -6,6 +6,7 @@ import 'package:gym_check/src/components/app_text_form_field.dart';
 import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/resources/resources.dart';
 import 'package:gym_check/src/screens/seguimiento/calendar/app_colors.dart';
+import 'package:gym_check/src/services/auth_service.dart';
 import 'package:gym_check/src/services/firebase_services.dart';
 import 'package:gym_check/src/utils/common_widgets/gradient_background.dart';
 import 'package:gym_check/src/values/app_constants.dart';
@@ -23,6 +24,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
+      final AuthService _authService = AuthService(); // Instancia de AuthService
+
 
   final ValueNotifier<bool> passwordNotifier = ValueNotifier(true);
   final ValueNotifier<bool> fieldValidNotifier = ValueNotifier(false);
@@ -161,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
                                 "Llena los campos para continuar");
                           } else {
                             SmartDialog.showLoading(msg: 'Iniciando sesión');
-                            String res = await login(
+                            String res = await _authService.login(
                                 emailController.text, passwordController.text);
 
                             if (res == "200") {

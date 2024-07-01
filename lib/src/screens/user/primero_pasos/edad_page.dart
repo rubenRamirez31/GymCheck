@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/peso_page.dart';
 import 'package:gym_check/src/services/firebase_services.dart';
 import 'package:gym_check/src/services/physical_data_service.dart';
+import 'package:gym_check/src/services/user_service.dart';
 import 'package:gym_check/src/utils/common_widgets/gradient_background.dart';
 import 'package:gym_check/src/values/app_theme.dart';
 import 'package:scroll_date_picker/scroll_date_picker.dart';
@@ -99,7 +100,7 @@ class _EdadPageState extends State<EdadPage> {
         'fechaNacimiento': _selectedDate,
       };
 
-      await updateUser(userData, context);
+      await  UserService.updateUser(userData, context);
 
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => const PesoPage()));

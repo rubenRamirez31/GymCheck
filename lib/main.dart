@@ -5,17 +5,14 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:gym_check/src/providers/global_variables_provider.dart';
 import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/providers/user_session_provider.dart';
-import 'package:gym_check/src/screens/authentication/confirm_email_page.dart';
 import 'package:gym_check/src/screens/authentication/login_page.dart';
 import 'package:gym_check/src/screens/authentication/register_page.dart';
 import 'package:gym_check/src/screens/crear/create_page.dart';
 import 'package:gym_check/src/screens/principal.dart';
 
 import 'package:gym_check/src/screens/social/create_post_page.dart';
-import 'package:gym_check/src/screens/social/edit_post_page.dart';
 import 'package:gym_check/src/screens/social/feed_page.dart';
 import 'package:gym_check/src/screens/social/notification_page.dart';
-import 'package:gym_check/src/screens/social/profile_page.dart';
 import 'package:gym_check/src/screens/user/mi_espacio/mi_espacio_page.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/altura_page.dart';
 
@@ -75,7 +72,8 @@ class _MyAppState extends State<MyApp> {
           builder: FlutterSmartDialog.init(),
           debugShowCheckedModeBanner: false,
           theme: AppTheme.themeData,
-        ///  themeMode:  ThemeMode.system,
+
+          ///  themeMode:  ThemeMode.system,
           home: user != null
               ? PrincipalPage(
                   uid: user?.uid,
@@ -85,7 +83,6 @@ class _MyAppState extends State<MyApp> {
             // Rutas de autenticación
             '/login': (context) => const LoginPage(),
             '/register': (context) => const RegisterPage(),
-            '/confirm_email': (context) => ConfirmEmailPage(),
 
             // Rutas de primeros pasos del usuario
             '/general_data': (context) => const GeneralDataPage(),
@@ -105,9 +102,7 @@ class _MyAppState extends State<MyApp> {
             '/feed': (context) => const FeedPage(),
             '/commentbox': (context) => const CommentBox(),
             '/share': (context) => const Share(),
-            '/profile': (context) => ProfilePage(nick: ""),
             '/create-post': (context) => const CreatePostPage(),
-            '/edit-post': (context) => const EditPostPage(postId: ""),
 
             // Rutas para el módulo de creación
             'create-module': (context) => CreatePage(),

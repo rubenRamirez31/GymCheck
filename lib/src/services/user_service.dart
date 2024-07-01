@@ -2,10 +2,37 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:gym_check/src/models/usuario/usuario.dart';
+import 'package:gym_check/src/providers/globales.dart';
+import 'package:provider/provider.dart';
 
 class UserService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  
+static Future<String> updateUser(Map<String, dynamic> newData, BuildContext context) async {
+    try {
+      final globales = Provider.of<Globales>(context, listen: false);
+
+      // Realizar una consulta para encontrar el usuario con el userIdAuth proporcionado
+      QuerySnapshot userQuery = await FirebaseFirestore.instance.collection('Usuarios').where('userIdAuth', isEqualTo: globales.idAuth).get();
+
+      // Verificar si se encontró algún usuario
+      if (userQuery.docs.isNotEmpty) {
+        // Obtener la referencia del documento del usuario
+        DocumentReference userRef = FirebaseFirestore.instance.collection('Usuarios').doc(userQuery.docs.first.id);
+
+        // Actualizar el documento del usuario con los nuevos datos
+        await userRef.update(newData);
+        return "Usuario actualizado correctamente";
+      } else {
+        return "No se encontró ningún usuario con el userIdAuth proporcionado";
+      }
+    } catch (error) {
+      // Manejar errores
+      return "Error: $error";
+    }
+  }
 
     // Obtener usuarios filtrados por nickname
   static Stream<List<Usuario>> obtenerUsuariosFiltradosStream(String query) {
@@ -99,21 +126,27 @@ class UserService {
     return false;
   }
 
+ 
+
   // Obtener seguidores de un usuario
-  static Stream<List<String>> getFollowers(String userIdDoc) {
-    return _firestore
-        .collection('Usuarios')
-        .doc(userIdDoc)
-        .snapshots()
-        .map((snapshot) {
-      if (snapshot.exists) {
-        var data = snapshot.data() as Map<String, dynamic>;
-        var followers = data['followers'] ?? [];
-        return List<String>.from(followers);
-      }
-      return [];
-    });
+static Stream<List<String>> getFollowers(String userIdDoc) {
+  if (userIdDoc.isEmpty) {
+    return Stream.value([]); // Retorna un stream vacío si el userIdDoc está vacío
   }
+  return _firestore
+      .collection('Usuarios')
+      .doc(userIdDoc)
+      .snapshots()
+      .map((snapshot) {
+    if (snapshot.exists) {
+      var data = snapshot.data() as Map<String, dynamic>;
+      var followers = data['followers'] ?? [];
+      return List<String>.from(followers);
+    }
+    return [];
+  });
+}
+
 
   // Obtener seguidos de un usuario
   static Stream<List<String>> getFollowing(String userIdDoc) {

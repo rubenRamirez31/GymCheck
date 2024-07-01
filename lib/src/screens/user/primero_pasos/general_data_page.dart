@@ -5,6 +5,7 @@ import 'package:gym_check/src/components/app_text_form_field.dart';
 
 import 'package:gym_check/src/screens/user/primero_pasos/edad_page.dart';
 import 'package:gym_check/src/services/firebase_services.dart';
+import 'package:gym_check/src/services/user_service.dart';
 import 'package:gym_check/src/utils/common_widgets/gradient_background.dart';
 
 
@@ -157,7 +158,7 @@ class _GeneralDataPageState extends State<GeneralDataPage> {
         'genero': dropdownValue,
       };
 
-       await updateUser(userData, context);
+       await  UserService.updateUser(userData, context);
 
      Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const EdadPage()));

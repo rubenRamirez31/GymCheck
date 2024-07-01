@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:gym_check/src/models/social/post_model.dart';
 import 'package:gym_check/src/providers/globales.dart';
+import 'package:gym_check/src/screens/profile/profile_page.dart';
 import 'package:gym_check/src/screens/social/profile_page.dart';
 import 'package:gym_check/src/values/app_colors.dart';
 import 'package:gym_check/src/widgets/social/comment_box.dart';
@@ -57,10 +58,7 @@ class PostHeader extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ProfilePage(nick: nick)),
-            );
+            
           },
           child: Text(
             nick,

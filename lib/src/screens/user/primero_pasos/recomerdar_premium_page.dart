@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:gym_check/src/providers/globales.dart';
 import 'package:gym_check/src/services/firebase_services.dart';
+import 'package:gym_check/src/services/user_service.dart';
 import 'package:gym_check/src/utils/common_widgets/gradient_background.dart';
 import 'package:gym_check/src/values/app_theme.dart';
 import 'package:provider/provider.dart';
@@ -102,7 +103,7 @@ class _RecomendarPlanPremiumPageState extends State<RecomendarPlanPremiumPage> {
         'primeros_pasos': 7,
       };
 
-      await updateUser(userData, context);
+      await  UserService.updateUser(userData, context);
 
       // ignore: use_build_context_synchronously
       Navigator.of(context)

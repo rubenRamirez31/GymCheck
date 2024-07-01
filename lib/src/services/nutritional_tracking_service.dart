@@ -11,7 +11,7 @@ class NutritionalService {
   static Future<Map<String, dynamic>> getTrackingData(BuildContext context) async {
     try {
       final globales = Provider.of<Globales>(context, listen: false);
-      final userRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.nick);
+      final userRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.idAuth);
       final docSnapshot = await userRef.get();
 
       if (docSnapshot.exists) {
@@ -28,7 +28,7 @@ class NutritionalService {
    static Future<Map<String, dynamic>> updateTrackingData(BuildContext context, Map<String, dynamic> newData) async {
     try {
       final globales = Provider.of<Globales>(context, listen: false);
-      final userRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.nick);
+      final userRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.idAuth);
 
       final docSnapshot = await userRef.get();
 
@@ -52,7 +52,7 @@ class NutritionalService {
   static Future<Map<String, dynamic>> addNutritionalData(BuildContext context, Map<String, double> data) async {
   try {
     final globales = Provider.of<Globales>(context, listen: false);
-    final userCollectionRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.nick);
+    final userCollectionRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.idAuth);
 
     final currentDate = DateTime.now();
 
@@ -85,7 +85,7 @@ class NutritionalService {
   static Future<List<Map<String, dynamic>>> getDataWithDynamicSorting(BuildContext context, String collectionType, String orderByTipo, String orderByDirection, String typeData) async {
     try {
       final globales = Provider.of<Globales>(context, listen: false);
-      final userCollectionRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.nick).collection('Registro-Macros');
+      final userCollectionRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.idAuth).collection('Registro-Macros');
 
       final querySnapshot = await userCollectionRef.where('tipo', isEqualTo: typeData).orderBy(orderByTipo, descending: orderByDirection == 'desc').get();
 
@@ -106,7 +106,7 @@ class NutritionalService {
   static Future<Map<String, dynamic>> getLatestNutritionalDataV2(BuildContext context, String collection) async {
     try {
       final globales = Provider.of<Globales>(context, listen: false);
-      final userCollectionRef = FirebaseFirestore.instance.collection('Nutricion').doc(globales.nick).collection(collection);
+      final userCollectionRef = FirebaseFirestore.instance.collection('Nutricion').doc(globales.idAuth).collection(collection);
       final querySnapshot = await userCollectionRef.orderBy('fecha', descending: true).get();
 
       // Crear un mapa para almacenar los últimos datos de cada tipo
@@ -135,7 +135,7 @@ class NutritionalService {
   static Future<Map<String, dynamic>> updateNutritionalDataByNick(BuildContext context, Map<String, dynamic> nutritionalData) async {
     try {
       final globales = Provider.of<Globales>(context, listen: false);
-      final userRef = FirebaseFirestore.instance.collection('Nutricion').doc(globales.nick);
+      final userRef = FirebaseFirestore.instance.collection('Nutricion').doc(globales.idAuth);
       await userRef.update(nutritionalData);
 
       return {'message': 'Configuraciones de NutritionalData actualizadas correctamente'};

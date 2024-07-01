@@ -5,7 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_check/src/screens/seguimiento/widgets/custom_button.dart';
 import 'package:gym_check/src/screens/user/primero_pasos/recomerdar_premium_page.dart';
-import 'package:gym_check/src/services/firebase_services.dart';
+import 'package:gym_check/src/services/user_service.dart';
 import 'package:gym_check/src/utils/common_widgets/gradient_background.dart';
 import 'package:gym_check/src/values/app_theme.dart';
 import 'package:image_picker/image_picker.dart';
@@ -129,7 +129,7 @@ class _FirstPhotoPageState extends State<FirstPhotoPage> {
           'urlImagen': imageUrl
         };
 
-        await updateUser(userData, context);
+        await  UserService.updateUser(userData, context);
 
         // Ahora puedes usar la URL de la imagen para almacenarla en tu base de datos o donde la necesites
         print(imageUrl);
@@ -152,7 +152,7 @@ class _FirstPhotoPageState extends State<FirstPhotoPage> {
         'primeros_pasos': 6,
       };
 
-      await updateUser(userData, context);
+      await  UserService.updateUser(userData, context);
 
       // Ahora puedes usar la URL de la imagen para almacenarla en tu base de datos o donde la necesites
 

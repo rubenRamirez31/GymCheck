@@ -18,6 +18,9 @@ class Globales extends ChangeNotifier {
   DateTime? fechaCreacion;
   bool? verificado;
   List<Workout> rutinas = [];
+  List<String>? followers;
+  List<String>? following;
+  String? estado;
 
   void agregarRutina(Workout w) {
     rutinas.add(w);
@@ -55,6 +58,9 @@ class Globales extends ChangeNotifier {
                 userData['fechaCreacion'].seconds * 1000)
             : null;
         verificado = userData['verificado'] ?? null;
+        followers = List<String>.from(userData['followers'] ?? []);
+        following = List<String>.from(userData['following'] ?? []);
+        estado = (userData['estado'] ?? '');
 
         print("Usuario encontrado e información cargada correctamente");
         notifyListeners();
@@ -68,7 +74,8 @@ class Globales extends ChangeNotifier {
 
   Future<void> followUser(String userIdToFollow) async {
     try {
-      await UserService.followUser(idDocumento, userIdToFollow); // Usa idDocumento en lugar de idAuth
+      await UserService.followUser(
+          idDocumento, userIdToFollow); // Usa idDocumento en lugar de idAuth
       notifyListeners();
     } catch (e) {
       print('Error siguiendo al usuario: $e');
@@ -77,7 +84,8 @@ class Globales extends ChangeNotifier {
 
   Future<void> unfollowUser(String userIdToUnfollow) async {
     try {
-      await UserService.unfollowUser(idDocumento, userIdToUnfollow); // Usa idDocumento en lugar de idAuth
+      await UserService.unfollowUser(
+          idDocumento, userIdToUnfollow); // Usa idDocumento en lugar de idAuth
       notifyListeners();
     } catch (e) {
       print('Error dejando de seguir al usuario: $e');
@@ -85,10 +93,12 @@ class Globales extends ChangeNotifier {
   }
 
   Stream<List<String>> getFollowers() {
-    return UserService.getFollowers(idDocumento); // Usa idDocumento en lugar de idAuth
+    return UserService.getFollowers(
+        idDocumento); // Usa idDocumento en lugar de idAuth
   }
 
   Stream<List<String>> getFollowing() {
-    return UserService.getFollowing(idDocumento); // Usa idDocumento en lugar de idAuth
+    return UserService.getFollowing(
+        idDocumento); // Usa idDocumento en lugar de idAuth
   }
 }

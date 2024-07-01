@@ -16,8 +16,11 @@ class Usuario {
   int? edad;
   DateTime? fechaNacimiento;
   String? tokenfcm;
+
+  
   List<String>? followers;
   List<String>? following;
+  String? estado;
 
   Usuario({
     this.docId,
@@ -37,6 +40,7 @@ class Usuario {
     this.tokenfcm,
     this.followers,
     this.following,
+    this.estado
   });
 
   factory Usuario.fromMap(Map<String, dynamic> map, String docId) {
@@ -58,6 +62,7 @@ class Usuario {
       tokenfcm: map['tokenfcm'] ?? '',
       followers: List<String>.from(map['followers'] ?? []),
       following: List<String>.from(map['following'] ?? []),
+      estado: (map['estado'] ?? ''),
     );
   }
 
@@ -81,6 +86,7 @@ class Usuario {
       tokenfcm: data['tokenfcm'] ?? '',
       followers: List<String>.from(data['followers'] ?? []),
       following: List<String>.from(data['following'] ?? []),
+      estado: (data['estado'] ?? ''),
     );
   }
 
@@ -102,6 +108,7 @@ class Usuario {
       'tokenfcm': tokenfcm,
       'followers': followers,
       'following': following,
+      'estado': estado,
     };
   }
 }

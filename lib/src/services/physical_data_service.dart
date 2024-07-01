@@ -12,15 +12,13 @@ class PhysicalDataService {
       final userCollectionRef = FirebaseFirestore.instance.collection('Seguimiento');
 
     // Crear un nuevo documento con el mismo nombre que el nick del usuario
-    final userDocRef = userCollectionRef.doc(globales.nick);
+    final userDocRef = userCollectionRef.doc(globales.idAuth);
     await userDocRef.set({'meta': '', 'diaFrecuencia': ''});
 
        // Crear las subcolecciones para los diferentes tipos de datos físicos
     final subCollections = [
-      "Metas",
       "Registro-Corporal",
-      "Registro-Semanal",
-      "Registro-Antropometrico",
+
       // Agrega aquí más subcolecciones si es necesario
     ];
 
@@ -43,7 +41,7 @@ class PhysicalDataService {
   static Future<Map<String, dynamic>> getPhysicalDataByNick(BuildContext context) async {
     try {
       final globales = Provider.of<Globales>(context, listen: false);
-      final userRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.nick);
+      final userRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.idAuth);
       final docSnapshot = await userRef.get();
 
       if (docSnapshot.exists) {
@@ -61,7 +59,7 @@ class PhysicalDataService {
   static Future<Map<String, dynamic>> addData(BuildContext context,String collection, Map<String, dynamic> data) async {
     try {
       final globales = Provider.of<Globales>(context, listen: false);
-      final userCollectionRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.nick).collection(collection);
+      final userCollectionRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.idAuth).collection(collection);
       final typeData = data['tipo'];
       final currentDate = DateTime.now();
       data['fecha'] = currentDate;
@@ -79,7 +77,7 @@ class PhysicalDataService {
   static Future<List<Map<String, dynamic>>> getDataWithDynamicSorting(BuildContext context,String collectionType, String orderByTipo, String orderByDirection, String typeData) async {
     try {
       final globales = Provider.of<Globales>(context, listen: false);
-      final userCollectionRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.nick).collection(collectionType);
+      final userCollectionRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.idAuth).collection(collectionType);
       
       final querySnapshot = await userCollectionRef.where('tipo', isEqualTo: typeData).orderBy(orderByTipo, descending: orderByDirection == 'desc').get();
       
@@ -101,7 +99,7 @@ class PhysicalDataService {
     static Future<Map<String, dynamic>> getLatestPhysicalData(BuildContext context,String collection, String typeData) async {
     try {
       final globales = Provider.of<Globales>(context, listen: false);
-      final userCollectionRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.nick).collection(collection);
+      final userCollectionRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.idAuth).collection(collection);
       final querySnapshot = await userCollectionRef.where('tipo', isEqualTo: typeData).orderBy('fecha', descending: true).limit(1).get();
 
       if (querySnapshot.docs.isNotEmpty) {
@@ -123,7 +121,7 @@ class PhysicalDataService {
   static Future<Map<String, dynamic>> getLatestPhysicalDataV2(BuildContext context, String collection) async {
   try {
     final globales = Provider.of<Globales>(context, listen: false);
-    final userCollectionRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.nick).collection(collection);
+    final userCollectionRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.idAuth).collection(collection);
     final querySnapshot = await userCollectionRef.orderBy('fecha', descending: true).get();
 
     // Crear un mapa para almacenar los últimos datos de cada tipo
@@ -153,7 +151,7 @@ class PhysicalDataService {
   static Future<Map<String, dynamic>> updatePhysicalDataByNick(BuildContext context,Map<String, dynamic> physicalData) async {
     try {
       final globales = Provider.of<Globales>(context, listen: false);
-      final userRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.nick);
+      final userRef = FirebaseFirestore.instance.collection('Seguimiento').doc(globales.idAuth);
       await userRef.update(physicalData);
 
       return {'message': 'Configuraciones de PhysicalData actualizadas correctamente'};
