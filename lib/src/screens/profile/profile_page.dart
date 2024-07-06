@@ -8,12 +8,11 @@ import 'package:gym_check/src/screens/profile/following_page.dart';
 import 'package:gym_check/src/screens/profile/other_profile_page.dart';
 import 'package:gym_check/src/screens/qr/gr_scanner.dart';
 import 'package:gym_check/src/screens/qr/qr_generator.dart';
-import 'package:gym_check/src/screens/seguimiento/productivity/daily_routine_page.dart';
 import 'package:gym_check/src/services/user_service.dart';
 import 'package:gym_check/src/widgets/menu_button_option_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'search_user_page.dart'; // Importa la página de búsqueda de usuarios
+import 'search_user_page.dart';
 
 class ProfilePage extends StatefulWidget {
   final Function? openDrawer;
@@ -31,24 +30,16 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin {
-  List<String> options = [
-    'Dia a Dia',
-    'Creaciones',
-    'Colecciones',
-  ]; // Lista de opciones
-
+class _ProfilePageState extends State<ProfilePage>
+    with TickerProviderStateMixin {
+  List<String> options = ['Rutinas', 'Series', 'Recetas'];
   List<Color> highlightColors = [
-    Colors.white, // Color de resaltado para 'Fisico'
-    Colors.white, // Color de resaltado para 'Emocional'
-    Colors.white, // Color de resaltado para 'Nutricional'
+    Colors.white,
+    Colors.white,
+    Colors.white,
+    Colors.white,
   ];
-
-  List<IconData> myIcons = [
-    Icons.calendar_today,
-    Icons.create,
-    Icons.save,
-  ];
+  List<IconData> myIcons = [Icons.create, Icons.save, Icons.restaurant];
   int _selectedMenuOption = 0;
 
   @override
@@ -60,13 +51,14 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
   Future<void> _loadSelectedMenuOption() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _selectedMenuOption = widget.initialPageIndex ?? prefs.getInt('selectedSubPageProfile') ?? 0;
+      _selectedMenuOption = widget.initialPageIndex ??
+          prefs.getInt('selectedSubPageProfile') ??
+          0;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final globales = context.watch<Globales>();
     var globalVariable = Provider.of<GlobalVariablesProvider>(context);
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 18, 18, 18),
@@ -138,238 +130,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(126, 18, 18, 18),
-                      borderRadius: BorderRadius.circular(10), // Radio de los bordes redondos
-                      border: Border.all(
-                        color: Colors.white, // Color del borde
-                        width: 0.5, // Ancho del borde
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(6),
-                                  child: CircleAvatar(
-                                    radius: 70,
-                                    backgroundImage: NetworkImage(globales.fotoPerfil),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      globales.nick,
-                                      style: TextStyle(
-                                        fontSize: 25,
-                                        color: const Color.fromARGB(255, 255, 255, 255),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Row(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => FollowersPage(),
-                                            ),
-                                          );
-                                        },
-                                        child: StreamBuilder<List<String>>(
-                                          stream: globales.idDocumento.isNotEmpty
-                                              ? UserService.getFollowers(globales.idDocumento)
-                                              : Stream.value([]),
-                                          builder: (context, snapshot) {
-                                            if (snapshot.hasData) {
-                                              return Text(
-                                                "${snapshot.data!.length} seguidores",
-                                                style: TextStyle(color: Colors.white),
-                                              );
-                                            }
-                                            return Text(
-                                              "0 seguidores",
-                                              style: TextStyle(color: Colors.white),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                      SizedBox(width: 5),
-                                      SizedBox(width: 5),
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => FollowingPage(),
-                                            ),
-                                          );
-                                        },
-                                        child: StreamBuilder<List<String>>(
-                                          stream: globales.idDocumento.isNotEmpty
-                                              ? UserService.getFollowing(globales.idDocumento)
-                                              : Stream.value([]),
-                                          builder: (context, snapshot) {
-                                            if (snapshot.hasData) {
-                                              return Text(
-                                                "°   ${snapshot.data!.length} Siguiendo",
-                                                style: TextStyle(color: Colors.white),
-                                              );
-                                            }
-                                            return Text(
-                                              "°   0 Siguiendo",
-                                              style: TextStyle(color: Colors.white),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      globales.estado ?? "Sin estado",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            CustomButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => EditProfilePage(),
-                                  ),
-                                );
-                              },
-                              text: "Editar",
-                              icon: Icons.settings,
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  showDragHandle: true,
-                                  backgroundColor: const Color.fromARGB(255, 18, 18, 18),
-                                  builder: (context) {
-                                    return Container(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Text(
-                                                  globales.nick,
-                                                  style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white,
-                                                  ),
-                                                  textAlign: TextAlign.start,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          ListTile(
-                                            leading: Icon(Icons.qr_code_2, color: Colors.white),
-                                            title: Text('Compartir perfil', style: TextStyle(color: Colors.white)),
-                                            onTap: () {
-                                              showModalBottomSheet(
-                                                showDragHandle: true,
-                                                backgroundColor: const Color.fromARGB(255, 18, 18, 18),
-                                                shape: const RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.vertical(
-                                                    top: Radius.circular(15),
-                                                  ),
-                                                ),
-                                                context: context,
-                                                isScrollControlled: true,
-                                                builder: (context) {
-                                                  return FractionallySizedBox(
-                                                      heightFactor: 0.90,
-                                                      child: QRGenerator(
-                                                        tipoDocumento: "Usuario",
-                                                        claveDocumento: globales.nick,
-                                                      ));
-                                                },
-                                              );
-                                            },
-                                          ),
-                                          ListTile(
-                                            leading: Icon(Icons.remove_red_eye, color: Colors.white),
-                                            title: Text('Vista previa de mi perfil', style: TextStyle(color: Colors.white)),
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => OtherProfilePage(
-                                                    userNick: globales.nick,
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                          ListTile(
-                                            leading: Icon(Icons.settings, color: Colors.white),
-                                            title: Text('Editar', style: TextStyle(color: Colors.white)),
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => EditProfilePage(),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              icon: Icon(
-                                Icons.more_vert_outlined,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+                  _cardProfile(context),
                   SizedBox(height: 20),
                   Container(
                     color: const Color.fromARGB(255, 18, 18, 18),
@@ -383,14 +144,19 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                               options: options,
                               icons: myIcons,
                               onItemSelected: (index) async {
-                                SharedPreferences prefs = await SharedPreferences.getInstance();
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
                                 setState(() {
                                   _selectedMenuOption = index;
-                                  globalVariable.selectedSubPageProfile = _selectedMenuOption;
+                                  globalVariable.selectedSubPageProfile =
+                                      _selectedMenuOption;
                                 });
-                                await prefs.setInt('selectedSubPageProfile', index);
+                                await prefs.setInt(
+                                    'selectedSubPageProfile', index);
                               },
-                              selectedMenuOptionGlobal: widget.initialPageIndex ?? globalVariable.selectedSubPageProfile,
+                              selectedMenuOptionGlobal:
+                                  widget.initialPageIndex ??
+                                      globalVariable.selectedSubPageProfile,
                             ),
                           ],
                         ),
@@ -398,13 +164,245 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                     ),
                   ),
                   SizedBox(height: 10),
-                  _selectedMenuOption == 0 ? const DailyRoutinePage() : const SizedBox(),
+                  _selectedMenuOption == 0
+                      ? const SizedBox()
+                      : const SizedBox(),
                 ],
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _cardProfile(BuildContext contex) {
+    final globales = context.watch<Globales>();
+
+    return Container(
+      decoration: BoxDecoration(
+        //color: Color.fromARGB(125, 120, 120, 120),
+        borderRadius: BorderRadius.circular(10), // Radio de los bordes redondos
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(6),
+                    child: CircleAvatar(
+                      radius: 70,
+                      backgroundImage: NetworkImage(globales.fotoPerfil),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        globales.nick,
+                        style: TextStyle(
+                          fontSize: 25,
+                          color: const Color.fromARGB(255, 255, 255, 255),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FollowersPage(),
+                              ),
+                            );
+                          },
+                          child: StreamBuilder<List<String>>(
+                            stream: globales.idDocumento.isNotEmpty
+                                ? UserService.getFollowers(globales.idDocumento)
+                                : Stream.value([]),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return Text(
+                                  "${snapshot.data!.length} seguidores",
+                                  style: TextStyle(color: Colors.white),
+                                );
+                              }
+                              return Text(
+                                "0 seguidores",
+                                style: TextStyle(color: Colors.white),
+                              );
+                            },
+                          ),
+                        ),
+                        SizedBox(width: 5),
+                        SizedBox(width: 5),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FollowingPage(),
+                              ),
+                            );
+                          },
+                          child: StreamBuilder<List<String>>(
+                            stream: globales.idDocumento.isNotEmpty
+                                ? UserService.getFollowing(globales.idDocumento)
+                                : Stream.value([]),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return Text(
+                                  "°   ${snapshot.data!.length} Siguiendo",
+                                  style: TextStyle(color: Colors.white),
+                                );
+                              }
+                              return Text(
+                                "°   0 Siguiendo",
+                                style: TextStyle(color: Colors.white),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        globales.estado ?? "Sin estado",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              CustomButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditProfilePage(),
+                    ),
+                  );
+                },
+                text: "Editar",
+                icon: Icons.settings,
+                foregroundColor: Colors.white,
+                backgroundColor: const Color.fromARGB(0, 255, 255, 255),
+                iconColor: Colors.white,
+                borderColor: Colors.white,
+              ),
+              IconButton(
+                onPressed: () {
+                  _menuProfile(globales.nick);
+                },
+                icon: Icon(
+                  Icons.more_vert_outlined,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future _menuProfile(String nombre) {
+    return showModalBottomSheet(
+      context: context,
+      showDragHandle: true,
+      backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      nombre,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                ],
+              ),
+              ListTile(
+                leading: Icon(Icons.qr_code_2, color: Colors.white),
+                title: Text('Compartir perfil',
+                    style: TextStyle(color: Colors.white)),
+                onTap: () {
+                  showModalBottomSheet(
+                    showDragHandle: true,
+                    backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(15),
+                      ),
+                    ),
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (context) {
+                      return FractionallySizedBox(
+                          heightFactor: 0.90,
+                          child: QRGenerator(
+                            tipoDocumento: "Usuario",
+                            claveDocumento: nombre,
+                          ));
+                    },
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.remove_red_eye, color: Colors.white),
+                title: Text('Vista previa de mi perfil',
+                    style: TextStyle(color: Colors.white)),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OtherProfilePage(
+                        userNick: nombre,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

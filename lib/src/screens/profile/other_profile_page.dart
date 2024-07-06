@@ -256,6 +256,10 @@ class _OtherProfilePageState extends State<OtherProfilePage> {
                                 text: 
                                   isFollowing ? 'Dejar de seguir' : 'Seguir',
                                   icon:  isFollowing ? Icons.check_circle : Icons.add_circle,
+                                    foregroundColor: Colors.white,
+                              backgroundColor: const Color.fromARGB(0, 255, 255, 255),
+                              iconColor: Colors.white,
+                              borderColor: Colors.white,
                                 
                               ),
                                IconButton(
@@ -263,6 +267,7 @@ class _OtherProfilePageState extends State<OtherProfilePage> {
                           icon: Icon(
                             Icons.more_vert_outlined,
                             color: Colors.white,
+                            
                           ),
                         ),
                             ],
